@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="app-container">
       用户列表
-      <!-- {{scope.row.email}} -->
+      {{scope.row[0].id}}
 <!-- 上方搜索框 -->
       <el-card class="filter-container" shadow="never">
       <div>
@@ -41,22 +41,22 @@
                 style="width: 100%;"
                 v-loading="listLoading" border>
         <el-table-column label="编号" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.id}}</template>
+          <template slot-scope="scope">{{scope.row[0].id}}</template>
         </el-table-column>
         <el-table-column label="帐号" align="center">
-          <template slot-scope="scope">{{scope.row.username}}</template>
+          <template slot-scope="scope">{{scope.row[0].username}}</template>
         </el-table-column>
         <el-table-column label="姓名" align="center">
-          <template slot-scope="scope">{{scope.row.nickName}}</template>
+          <template slot-scope="scope">{{scope.row[0].nickName}}</template>
         </el-table-column>
         <el-table-column label="邮箱" align="center">
-          <template slot-scope="scope">{{scope.row.email}}</template>
+          <template slot-scope="scope">{{scope.row[0].email}}</template>
         </el-table-column>
         <el-table-column label="添加时间" width="160" align="center">
-          <template slot-scope="scope">{{scope.row.createTime | formatDateTime}}</template>
+          <template slot-scope="scope">{{scope.row[0].createTime | formatDateTime}}</template>
         </el-table-column>
         <el-table-column label="最后登录" width="160" align="center">
-          <template slot-scope="scope">{{scope.row.loginTime | formatDateTime}}</template>
+          <template slot-scope="scope">{{scope.row[0].loginTime | formatDateTime}}</template>
         </el-table-column>
         <el-table-column label="是否启用" width="140" align="center">
           <template slot-scope="scope">
@@ -160,7 +160,7 @@
   import {fetchList,createAdmin,updateAdmin,updateStatus,deleteAdmin,getRoleByAdmin,allocRole} from '@/api/login';
   import {fetchAllRoleList} from '@/api/role';
   import {formatDate} from '@/utils/date';
-  import {getHome} from '@/api/userList';
+  import {getUser} from '@/api/userList';
 
   const defaultListQuery = {
     pageNum: 1,
@@ -191,7 +191,8 @@
         allocRoleIds:[],
         allRoleList:[],
         allocAdminId:null,
-        scope:{}
+        scope:{},
+        id:null
       }
     },
      
@@ -201,11 +202,13 @@
     },
     mounted(){
       
-      getHome().then(res=>{
+      getUser().then(res=>{
 
           this.scope = res.data;
-          console.log(res.data);
-          debugger;
+          console.log(res.data.row);
+          console.log(res.data.row[0].id);
+          console.log(this.scope.row);
+          // debugger;
       })
     },
     filters: {
@@ -218,8 +221,7 @@
       }
     },
    
-    methods: {
-      
+    methods: {  
       handleResetSearch() {
         this.listQuery = Object.assign({}, defaultListQuery);
       },

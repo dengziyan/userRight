@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getUser() {
+export function getRole() {
   return request({
-    url: '/userList',
+    url: '/roleList',
     method: 'get'
   })
 }
