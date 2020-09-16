@@ -1,7 +1,7 @@
 
 module.exports = [
     {
-        url:'/roleList',
+        url:'/opeDiary',
         type:'get',
         response: config=>{
             return{
@@ -10,9 +10,12 @@ module.exports = [
                     row:[
                         {
                             id:1,
-                            name:'超级管理员',
-                            description:'拥有所有权限',
-                            email:'111@qq.com'
+                            title:'权限',
+                            level:'一级',
+                            name:'ums',
+                            icon:'el-icon-s-goods',
+                            sort:0,
+                            
                                                        
                         }
                     ]

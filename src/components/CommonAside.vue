@@ -66,8 +66,8 @@
                     icon: 'table'
                   },
                   {
-                    path: '/resourseList',
-                    name: 'resourseList',
+                    path: '/resourceList',
+                    name: 'resourceList',
                     label: '资源列表',
                     icon: 'tree'
                   }
@@ -77,7 +77,7 @@
                 label: '系统管理',
                 name: 'system',
                 icon: 's-custom',
-                children: [       
+                children: [
                   {
                     path: '/opeDiary',
                     name: 'opeDiary',

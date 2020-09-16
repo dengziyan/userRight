@@ -5,13 +5,20 @@ const user = require('./user')
 const table = require('./table')
 const home = require('./home')
 const userList = require('./userList')
-
+const roleList = require('./roleList')
+const menuList = require('./menuList')
+const resourceList = require('./resourceList')
+const opeDiary = require('./opeDiary')
 
 const mocks = [
   ...user,
   ...table,
   ...home,
-  ...userList
+  ...userList,
+  ...roleList,
+  ...menuList,
+  ...resourceList,
+  ...opeDiary
 ]
 
 

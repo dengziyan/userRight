@@ -41,9 +41,9 @@ export const constantRoutes = [
         component: () => import('@/views/Authoraty/MenuList')
       },
       {
-        path: '/resourseList',
-        name: 'resourseList',
-        component: () => import('@/views/Authoraty/ResourseList')
+        path: '/resourceList',
+        name: 'resourceList',
+        component: () => import('@/views/Authoraty/ResourceList')
       },
       {
         path: '/opeDiary',

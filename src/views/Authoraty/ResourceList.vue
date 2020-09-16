@@ -1,7 +1,6 @@
-<template>
-    <div class="app-container">
-      角色列表
-      <el-card class="filter-container" shadow="never">
+<template> 
+  <div class="app-container">
+    <el-card class="filter-container" shadow="never">
       <div>
         <i class="el-icon-search"></i>
         <span>筛选搜索</span>
@@ -21,8 +20,20 @@
       </div>
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
-          <el-form-item label="输入搜索：">
-            <el-input v-model="listQuery.keyword" class="input-width" placeholder="角色名称" clearable></el-input>
+          <el-form-item label="资源名称：">
+            <el-input v-model="listQuery.nameKeyword" class="input-width" placeholder="资源名称" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="资源路径：">
+            <el-input v-model="listQuery.urlKeyword" class="input-width" placeholder="资源路径" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="资源分类：">
+            <el-select v-model="listQuery.categoryId" placeholder="全部" clearable class="input-width">
+              <el-option v-for="item in categoryOptions"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-form>
       </div>
@@ -31,50 +42,30 @@
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
       <el-button size="mini" class="btn-add" @click="handleAdd()" style="margin-left: 20px">添加</el-button>
+      <el-button size="mini" class="btn-add" @click="handleShowCategory()">资源分类</el-button>
     </el-card>
     <div class="table-container">
-      <el-table ref="roleTable"
+      <el-table ref="resourceTable"
                 :data="list"
                 style="width: 100%;"
                 v-loading="listLoading" border>
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
-        <el-table-column label="角色名称" align="center">
+        <el-table-column label="资源名称" align="center">
           <template slot-scope="scope">{{scope.row.name}}</template>
+        </el-table-column>
+        <el-table-column label="资源路径" align="center">
+          <template slot-scope="scope">{{scope.row.url}}</template>
         </el-table-column>
         <el-table-column label="描述" align="center">
           <template slot-scope="scope">{{scope.row.description}}</template>
         </el-table-column>
-        <!-- <el-table-column label="用户数"  width="100" align="center">
-          <template slot-scope="scope">{{scope.row.adminCount}}</template>
-        </el-table-column>
         <el-table-column label="添加时间" width="160" align="center">
           <template slot-scope="scope">{{scope.row.createTime | formatDateTime}}</template>
-        </el-table-column> -->
-        <el-table-column label="是否启用" width="140" align="center">
-          <template slot-scope="scope">
-            <el-switch
-              @change="handleStatusChange(scope.$index, scope.row)"
-              :active-value="1"
-              :inactive-value="0"
-              v-model="scope.row.status">
-            </el-switch>
-          </template>
         </el-table-column>
-        <el-table-column label="操作" width="160" align="center">
+        <el-table-column label="操作" width="140" align="center">
           <template slot-scope="scope">
-            <el-row>
-              <el-button size="mini"
-                         type="text"
-                         @click="handleSelectMenu(scope.$index, scope.row)">分配菜单
-              </el-button>
-              <el-button size="mini"
-                         type="text"
-                         @click="handleSelectResource(scope.$index, scope.row)">分配资源
-              </el-button>
-            </el-row>
-            <el-row>
             <el-button size="mini"
                        type="text"
                        @click="handleUpdate(scope.$index, scope.row)">
@@ -84,7 +75,6 @@
                        type="text"
                        @click="handleDelete(scope.$index, scope.row)">删除
             </el-button>
-            </el-row>
           </template>
         </el-table-column>
       </el-table>
@@ -97,31 +87,37 @@
         layout="total, sizes,prev, pager, next,jumper"
         :current-page.sync="listQuery.pageNum"
         :page-size="listQuery.pageSize"
-        :page-sizes="[5,10,15]"
+        :page-sizes="[10,15,20]"
         :total="total">
       </el-pagination>
     </div>
     <el-dialog
-      :title="isEdit?'编辑角色':'添加角色'"
+      :title="isEdit?'编辑资源':'添加资源'"
       :visible.sync="dialogVisible"
       width="40%">
-      <el-form :model="role"
-               ref="roleForm"
+      <el-form :model="resource"
+               ref="resourceForm"
                label-width="150px" size="small">
-        <el-form-item label="角色名称：">
-          <el-input v-model="role.name" style="width: 250px"></el-input>
+        <el-form-item label="资源名称：">
+          <el-input v-model="resource.name" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="资源路径：">
+          <el-input v-model="resource.url" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="资源分类：">
+          <el-select v-model="resource.categoryId" placeholder="全部" clearable style="width: 250px">
+            <el-option v-for="item in categoryOptions"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="描述：">
-          <el-input v-model="role.description"
+          <el-input v-model="resource.description"
                     type="textarea"
                     :rows="5"
                     style="width: 250px"></el-input>
-        </el-form-item>
-        <el-form-item label="是否启用：">
-          <el-radio-group v-model="role.status">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="0">否</el-radio>
-          </el-radio-group>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -129,27 +125,30 @@
         <el-button type="primary" @click="handleDialogConfirm()" size="small">确 定</el-button>
       </span>
     </el-dialog>
-    </div>
+  </div>
 </template>
-
 <script>
-  import {fetchList,createRole,updateRole,updateStatus,deleteRole} from '@/api/role';
+  import {fetchList,createResource,updateResource,deleteResource} from '@/api/resource';
+  import {listAllCate} from '@/api/resourceCategory';
   import {formatDate} from '@/utils/date';
-  import {getRole} from '@/api/roleList';
+  import {getResource} from '@/api/resourceList';
+
   const defaultListQuery = {
     pageNum: 1,
-    pageSize: 5,
-    keyword: null
+    pageSize: 10,
+    nameKeyword: null,
+    urlKeyword: null,
+    categoryId:null
   };
-  const defaultRole = {
+  const defaultResource = {
     id: null,
     name: null,
-    description: null,
-    adminCount: 0,
-    status: 1
+    url: null,
+    categoryId: null,
+    description:''
   };
   export default {
-    name: 'roleList',
+    name: 'resourceList',
     data() {
       return {
         listQuery: Object.assign({}, defaultListQuery),
@@ -157,16 +156,19 @@
         total: null,
         listLoading: false,
         dialogVisible: false,
-        role: Object.assign({}, defaultRole),
-        isEdit: false
+        resource: Object.assign({}, defaultResource),
+        isEdit: false,
+        categoryOptions:[],
+        defaultCategoryId:null
       }
     },
     created() {
       this.getList();
+      this.getCateList();
     },
     mounted(){
       
-      getRole().then(res=>{
+      getResource().then(res=>{
 
           this.list = res.data.row;
           this.listLoading=false
@@ -202,39 +204,16 @@
       handleAdd() {
         this.dialogVisible = true;
         this.isEdit = false;
-        this.role = Object.assign({},defaultRole);
-      },
-      handleStatusChange(index, row) {
-        this.$confirm('是否要修改该状态?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          updateStatus(row.id, {status: row.status}).then(response => {
-            this.$message({
-              type: 'success',
-              message: '修改成功!'
-            });
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消修改'
-          });
-          this.getList();
-        });
+        this.resource = Object.assign({},defaultResource);
+        this.resource.categoryId = this.defaultCategoryId;
       },
       handleDelete(index, row) {
-        this.$confirm('是否要删除该角色?', '提示', {
+        this.$confirm('是否要删除该资源?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          let ids = [];
-          ids.push(row.id);
-          let params=new URLSearchParams();
-          params.append("ids",ids);
-          deleteRole(params).then(response => {
+          deleteResource(row.id).then(response => {
             this.$message({
               type: 'success',
               message: '删除成功!'
@@ -246,7 +225,7 @@
       handleUpdate(index, row) {
         this.dialogVisible = true;
         this.isEdit = true;
-        this.role = Object.assign({},row);
+        this.resource = Object.assign({},row);
       },
       handleDialogConfirm() {
         this.$confirm('是否要确认?', '提示', {
@@ -255,7 +234,7 @@
           type: 'warning'
         }).then(() => {
           if (this.isEdit) {
-            updateRole(this.role.id,this.role).then(response => {
+            updateResource(this.resource.id,this.resource).then(response => {
               this.$message({
                 message: '修改成功！',
                 type: 'success'
@@ -264,7 +243,7 @@
               this.getList();
             })
           } else {
-            createRole(this.role).then(response => {
+            createResource(this.resource).then(response => {
               this.$message({
                 message: '添加成功！',
                 type: 'success'
@@ -275,11 +254,8 @@
           }
         })
       },
-      handleSelectMenu(index,row){
-        this.$router.push({path:'/ums/allocMenu',query:{roleId:row.id}})
-      },
-      handleSelectResource(index,row){
-        this.$router.push({path:'/ums/allocResource',query:{roleId:row.id}})
+      handleShowCategory(){
+        this.$router.push({path: '/ums/resourceCategory'})
       },
       getList() {
         this.listLoading = true;
@@ -288,11 +264,20 @@
           this.list = response.data.list;
           this.total = response.data.total;
         });
+      },
+      getCateList(){
+        listAllCate().then(response=>{
+          let cateList = response.data;
+          for(let i=0;i<cateList.length;i++){
+            let cate = cateList[i];
+            this.categoryOptions.push({label:cate.name,value:cate.id});
+          }
+          this.defaultCategoryId=cateList[0].id;
+        })
       }
     }
   }
 </script>
+<style></style>
 
-<style scoped>
 
-</style>
