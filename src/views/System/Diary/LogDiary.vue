@@ -116,6 +116,7 @@
 
 <script>
 import { list, delLogininfor, cleanLogininfor, exportLogininfor } from "@/api/logininfor";
+import { getLog } from "@/api/logDiary";
 
 export default {
   name: "Logininfor",
@@ -153,10 +154,20 @@ export default {
       this.statusOptions = response.data;
     });
   },
+  mounted(){
+      
+      getLog().then(res=>{
+
+          this.list = res.data.row;
+          // this.listLoading=false
+          this.loading = false;
+          // debugger;
+      })
+    },
   methods: {
     /** 查询登录日志列表 */
     getList() {
-      this.loading = true;
+      // this.loading = true;
       list(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
           this.list = response.rows;
           this.total = response.total;

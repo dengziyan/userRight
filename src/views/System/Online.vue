@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { list, forceLogout } from "@/api/online";
+import { list, forceLogout, getOnline} from "@/api/online";
 
 export default {
   name: "Online",
@@ -89,6 +89,16 @@ export default {
   created() {
     this.getList();
   },
+  mounted(){
+      
+      getOnline().then(res=>{
+
+          this.list = res.data.row;
+          // this.listLoading=false
+          this.loading = false;
+          // debugger;
+      })
+    },
   methods: {
     /** 查询登录日志列表 */
     getList() {

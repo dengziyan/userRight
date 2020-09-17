@@ -9,6 +9,8 @@ const roleList = require('./roleList')
 const menuList = require('./menuList')
 const resourceList = require('./resourceList')
 const opeDiary = require('./opeDiary')
+const logDiary = require('./logDiary')
+const online = require('./online')
 
 const mocks = [
   ...user,
@@ -18,7 +20,9 @@ const mocks = [
   ...roleList,
   ...menuList,
   ...resourceList,
-  ...opeDiary
+  ...opeDiary,
+  ...logDiary,
+  ...online
 ]
 
 

@@ -54,7 +54,7 @@ export const constantRoutes = [
         path: '/logDiary',
         name: 'logDiary',
         component: () => import('@/views/System/Diary/LogDiary')
-      },  
+      },
       {
         path: '/online',
         name: 'online',

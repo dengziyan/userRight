@@ -238,14 +238,15 @@ export default {
       getOpe().then(res=>{
 
           this.list = res.data.row;
-          this.listLoading=false
+          // this.listLoading=false
+          this.loading = false;
           // debugger;
       })
     },
   methods: {
     /** 查询登录日志 */
     getList() {
-      this.loading = true;
+      // this.loading = true;
       list(this.addDateRange(this.queryParams, this.dateRange)).then( response => {
           this.list = response.rows;
           this.total = response.total;

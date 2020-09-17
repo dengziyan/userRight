@@ -1,8 +1,7 @@
 import request from '@/utils/request'
-
-export function getResource() {
+export function getLog() {
     return request({
-      url: '/resourceList',
+      url: '/logDiary',
       method: 'get'
     })
   }
