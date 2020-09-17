@@ -167,7 +167,7 @@
       this.getCateList();
     },
     mounted(){
-      
+
       getResource().then(res=>{
 
           this.list = res.data.row;

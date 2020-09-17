@@ -27,7 +27,6 @@
     </el-form>
     <el-table
       v-loading="loading"
-      :data="list.slice((pageNum-1)*pageSize,pageNum*pageSize)"
       style="width: 100%;"
     >
       <el-table-column label="序号" type="index" align="center">
@@ -54,7 +53,6 @@
             type="text"
             icon="el-icon-delete"
             @click="handleForceLogout(scope.row)"
-            v-hasPermi="['monitor:online:forceLogout']"
           >强退</el-button>
         </template>
       </el-table-column>
@@ -90,7 +88,7 @@ export default {
     this.getList();
   },
   mounted(){
-      
+
       getOnline().then(res=>{
 
           this.list = res.data.row;
@@ -100,7 +98,7 @@ export default {
       })
     },
   methods: {
-    /** 查询登录日志列表 */
+    /* 查询登录日志列表 */
     getList() {
       this.loading = true;
       list(this.queryParams).then(response => {

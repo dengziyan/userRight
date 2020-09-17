@@ -189,16 +189,16 @@
         allocRoleIds:[],
         allRoleList:[],
         allocAdminId:null
-        
+
       }
     },
-     
+
     created() {
       this.getList();
       this.getAllRoleList();
     },
     mounted(){
-      
+
       getUser().then(res=>{
 
           this.list = res.data.row;
@@ -215,8 +215,8 @@
         return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
       }
     },
-   
-    methods: {  
+
+    methods: {
       handleResetSearch() {
         this.listQuery = Object.assign({}, defaultListQuery);
       },
@@ -330,7 +330,7 @@
       },
       getList() {
         this.listLoading = true;
-        fetchList(this.listQuery).then(response => {
+          fetchList(this.listQuery).then(response => {
           this.listLoading = false;
           this.list = response.data.list;
           this.total = response.data.total;

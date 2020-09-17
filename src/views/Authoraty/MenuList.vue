@@ -106,7 +106,7 @@
       this.getList();
     },
      mounted(){
-      
+
       getMenu().then(res=>{
 
           this.list = res.data.row;
