@@ -9,12 +9,15 @@ module.exports = [
                 data: {
                     row:[
                         {
-                            id:1,
-                            title:'权限',
-                            level:'一级',
-                            name:'ums',
-                            icon:'el-icon-s-goods',
-                            sort:0,
+                            operId:5905,
+                            title:'岗位管理',
+                            businessType:'导出',
+                            requestMethod:'GET',
+                            operName:'dengziyan',
+                            operIp:'',
+                            operLocation:'内网IP',
+                            status:'成功',
+                            operTime:''
                             
                                                        
                         }

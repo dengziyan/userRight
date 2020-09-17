@@ -1,6 +1,5 @@
 <template>
   <div class="app-container">
-    操作日志
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="系统模块" prop="title">
         <el-input
