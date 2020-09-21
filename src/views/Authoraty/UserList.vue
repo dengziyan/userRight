@@ -1,17 +1,8 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <!-- 部门数据
-      <el-col :span="4" :xs="24">
-        <div class="head-container">
-          <el-input v-model="deptName" placeholder="请输入部门名称" clearable size="small" prefix-icon="el-icon-search" style="margin-bottom: 20px" />
-        </div>
-        <div class="head-container">
-          <el-tree :data="deptOptions" :props="defaultProps" :expand-on-click-node="false" :filter-node-method="filterNode" ref="tree" default-expand-all @node-click="handleNodeClick" />
-        </div>
-      </el-col> -->
-      <!--用户数据-->
       <el-col :span="20" :xs="24">
+        <!-- 搜索框-->
         <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
           <el-form-item label="用户名称" prop="userName">
             <el-input v-model="queryParams.userName" placeholder="请输入用户名称" clearable size="small" style="width: 240px"
@@ -37,36 +28,16 @@
             <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
           </el-form-item>
         </el-form>
-
+        <!-- 各个操作按钮 -->
         <el-row :gutter="10" class="mb8">
-          <el-col :span="1.5">
-            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd"
-                       v-hasPermi="['system:user:add']">新增
-            </el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
-                       v-hasPermi="['system:user:edit']">修改
-            </el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
-                       v-hasPermi="['system:user:remove']">删除
-            </el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="info" icon="el-icon-upload2" size="mini" @click="handleImport"
-                       v-hasPermi="['system:user:import']">导入
-            </el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport"
-                       v-hasPermi="['system:user:export']">导出
-            </el-button>
-          </el-col>
-          <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
+            <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate">修改</el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除</el-button>
+            <el-button type="info" icon="el-icon-upload2" size="mini" @click="handleImport">导入</el-button>
+            <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
+<!--          <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>-->
         </el-row>
-
+        <!-- 表格-->
         <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center"/>
           <el-table-column label="编号" align="center" prop="id"/>
@@ -75,11 +46,6 @@
           <el-table-column label="性别" align="center" prop="gender"/>
           <el-table-column label="邮箱" align="center" prop="email"/>
           <el-table-column label="手机号码" align="center" prop="mobilePhone" width="120"/>
-          <!-- <el-table-column label="状态" align="center">
-            <template slot-scope="scope">
-              <el-switch v-model="scope.row.status" active-value="0" inactive-value="1" @change="handleStatusChange(scope.row)"></el-switch>
-            </template>
-          </el-table-column> -->
           <el-table-column label="创建时间" align="center" prop="createDate" width="160">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createDate) }}</span>
@@ -119,11 +85,6 @@
               <el-input v-model="form.nickName" placeholder="请输入用户昵称"/>
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="12">
-            <el-form-item label="归属部门" prop="deptId">
-              <treeselect v-model="form.deptId" :options="deptOptions" :disable-branch-nodes="true" :show-count="true" placeholder="请选择归属部门" />
-            </el-form-item>
-          </el-col> -->
         </el-row>
         <el-row>
           <el-col :span="12">
@@ -244,60 +205,36 @@ export default {
   // components: { Treeselect },
   data() {
     return {
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 总条数
-      total: 0,
-      // 用户表格数据
-      userList: null,
-      // 弹出层标题
-      title: '',
-      // 部门树选项
-      deptOptions: undefined,
-      // 是否显示弹出层
-      open: false,
-      // 部门名称
-      deptName: undefined,
-      // 默认密码
-      initPassword: undefined,
-      // 日期范围
-      dateRange: [],
-      // 状态数据字典
-      statusOptions: [],
-      // 性别状态字典
-      sexOptions: [],
-      // 岗位选项
-      postOptions: [],
-      // 角色选项
-      roleOptions: [],
-      // 表单参数
-      form: {},
+      loading: true, // 遮罩层
+      ids: [], // 选中数组
+      single: true, // 非单个禁用
+      multiple: true, // 非多个禁用
+      showSearch: true, // 显示搜索条件
+      total: 0, // 总条数
+      userList: null, // 用户表格数据
+      title: '', // 弹出层标题
+      deptOptions: undefined, // 部门树选项
+      open: false, // 是否显示弹出层
+      deptName: undefined, // 部门名称
+      initPassword: undefined, // 默认密码
+      dateRange: [], // 日期范围
+      statusOptions: [], // 状态数据字典
+      sexOptions: [], // 性别状态字典
+      postOptions: [], // 岗位选项
+      roleOptions: [], // 角色选项
+      form: {}, // 表单参数
       defaultProps: {
         children: 'children',
         label: 'label'
       },
       // 用户导入参数
       upload: {
-        // 是否显示弹出层（用户导入）
-        open: false,
-        // 弹出层标题（用户导入）
-        title: '',
-        // 是否禁用上传
-        isUploading: false,
-        // 是否更新已经存在的用户数据
-        updateSupport: 0,
-        // 设置上传的请求头部
-        headers: { Authorization: 'Bearer ' + getToken() },
-        // 上传的地址
-        url: process.env.VUE_APP_BASE_API + '/system/user/importData'
+        open: false, // 是否显示弹出层（用户导入）
+        title: '', // 弹出层标题（用户导入）
+        isUploading: false, // 是否禁用上传
+        updateSupport: 0, // 是否更新已经存在的用户数据
+        headers: { Authorization: 'Bearer ' + getToken() }, // 设置上传的请求头部
+        url: process.env.VUE_APP_BASE_API + '/system/user/importData' // 上传的地址
       },
       // 查询参数
       queryParams: {
@@ -349,16 +286,6 @@ export default {
   },
   created() {
     this.getList()
-    // this.getTreeselect();
-    // this.getDicts("sys_normal_disable").then((response) => {
-    //   this.statusOptions = response.data;
-    // });
-    // this.getDicts("sys_user_sex").then((response) => {
-    //   this.sexOptions = response.data;
-    // });
-    // this.getConfigKey("sys.user.initPassword").then((response) => {
-    //   this.initPassword = response.msg;
-    // });
   },
   methods: {
     /** 查询用户列表 */
@@ -452,12 +379,12 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset()
       // this.getTreeselect();
+      this.reset()
+      this.open = true
       getUser().then((response) => {
         this.postOptions = response.posts
         this.roleOptions = response.roles
-        this.open = true
         this.title = '添加用户'
         this.form.password = this.initPassword
       })
