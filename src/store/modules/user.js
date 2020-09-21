@@ -6,7 +6,6 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    id: '',
     avatar: ''
   }
 }
@@ -23,9 +22,6 @@ const mutations = {
   SET_NAME: (state, name) => {
     state.name = name
   },
-  SET_ID: (state, id) => {
-    state.id = id
-  },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   }
@@ -38,8 +34,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
-        commit('SET_TOKEN', data.token) // tokne
-        commit('SET_ID', data.id) // 用户编号
+        commit('SET_TOKEN', data.token)
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -51,7 +46,7 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.id).then(response => {
+      getInfo(state.token).then(response => {
         const { data } = response
 
         if (!data) {
