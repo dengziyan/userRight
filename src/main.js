@@ -11,7 +11,7 @@ import RightToolbar from "@/components/RightToolbar"
 
 //全局配置
 import 'normalize.css/normalize.css'
-import '@/styles/index.scss' 
+import '@/styles/index.scss'
 import 'element-ui/lib/theme-chalk/index.css'
 import request from '@/utils/request'
 
@@ -21,7 +21,7 @@ import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, 
 
 //第三方包
 import ElementUI from 'element-ui'
-import locale from 'element-ui/lib/locale/lang/en' 
+import locale from 'element-ui/lib/locale/lang/en'
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
@@ -44,7 +44,7 @@ Vue.prototype.$http = request;
 Vue.use(permission)
 
 import '@/icons' // icon
-import '@/permission' 
+import '@/permission'
 
 
 if (process.env.NODE_ENV === 'production') {

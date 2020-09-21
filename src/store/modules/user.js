@@ -6,7 +6,7 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    id: '',
+    id: sessionStorage.getItem('userId'),
     avatar: ''
   }
 }
@@ -40,6 +40,7 @@ const actions = {
         const { data } = response
         commit('SET_TOKEN', data.token) // tokne
         commit('SET_ID', data.id) // 用户编号
+        sessionStorage.setItem('userId', data.id)
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -58,10 +59,8 @@ const actions = {
           return reject('Verification failed, please Login again.')
         }
 
-        console.log(data.userInfo)
         const name = data.userInfo.account
         const avatar = data.userInfo.avatarUrl
-        console.log(name,avatar)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         resolve(data)
@@ -74,7 +73,7 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      logout(state.name).then(() => {
         removeToken() // must remove  token  first
         resetRouter()
         commit('RESET_STATE')

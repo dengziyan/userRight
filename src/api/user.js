@@ -17,14 +17,17 @@ export function login(data) {
 
 export function getInfo(id) {
   return request({
-    url: '/sys/user-info/' + id,
+    url: '/sys/user-info/' + id || sessionStorage.getItem('userId'),
     method: 'get'
   })
 }
 
-export function logout() {
+export function logout(username) {
   return request({
-    url: '/user-rights-system/user/logout',
-    method: 'post'
+    url: '/sysUser/logout',
+    method: 'post',
+    data: {
+      account: username
+    }
   })
 }
