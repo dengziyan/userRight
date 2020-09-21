@@ -53,7 +53,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$store.dispatch('user/logout').then((response) => {
-          console.log(response)
+          location.href = '/index'
         })
       })
     }

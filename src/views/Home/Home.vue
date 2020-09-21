@@ -14,17 +14,18 @@
             return{
                 user: {}
             }
-        },
-        mounted(){
-            getHome().then(res=>{
-                this.user = res.data;
-                console.log(res.data);
-            })
-            this.$http.get('/home').then(res=>{
-                console.log(res);
-            })
         }
-        
+        // ,
+        // mounted(){
+        //     getHome().then(res=>{
+        //         this.user = res.data;
+        //         console.log(res.data);
+        //     })
+        //     this.$http.get('/home').then(res=>{
+        //         console.log(res);
+        //     })
+        // }
+
     }
 </script>
 
