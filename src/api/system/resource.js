@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-//查询
+// 查询
 export function fetchList(params) {
   return request({
     url: '/sysResources/resourceList',
@@ -31,9 +31,9 @@ export function deleteResource(id) {
   })
 }
 
-export function fetchAllResourceList() {
-  return request({
-    url: '/resource/listAll',
-    method: 'get'
-  })
-}
+// export function fetchAllResourceList() {
+//   return request({
+//     url: '/resource/listAll',
+//     method: 'get'
+//   })
+// }
