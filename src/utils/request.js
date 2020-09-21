@@ -45,6 +45,10 @@ service.interceptors.response.use(
   response => {
     const res = response.data
 
+    // 判断是否携带tkne
+    // 判断与原有token是否相等
+    // 不等就换成返回来的token
+
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 2000) {
       Message({
