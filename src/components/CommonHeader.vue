@@ -17,7 +17,7 @@
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>个人中心</el-dropdown-item>
-            <el-dropdown-item>退出</el-dropdown-item>
+            <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
 
@@ -27,26 +27,37 @@
 </template>
 
 <script>
-  import { mapState } from  'vuex'
+import { mapState } from 'vuex'
 import { Collapse } from 'element-ui'
-    export default {
-      computed: {
-       ...mapState({
-         current:state => state.tab.currentMenu
-       })
-      },
-      data(){
-        return{
-          userImg:require('../assets/images/feng.png')
-        }
-      },
-      methods:{
-        collapseMenu(){
-          this.$store.commit('collapseMenu')
-        }
-      }
-
+export default {
+  computed: {
+   ...mapState({
+     current:state => state.tab.currentMenu
+   })
+  },
+  data(){
+    return{
+      userImg:require('../assets/images/feng.png')
     }
+  },
+  methods:{
+    collapseMenu(){
+      this.$store.commit('collapseMenu')
+    },
+    async logout() {
+      this.$confirm('确定注销并退出系统吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$store.dispatch('LogOut').then(() => {
+          location.href = '/index';
+        })
+      })
+    }
+  }
+
+}
 </script>
 
 <style lang="scss" scoped>
