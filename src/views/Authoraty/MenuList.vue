@@ -85,7 +85,7 @@
 </template>
 
 <script>
-  import {fetchList,deleteMenu,updateMenu,updateHidden} from '@/api/menu'
+  import {fetchList,deleteMenu,updateMenu,updateHidden} from '@/api/system/menu'
   import {getMenu} from '@/api/menuList';
   export default {
     name: "menuList",

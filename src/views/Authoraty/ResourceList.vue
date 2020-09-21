@@ -53,13 +53,13 @@
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
         <el-table-column label="资源名称" align="center">
-          <template slot-scope="scope">{{scope.row.name}}</template>
+          <template slot-scope="scope">{{scope.row.resourceName}}</template>
         </el-table-column>
         <el-table-column label="资源路径" align="center">
           <template slot-scope="scope">{{scope.row.url}}</template>
         </el-table-column>
         <el-table-column label="描述" align="center">
-          <template slot-scope="scope">{{scope.row.description}}</template>
+          <template slot-scope="scope">{{scope.row.resourceTag}}</template>
         </el-table-column>
         <el-table-column label="添加时间" width="160" align="center">
           <template slot-scope="scope">{{scope.row.createTime | formatDateTime}}</template>
@@ -128,155 +128,148 @@
   </div>
 </template>
 <script>
-  import {fetchList,createResource,updateResource,deleteResource} from '@/api/resource';
-  import {listAllCate} from '@/api/resourceCategory';
-  import {formatDate} from '@/utils/date';
-  import {getResource} from '@/api/resourceList';
+import {fetchList,createResource,updateResource,deleteResource} from '@/api/system/resource';
+import {listAllCate} from '@/api/system/resourceCategory';
+import {formatDate} from '@/utils/date';
 
-  const defaultListQuery = {
-    pageNum: 1,
-    pageSize: 10,
-    nameKeyword: null,
-    urlKeyword: null,
-    categoryId:null
-  };
-  const defaultResource = {
-    id: null,
-    name: null,
-    url: null,
-    categoryId: null,
-    description:''
-  };
-  export default {
-    name: 'resourceList',
-    data() {
-      return {
-        listQuery: Object.assign({}, defaultListQuery),
-        list: [],
-        total: null,
-        listLoading: false,
-        dialogVisible: false,
-        resource: Object.assign({}, defaultResource),
-        isEdit: false,
-        categoryOptions:[],
-        defaultCategoryId:null
+const defaultListQuery = {
+  pageNum: 1,
+  pageSize: 10,
+  nameKeyword: null,
+  urlKeyword: null,
+  categoryId:null
+};
+const defaultResource = {
+  id: null,
+  name: null,
+  url: null,
+  categoryId: null,
+  description:''
+};
+export default {
+  name: 'resourceList',
+  data() {
+    return {
+      listQuery: Object.assign({}, defaultListQuery),
+      list: [],
+      total: null,
+      listLoading: false,
+      dialogVisible: false,
+      resource: Object.assign({}, defaultResource),
+      isEdit: false,
+      categoryOptions:[],
+      defaultCategoryId:null
+    }
+  },
+  created() {
+    this.getList();
+    this.getCateList();
+  },
+  mounted(){
+
+  },
+  filters: {
+    formatDateTime(time) {
+      if (time == null || time === '') {
+        return 'N/A';
       }
+      let date = new Date(time);
+      return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
+    }
+  },
+  methods: {
+    handleResetSearch() {
+      this.listQuery = Object.assign({}, defaultListQuery);
     },
-    created() {
+    handleSearchList() {
+      this.listQuery.pageNum = 1;
       this.getList();
-      this.getCateList();
     },
-    mounted(){
-
-      getResource().then(res=>{
-
-          this.list = res.data.row;
-          this.listLoading=false
-          // debugger;
+    handleSizeChange(val) {
+      this.listQuery.pageNum = 1;
+      this.listQuery.pageSize = val;
+      this.getList();
+    },
+    handleCurrentChange(val) {
+      this.listQuery.pageNum = val;
+      this.getList();
+    },
+    handleAdd() {
+      this.dialogVisible = true;
+      this.isEdit = false;
+      this.resource = Object.assign({},defaultResource);
+      this.resource.categoryId = this.defaultCategoryId;
+    },
+    handleDelete(index, row) {
+      this.$confirm('是否要删除该资源?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteResource(row.id).then(response => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getList();
+        });
+      });
+    },
+    handleUpdate(index, row) {
+      this.dialogVisible = true;
+      this.isEdit = true;
+      this.resource = Object.assign({},row);
+    },
+    handleDialogConfirm() {
+      this.$confirm('是否要确认?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (this.isEdit) {
+          updateResource(this.resource.id,this.resource).then(response => {
+            this.$message({
+              message: '修改成功！',
+              type: 'success'
+            });
+            this.dialogVisible =false;
+            this.getList();
+          })
+        } else {
+          createResource(this.resource).then(response => {
+            this.$message({
+              message: '添加成功！',
+              type: 'success'
+            });
+            this.dialogVisible =false;
+            this.getList();
+          })
+        }
       })
     },
-    filters: {
-      formatDateTime(time) {
-        if (time == null || time === '') {
-          return 'N/A';
-        }
-        let date = new Date(time);
-        return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
-      }
+    handleShowCategory(){
+      this.$router.push({path: '/ums/resourceCategory'})
     },
-    methods: {
-      handleResetSearch() {
-        this.listQuery = Object.assign({}, defaultListQuery);
-      },
-      handleSearchList() {
-        this.listQuery.pageNum = 1;
-        this.getList();
-      },
-      handleSizeChange(val) {
-        this.listQuery.pageNum = 1;
-        this.listQuery.pageSize = val;
-        this.getList();
-      },
-      handleCurrentChange(val) {
-        this.listQuery.pageNum = val;
-        this.getList();
-      },
-      handleAdd() {
-        this.dialogVisible = true;
-        this.isEdit = false;
-        this.resource = Object.assign({},defaultResource);
-        this.resource.categoryId = this.defaultCategoryId;
-      },
-      handleDelete(index, row) {
-        this.$confirm('是否要删除该资源?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          deleteResource(row.id).then(response => {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
-            this.getList();
-          });
-        });
-      },
-      handleUpdate(index, row) {
-        this.dialogVisible = true;
-        this.isEdit = true;
-        this.resource = Object.assign({},row);
-      },
-      handleDialogConfirm() {
-        this.$confirm('是否要确认?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          if (this.isEdit) {
-            updateResource(this.resource.id,this.resource).then(response => {
-              this.$message({
-                message: '修改成功！',
-                type: 'success'
-              });
-              this.dialogVisible =false;
-              this.getList();
-            })
-          } else {
-            createResource(this.resource).then(response => {
-              this.$message({
-                message: '添加成功！',
-                type: 'success'
-              });
-              this.dialogVisible =false;
-              this.getList();
-            })
-          }
-        })
-      },
-      handleShowCategory(){
-        this.$router.push({path: '/ums/resourceCategory'})
-      },
-      getList() {
-        this.listLoading = true;
-        fetchList(this.listQuery).then(response => {
-          this.listLoading = false;
-          this.list = response.data.list;
-          this.total = response.data.total;
-        });
-      },
-      getCateList(){
-        listAllCate().then(response=>{
-          let cateList = response.data;
-          for(let i=0;i<cateList.length;i++){
-            let cate = cateList[i];
-            this.categoryOptions.push({label:cate.name,value:cate.id});
-          }
-          this.defaultCategoryId=cateList[0].id;
-        })
-      }
+    getList() {
+      this.listLoading = true;
+      fetchList(this.listQuery).then(response => {
+        this.listLoading = false;
+        this.list = response.data.list;
+        this.total = response.data.total;
+      });
+    },
+    getCateList(){
+      listAllCate().then(response=>{
+        let cateList = response.data;
+        for(let i=0;i<cateList.length;i++){
+          let cate = cateList[i];
+          this.categoryOptions.push({label:cate.name,value:cate.id});
+        }
+        this.defaultCategoryId=cateList[0].id;
+      })
     }
   }
+}
 </script>
 <style></style>
 

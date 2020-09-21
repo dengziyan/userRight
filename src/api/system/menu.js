@@ -10,7 +10,7 @@ export function fetchList(parentId, params) {
 
 export function deleteMenu(id) {
   return request({
-    url: '/menu/delete/' + id,
+    url: '/sysMenu/delete' + id,
     method: 'post'
   })
 }
@@ -25,7 +25,7 @@ export function createMenu(data) {
 
 export function updateMenu(id, data) {
   return request({
-    url: '/menu/update/' + id,
+    url: '/sysMenu/update' + id,
     method: 'post',
     data: data
   })

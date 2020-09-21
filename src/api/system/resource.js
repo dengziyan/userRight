@@ -1,16 +1,16 @@
 import request from '@/utils/request'
-
+//查询
 export function fetchList(params) {
   return request({
-    url: '/resource/list',
+    url: '/sysResources/resourceList',
     method: 'get',
     params: params
   })
 }
-
+//
 export function createResource(data) {
   return request({
-    url: '/resource/create',
+    url: '/sysResourcesCategory/create',
     method: 'post',
     data: data
   })
@@ -18,7 +18,7 @@ export function createResource(data) {
 
 export function updateResource(id, data) {
   return request({
-    url: '/resource/update/' + id,
+    url: '/sysResourcesCategory/update' + id,
     method: 'post',
     data: data
   })
