@@ -54,19 +54,25 @@
 
         <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center" />
-          <el-table-column label="用户编号" align="center" prop="userId" />
-          <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true" />
-          <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true" />
-          <el-table-column label="部门" align="center" prop="dept.deptName" :show-overflow-tooltip="true" />
-          <el-table-column label="手机号码" align="center" prop="phonenumber" width="120" />
-          <el-table-column label="状态" align="center">
+          <el-table-column label="编号" align="center" prop="id" />
+          <el-table-column label="账号" align="center" prop="account"/>
+          <el-table-column label="姓名" align="center" prop="realName"/>
+          <el-table-column label="性别" align="center" prop="gender"/>
+          <el-table-column label="邮箱" align="center" prop="email"/>           
+          <el-table-column label="手机号码" align="center" prop="mobilePhone" width="120" />
+          <!-- <el-table-column label="状态" align="center">
             <template slot-scope="scope">
               <el-switch v-model="scope.row.status" active-value="0" inactive-value="1" @change="handleStatusChange(scope.row)"></el-switch>
             </template>
-          </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createTime" width="160">
+          </el-table-column> -->
+          <el-table-column label="创建时间" align="center" prop="createDate" width="160">
             <template slot-scope="scope">
-              <span>{{ parseTime(scope.row.createTime) }}</span>
+              <span>{{ parseTime(scope.row.createDate) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="最后登录" align="center" prop="lastLoginTime" width="160">
+            <template slot-scope="scope">
+              <span>{{ parseTime(scope.row.lastLoginTime) }}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
@@ -91,11 +97,11 @@
               <el-input v-model="form.nickName" placeholder="请输入用户昵称" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <el-form-item label="归属部门" prop="deptId">
               <treeselect v-model="form.deptId" :options="deptOptions" :disable-branch-nodes="true" :show-count="true" placeholder="请选择归属部门" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-row>
           <el-col :span="12">
@@ -314,7 +320,7 @@ export default {
   },
   created() {
     this.getList();
-    this.getTreeselect();
+    // this.getTreeselect();
     this.getDicts("sys_normal_disable").then((response) => {
       this.statusOptions = response.data;
     });
@@ -418,7 +424,7 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
-      this.getTreeselect();
+      // this.getTreeselect();
       getUser().then((response) => {
         this.postOptions = response.posts;
         this.roleOptions = response.roles;
@@ -430,7 +436,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      this.getTreeselect();
+      // this.getTreeselect();
       const userId = row.userId || this.ids;
       getUser(userId).then((response) => {
         this.form = response.data;
