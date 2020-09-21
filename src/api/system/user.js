@@ -4,7 +4,7 @@ import { praseStrEmpty } from "@/utils/userright";
 // 查询用户列表
 export function listUser(query) {
   return request({
-    url: '/sys/user',
+    url: 'http://localhost:8080/sys/user',
     method: 'get',
     params: query
   })
