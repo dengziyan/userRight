@@ -11,9 +11,9 @@ export function listUser(query) {
 }
 
 // 查询用户详细
-export function getUser(userId) {
+export function getUser(id) {
   return request({
-    url: '/sys/user/' + praseStrEmpty(userId),
+    url: '/sys/user/' + praseStrEmpty(id),
     method: 'get'
   })
 }
@@ -37,9 +37,9 @@ export function updateUser(data) {
 }
 
 // 删除用户
-export function delUser(userId) {
+export function delUser(id) {
   return request({
-    url: '/sys/user/' + userId,
+    url: '/sys/user/' + id,
     method: 'delete'
   })
 }
@@ -54,9 +54,9 @@ export function exportUser(query) {
 }
 
 // 用户密码重置
-export function resetUserPwd(userId, password) {
+export function resetUserPwd(id, password) {
   const data = {
-    userId,
+    id,
     password
   }
   return request({

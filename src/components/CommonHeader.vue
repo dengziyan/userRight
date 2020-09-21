@@ -16,7 +16,9 @@
             <img :src="userImg" class="user"/>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>个人中心</el-dropdown-item>
+            <router-link to="/personal">
+              <el-dropdown-item>个人中心</el-dropdown-item>
+            </router-link>
             <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -99,8 +101,8 @@ el-button{
 }
 .r-content{
   .user{
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
   }
 }
@@ -112,4 +114,8 @@ el-button{
 .el-icon-arrow-down {
   font-size: 12px;
 }
+.el-dropdown-menu--mini .el-dropdown-menu__item {
+  font-size: 16px;
+}
+
 </style>

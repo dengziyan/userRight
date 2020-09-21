@@ -514,3 +514,11 @@ export default {
   }
 }
 </script>
+<style>
+  .el-col-20 {
+    width: 100.33333%;
+  }
+  .el-submenu .el-menu-item {
+    min-width: auto;
+  }
+</style>

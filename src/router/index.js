@@ -59,6 +59,11 @@ export const constantRoutes = [
         path: '/online',
         name: 'online',
         component: () => import('@/views/System/Online')
+      },
+      {
+        path: '/personal',
+        name: 'personal',
+        component: () => import('@/views/personal/index')
       }
     ]
 
