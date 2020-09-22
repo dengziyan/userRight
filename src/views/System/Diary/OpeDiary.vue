@@ -187,30 +187,18 @@ export default {
   name: 'OpeDiary',
   data() {
     return {
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 总条数
-      total: 0,
-      // 表格数据
-      list: [],
-      // 是否显示弹出层
-      open: false,
-      // 类型数据字典
-      typeOptions: [],
-      // 类型数据字典
-      statusOptions: [],
-      // 日期范围
-      dateRange: [],
-      // 表单参数
-      form: {},
-      // 查询参数
-      queryParams: {
+      loading: true, // 遮罩层
+      ids: [], // 选中数组
+      multiple: true, // 非多个禁用
+      showSearch: true, // 显示搜索条件
+      total: 0, // 总条数
+      list: [], // 表格数据
+      open: false, // 是否显示弹出层
+      typeOptions: [], // 类型数据字典
+      statusOptions: [], // 类型数据字典
+      dateRange: [], // 日期范围
+      form: {}, // 表单参数
+      queryParams: { // 查询参数
         pageNum: 1,
         pageSize: 10,
         title: undefined,
@@ -221,29 +209,29 @@ export default {
     }
   },
   created() {
-    // this.getList()
-    this.getDicts('sys_oper_type').then(response => {
-      this.typeOptions = response.data
-    })
-    this.getDicts('sys_common_status').then(response => {
-      this.statusOptions = response.data
-    })
+    this.getList()
+    // this.getDicts('sys_oper_type').then(response => {
+    //   this.typeOptions = response.data
+    // })
+    // this.getDicts('sys_common_status').then(response => {
+    //   this.statusOptions = response.data
+    // })
   },
-  mounted() {
-    getOpe().then(res => {
-      this.list = res.data.row
-      // this.listLoading=false
-      this.loading = false
-      // debugger;
-    })
-  },
+  // mounted() {
+  //   getOpe().then(res => {
+  //     this.list = res.data.row
+  //     // this.listLoading=false
+  //     this.loading = false
+  //     // debugger;
+  //   })
+  // },
   methods: {
-    //查询登录日志
+    // 查询登录日志
     getList() {
-      // this.loading = true;
+      this.loading = true;
       list(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-        this.list = response.rows
-        this.total = response.total
+        this.list = response.data.rows
+        this.total = response.data.total
         this.loading = false
       }
       )

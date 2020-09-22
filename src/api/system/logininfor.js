@@ -1,9 +1,17 @@
 import request from '@/utils/request'
 
-// 查询登录日志列表
+// 查询用户登录日志
 export function list(query) {
   return request({
-    url: '/monitor/logininfor/list',
+    url: '/sys/log/login-log',
+    method: 'get',
+    params: query
+  })
+}
+// 导出登录日志
+export function exportLogininfor(query) {
+  return request({
+    url: '/sys/log/login-log/export',
     method: 'get',
     params: query
   })
@@ -25,11 +33,4 @@ export function cleanLogininfor() {
   })
 }
 
-// 导出登录日志
-export function exportLogininfor(query) {
-  return request({
-    url: '/monitor/logininfor/export',
-    method: 'get',
-    params: query
-  })
-}
+

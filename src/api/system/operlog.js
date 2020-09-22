@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询操作日志列表
 export function list(query) {
   return request({
-    url: '/monitor/operlog/list',
+    url: '/sys/log/operation-log',
     method: 'get',
     params: query
   })
@@ -28,7 +28,7 @@ export function cleanOperlog() {
 // 导出操作日志
 export function exportOperlog(query) {
   return request({
-    url: '/monitor/operlog/export',
+    url: '/sys/log/operation-log/export',
     method: 'get',
     params: query
   })
