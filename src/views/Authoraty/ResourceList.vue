@@ -52,7 +52,7 @@
                 style="width: 100%;"
                 v-loading="listLoading" border>
         <el-table-column label="编号" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.id}}</template>
+          <template slot-scope="scope">{{ scope.row.id}}</template>
         </el-table-column>
         <el-table-column label="资源名称" align="center">
           <template slot-scope="scope">{{scope.row.resourceName}}</template>
@@ -265,7 +265,7 @@ export default {
         let cateList = response.data;
         for(let i=0;i<cateList.length;i++){
           let cate = cateList[i];
-          this.categoryOptions.push({label:cate.name,value:cate.id});
+          this.categoryOptions.push({label:cate.categoryName,value:cate.id});
         }
         this.defaultCategoryId=cateList[0].id;
       })

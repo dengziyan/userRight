@@ -2,18 +2,18 @@
   <div>
     <header>
       <div class="l-content">
-        <el-button type="primary" icon="el-icon-s-fold" @click="collapseMenu"></el-button>
+        <el-button type="primary" icon="el-icon-s-fold" @click="collapseMenu" />
         <!-- 面包屑-->
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item :to="current.path" v-if="current">{{current.label}}</el-breadcrumb-item>
+          <el-breadcrumb-item v-if="current" :to="current.path">{{ current.label }}</el-breadcrumb-item>
 
         </el-breadcrumb>
       </div>
-      <div class="r-content" >
+      <div class="r-content">
         <el-dropdown trigger="click" size="mini">
           <span class="el-dropdown-link">
-            <img :src="userImg" class="user"/>
+            <img :src="userImg" class="user">
           </span>
           <el-dropdown-menu slot="dropdown">
             <router-link to="/personal">
@@ -30,20 +30,20 @@
 
 <script>
 import { mapState } from 'vuex'
-import { Collapse } from 'element-ui'
+
 export default {
-  computed: {
-   ...mapState({
-     current:state => state.tab.currentMenu
-   })
-  },
-  data(){
-    return{
-      userImg:require('../assets/images/feng.png')
+  data() {
+    return {
+      userImg: require('../assets/images/feng.png')
     }
   },
-  methods:{
-    collapseMenu(){
+  computed: {
+    ...mapState({
+      current: state => state.tab.currentMenu
+    })
+  },
+  methods: {
+    collapseMenu() {
       this.$store.commit('collapseMenu')
     },
     async logout() {
@@ -52,8 +52,8 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$store.dispatch('user/logout').then((response) => {
-          location.href = '/index'
+        this.$store.dispatch('user/logout').then(() => {
+          location.href = '/login'
         })
       })
     }

@@ -1,12 +1,12 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setCookies, removeCookies } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    id: sessionStorage.getItem('userId'),
+    id: '',
     avatar: ''
   }
 }
@@ -38,10 +38,11 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
-        commit('SET_TOKEN', data.token) // tokne
+        const token = data.tokenHead + data.token
+
+        commit('SET_TOKEN', token) // token
         commit('SET_ID', data.id) // 用户编号
-        sessionStorage.setItem('userId', data.id)
-        setToken(data.token)
+        setCookies(token, data.id)
         resolve()
       }).catch(error => {
         reject(error)
@@ -73,8 +74,8 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.name).then(() => {
-        removeToken() // must remove  token  first
+      logout(state.name).then(response => {
+        removeCookies() // must remove  token  first
         resetRouter()
         commit('RESET_STATE')
         resolve()
@@ -87,7 +88,7 @@ const actions = {
   // remove token
   resetToken({ commit }) {
     return new Promise(resolve => {
-      removeToken() // must remove  token  first
+      removeCookies() // must remove  token  first
       commit('RESET_STATE')
       resolve()
     })

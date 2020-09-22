@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import Qs from 'qs'
+import { getIDKey } from '@/utils/auth'
 export function login(data) {
   return request({
     url: '/sysUser/login',
@@ -16,8 +17,9 @@ export function login(data) {
 }
 
 export function getInfo(id) {
+  id = id || getIDKey()
   return request({
-    url: '/sys/user-info/' + id || sessionStorage.getItem('userId'),
+    url: '/sys/user-info/' + id,
     method: 'get'
   })
 }

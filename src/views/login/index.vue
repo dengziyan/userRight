@@ -1,39 +1,45 @@
 <template>
   <div class="login-container">
     <el-card class="login-form-layout">
-      <el-form autoComplete="on"
-               :model="loginForm"
-               :rules="loginRules"
-               ref="loginForm"
-               label-position="left">
+      <el-form
+        ref="loginForm"
+        auto-complete="on"
+        :model="loginForm"
+        :rules="loginRules"
+        label-position="left"
+      >
         <div style="text-align: center">
-          <svg-icon icon-class="login-mall" style="width: 56px;height: 56px;color: #409EFF"></svg-icon>
+          <svg-icon icon-class="login-mall" style="width: 56px;height: 56px;color: #409EFF" />
         </div>
         <h2 class="login-title color-main">user-rights-system</h2>
         <el-form-item prop="username">
-          <el-input name="username"
-                    type="text"
-                    v-model="loginForm.username"
-                    autoComplete="on"
-                    placeholder="请输入用户名">
-          <span slot="prefix">
-            <svg-icon icon-class="user" class="color-main"></svg-icon>
-          </span>
+          <el-input
+            v-model="loginForm.username"
+            name="username"
+            type="text"
+            auto-complete="on"
+            placeholder="请输入用户名"
+          >
+            <span slot="prefix">
+              <svg-icon icon-class="user" class="color-main" />
+            </span>
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input name="password"
-                    :type="pwdType"
-                    @keyup.enter.native="handleLogin"
-                    v-model="loginForm.password"
-                    autoComplete="on"
-                    placeholder="请输入密码">
-          <span slot="prefix">
-            <svg-icon icon-class="password" class="color-main"></svg-icon>
-          </span>
+          <el-input
+            v-model="loginForm.password"
+            name="password"
+            type="password"
+            auto-complete="on"
+            placeholder="请输入密码"
+            @keyup.enter.native="handleLogin"
+          >
+            <span slot="prefix">
+              <svg-icon icon-class="password" class="color-main" />
+            </span>
             <span slot="suffix" @click="showPwd">
-            <svg-icon icon-class="eye" class="color-main"></svg-icon>
-          </span>
+              <svg-icon icon-class="eye" class="color-main" />
+            </span>
           </el-input>
         </el-form-item>
         <el-form-item>
@@ -110,7 +116,6 @@ export default {
       })
     },
     resetForm() {
-      // this.$refs[formName].resetFields()
       this.loginForm.username = ''
       this.loginForm.password = ''
     },
@@ -120,13 +125,11 @@ export default {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
-            // this.$router.replace('/')
             this.loading = false
           }).catch(() => {
             this.loading = false
           })
         } else {
-          console.log('参数验证不合法!!')
           return false
         }
       })

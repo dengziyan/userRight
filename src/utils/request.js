@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getToken, setToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -44,29 +44,38 @@ service.interceptors.response.use(
   response => {
     const res = response.data
 
-    // 判断是否携带tkne
+    // 判断是否携带token
     // 判断与原有token是否相等
     // 不等就换成返回来的token
+    // console.log(response.headers.authorization)
+    // // 判断是否携带token
+    const token = response.headers.authorization
+
+    if (token) {
+      // 判断与原有token是否相等
+      // 不等就换成返回来的token
+      token !== getToken() ? setToken(token) : ''
+    }
 
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 2000) {
-      Message({
-        message: res.message || 'Error',
-        type: 'error',
-        duration: 5 * 1000
-      })
-
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      // 4001: Illegal token;Token expired;
+      if (res.code === 4001) {
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
+        MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
             location.reload()
           })
+        })
+      } else {
+        Message({
+          message: res.message || 'Error',
+          type: 'error',
+          duration: 5 * 1000
         })
       }
       return Promise.reject(new Error(res.message || 'Error'))

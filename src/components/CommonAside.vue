@@ -1,12 +1,12 @@
 <template>
   <div>
-    <el-menu :collapse="isCollapse" default-active="1" unique-opened="true" class="el-menu-vertical-demo" background-color="#409EFF" text-color="#fff" active-text-color="#ffd04b">
+    <el-menu :collapse="isCollapse" default-active="1" :unique-opened="true" class="el-menu-vertical-demo" background-color="#409EFF" text-color="#fff" active-text-color="#ffd04b">
       <el-menu-item v-for="item in noChildren" :key="item.path" :index="item.path" @click="clickMenu(item)">
         <i :class="'el-icon-'+item.icon" />
         <span slot="title">{{ item.label }}</span>
       </el-menu-item>
 
-      <el-submenu v-for="(item,index) in hasChildren" :key="index" :index="index">
+      <el-submenu v-for="(item,index) in hasChildren" :key="index" :index="index+''">
         <template slot="title">
           <i :class="'el-icon-'+item.icon" />
           <span slot="title">{{ item.label }}</span>
