@@ -86,7 +86,7 @@
 
 <script>
 import {fetchList,deleteMenu,updateMenu,updateHidden} from '@/api/authoraty/menu'
-// import {getMenu} from '@/api/menuList';
+
 export default {
   name: "menuList",
   data() {
