@@ -24,9 +24,17 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style>
   .el-header{
     background-color: #99a9bf;
   }
 
+  #app {
+    /*height: 100%;*/
+    overflow-y:hidden;
+  }
+  .el-table {
+    overflow-y: auto;
+    height: 350px;
+  }
 </style>

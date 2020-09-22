@@ -58,20 +58,14 @@
           </el-table-column>
           <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
-              >修改
-              </el-button>
-              <el-button v-if="scope.row.userId !== 1" size="mini" type="text" icon="el-icon-delete"
-                         @click="handleDelete(scope.row)">删除
-              </el-button>
+              <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" >修改</el-button>
+              <el-button v-if="scope.row.userId !== 1" size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
               <el-button size="mini" type="text" icon="el-icon-key" @click="handleResetPwd(scope.row)">重置
               </el-button>
             </template>
           </el-table-column>
         </el-table>
-
-        <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
-                    @pagination="getList"/>
+        <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize" @pagination="getList"/>
       </el-col>
     </el-row>
 
@@ -80,15 +74,15 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="用户昵称" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入用户昵称"/>
+            <el-form-item label="用户账号" prop="account">
+              <el-input v-model="form.account" placeholder="请输入用户账号"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="手机号码" prop="phonenumber">
-              <el-input v-model="form.phonenumber" placeholder="请输入手机号码" maxlength="11"/>
+            <el-form-item label="手机号码" prop="mobilePhone">
+              <el-input v-model="form.mobilePhone" placeholder="请输入手机号码" maxlength="11"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -99,10 +93,11 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item v-if="form.userId == undefined" label="用户名称" prop="userName">
-              <el-input v-model="form.userName" placeholder="请输入用户名称"/>
+            <el-form-item v-if="form.id == undefined" label="用户姓名" prop="realName">
+              <el-input v-model="form.realName" placeholder="请输入用户姓名"/>
             </el-form-item>
           </el-col>
+          <!--  ？密码需要显示吗        -->
           <el-col :span="12">
             <el-form-item v-if="form.userId == undefined" label="用户密码" prop="password">
               <el-input v-model="form.password" placeholder="请输入用户密码" type="password"/>
@@ -112,7 +107,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户性别">
-              <el-select v-model="form.sex" placeholder="请选择">
+              <el-select v-model="form.gender" placeholder="请选择">
                 <el-option v-for="dict in sexOptions" :key="dict.dictValue" :label="dict.dictLabel"
                            :value="dict.dictValue"></el-option>
               </el-select>
@@ -130,18 +125,9 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="岗位">
-              <el-select v-model="form.postIds" multiple placeholder="请选择">
-                <el-option v-for="item in postOptions" :key="item.postId" :label="item.postName" :value="item.postId"
-                           :disabled="item.status == 1"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
             <el-form-item label="角色">
               <el-select v-model="form.roleIds" multiple placeholder="请选择">
-                <el-option v-for="item in roleOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId"
-                           :disabled="item.status == 1"></el-option>
+                <el-option v-for="item in roleOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId" :disabled="item.status == 1"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
