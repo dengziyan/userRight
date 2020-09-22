@@ -121,4 +121,7 @@ export default {
     width: 160px;
     min-height: 400px;
   }
+  .el-submenu .el-menu-item {
+    min-width: auto;
+  }
 </style>

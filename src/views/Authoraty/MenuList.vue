@@ -105,13 +105,6 @@ export default {
     this.resetParentId();
     this.getList();
   },
-   mounted(){
-    getMenu().then(res=>{
-      this.list = res.data.row;
-      this.listLoading=false
-      // debugger;
-    })
-  },
   watch: {
     $route(route) {
       this.resetParentId();
