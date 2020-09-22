@@ -8,21 +8,22 @@ export function fetchList(parentId, params) {
   })
 }
 
+// 根据ID删除菜单
 export function deleteMenu(id) {
   return request({
     url: '/sysMenu/delete' + id,
     method: 'post'
   })
 }
-
+// 添加菜单信息
 export function createMenu(data) {
   return request({
-    url: '/menu/create',
+    url: '/sysMenu/insert',
     method: 'post',
     data: data
   })
 }
-
+// 更新菜单
 export function updateMenu(id, data) {
   return request({
     url: '/sysMenu/update' + id,
@@ -33,14 +34,14 @@ export function updateMenu(id, data) {
 
 export function getMenu(id) {
   return request({
-    url: '/menu/' + id,
+    url: '/sysMenu/' + id,
     method: 'get',
   })
 }
 
 export function updateHidden(id, params) {
   return request({
-    url: '/menu/updateHidden/' + id,
+    url: '/sysMenu/updateHidden/' + id,
     method: 'post',
     params: params
   })
@@ -48,7 +49,7 @@ export function updateHidden(id, params) {
 
 export function fetchTreeList() {
   return request({
-    url: '/menu/treeList',
+    url: '/sysMenu/treeList',
     method: 'get'
   })
 }
