@@ -26,7 +26,7 @@ const users = {
 module.exports = [
   // user login
   {
-    url: '/user-rights-system/user/login',
+    url: '/user-rights-authoraty/user/login',
     type: 'post',
     response: config => {
       const { username } = config.body
@@ -49,7 +49,7 @@ module.exports = [
 
   // get user info
   {
-    url: '/user-rights-system/user/info\.*',
+    url: '/user-rights-authoraty/user/info\.*',
     type: 'get',
     response: config => {
       const { token } = config.query
@@ -72,7 +72,7 @@ module.exports = [
 
   // user logout
   {
-    url: '/user-rights-system/user/logout',
+    url: '/user-rights-authoraty/user/logout',
     type: 'post',
     response: _ => {
       return {

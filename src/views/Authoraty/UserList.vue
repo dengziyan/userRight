@@ -196,7 +196,7 @@ import {
   resetUserPwd,
   changeUserStatus,
   importTemplate
-} from '@/api/system/user'
+} from '@/api/authoraty/user'
 import { getToken } from '@/utils/auth'
 
 export default {
@@ -233,7 +233,7 @@ export default {
         isUploading: false, // 是否禁用上传
         updateSupport: 0, // 是否更新已经存在的用户数据
         headers: { Authorization: 'Bearer ' + getToken() }, // 设置上传的请求头部
-        url: process.env.VUE_APP_BASE_API + '/system/user/importData' // 上传的地址
+        url: process.env.VUE_APP_BASE_API + '/authoraty/user/importData' // 上传的地址
       },
       // 查询参数
       queryParams: {

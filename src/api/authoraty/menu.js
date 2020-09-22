@@ -1,8 +1,9 @@
 import request from '@/utils/request'
 
-export function fetchList(parentId, params) {
+// 查询所有菜单
+export function fetchList(params) {
   return request({
-    url: '/menu/list/' + parentId,
+    url: '/sysMenu/menuList',
     method: 'get',
     params: params
   })
@@ -38,7 +39,7 @@ export function getMenu(id) {
     method: 'get',
   })
 }
-
+// 修改菜单显示状态
 export function updateHidden(id, params) {
   return request({
     url: '/sysMenu/updateHidden/' + id,

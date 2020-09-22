@@ -42,7 +42,9 @@
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
       <el-button size="mini" class="btn-add" @click="handleAdd()" style="margin-left: 20px">添加</el-button>
-      <el-button size="mini" class="btn-add" @click="handleShowCategory()">资源分类</el-button>
+      <router-link to="/resourceCategory">
+        <el-button size="mini" class="btn-add" @click="handleShowCategory()">资源分类</el-button>
+      </router-link>
     </el-card>
     <div class="table-container">
       <el-table ref="resourceTable"
@@ -128,8 +130,8 @@
   </div>
 </template>
 <script>
-import {fetchList,createResource,updateResource,deleteResource} from '@/api/system/resource';
-import {listAllCate} from '@/api/system/resourceCategory';
+import {fetchList,createResource,updateResource,deleteResource} from '@/api/authoraty/resource';
+import {listAllCate} from '@/api/authoraty/resourceCategory';
 import {formatDate} from '@/utils/date';
 
 const defaultListQuery = {

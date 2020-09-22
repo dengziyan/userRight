@@ -180,8 +180,8 @@
 </template>
 
 <script>
-import { list, delOperlog, cleanOperlog, exportOperlog } from '@/api/operlog'
-import { getOpe } from '@/api/opeDiary'
+import { list, delOperlog, cleanOperlog, exportOperlog } from '@/api/system/operlog'
+// import { getOpe } from '@/api/opeDiary'
 
 export default {
   name: 'OpeDiary',
@@ -238,7 +238,7 @@ export default {
     })
   },
   methods: {
-    //查询登录日志 
+    //查询登录日志
     getList() {
       // this.loading = true;
       list(this.addDateRange(this.queryParams, this.dateRange)).then(response => {

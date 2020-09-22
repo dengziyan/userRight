@@ -58,7 +58,7 @@
   import userAvatar from "./userAvatar";
   import userInfo from "./userInfo";
   import resetPwd from "./resetPwd";
-  import { getUserProfile } from "@/api/system/user";
+  import { getUserProfile } from "@/api/authoraty/user";
 
 export default {
   name: 'Profile',

@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'user-rights-system',
+  title: 'user-rights-authoraty',
 
   /**
    * @type {boolean} true | false

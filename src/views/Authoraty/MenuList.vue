@@ -85,119 +85,118 @@
 </template>
 
 <script>
-  import {fetchList,deleteMenu,updateMenu,updateHidden} from '@/api/system/menu'
-  import {getMenu} from '@/api/menuList';
-  export default {
-    name: "menuList",
-    data() {
-      return {
-        list: [],
-        total: null,
-        listLoading: true,
-        listQuery: {
-          pageNum: 1,
-          pageSize: 5
-        },
-        parentId: 0
-      }
-    },
-    created() {
+import {fetchList,deleteMenu,updateMenu,updateHidden} from '@/api/authoraty/menu'
+// import {getMenu} from '@/api/menuList';
+export default {
+  name: "menuList",
+  data() {
+    return {
+      list: [],
+      total: null,
+      listLoading: true,
+      listQuery: {
+        pageNum: 1,
+        pageSize: 5
+      },
+      parentId: 0
+    }
+  },
+  created() {
+    this.resetParentId();
+    this.getList();
+  },
+   mounted(){
+    getMenu().then(res=>{
+      this.list = res.data.row;
+      this.listLoading=false
+      // debugger;
+    })
+  },
+  watch: {
+    $route(route) {
       this.resetParentId();
       this.getList();
-    },
-     mounted(){
-
-      getMenu().then(res=>{
-
-          this.list = res.data.row;
-          this.listLoading=false
-          // debugger;
-      })
-    },
-    watch: {
-      $route(route) {
-        this.resetParentId();
-        this.getList();
+    }
+  },
+  methods: {
+    resetParentId(){
+      this.listQuery.pageNum = 1;
+      if (this.$route.query.parentId != null) {
+        this.parentId = this.$route.query.parentId;
+      } else {
+        this.parentId = 0;
       }
     },
-    methods: {
-      resetParentId(){
-        this.listQuery.pageNum = 1;
-        if (this.$route.query.parentId != null) {
-          this.parentId = this.$route.query.parentId;
-        } else {
-          this.parentId = 0;
-        }
-      },
-      handleAddMenu() {
-        this.$router.push('/ums/addMenu');
-      },
-      getList() {
-        this.listLoading = true;
-        fetchList(this.parentId, this.listQuery).then(response => {
-          this.listLoading = false;
-          this.list = response.data;
-          this.total = response.data.total;
+    handleAddMenu() {
+      this.$router.push('/addMenu');
+    },
+    // 获取列表数据
+    getList() {
+      this.listLoading = true;
+      fetchList(this.parentId, this.listQuery).then(response => {
+        this.listLoading = false;
+        this.list = response.data;
+        this.total = response.data.total;
+      });
+    },
+    handleSizeChange(val) {
+      this.listQuery.pageNum = 1;
+      this.listQuery.pageSize = val;
+      this.getList();
+    },
+    handleCurrentChange(val) {
+      this.listQuery.pageNum = val;
+      this.getList();
+    },
+    handleHiddenChange(index, row) {
+      updateHidden(row.id,{hidden:row.hidden}).then(response=>{
+        this.$message({
+          message: '修改成功',
+          type: 'success',
+          duration: 1000
         });
-      },
-      handleSizeChange(val) {
-        this.listQuery.pageNum = 1;
-        this.listQuery.pageSize = val;
-        this.getList();
-      },
-      handleCurrentChange(val) {
-        this.listQuery.pageNum = val;
-        this.getList();
-      },
-      handleHiddenChange(index, row) {
-        updateHidden(row.id,{hidden:row.hidden}).then(response=>{
+      });
+    },
+    handleShowNextLevel(index, row) {
+      this.$router.push({path: '/addMenu', query: {parentId: row.id}})
+    },
+    // handleUpdate(index, row) {
+    //   this.$router.push({path:'/ums/updateMenu',query:{id:row.id}});
+    // },
+    handleDelete(index, row) {
+      this.$confirm('是否要删除该菜单', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteMenu(row.id).then(response => {
           this.$message({
-            message: '修改成功',
+            message: '删除成功',
             type: 'success',
             duration: 1000
           });
+          this.getList();
         });
-      },
-      handleShowNextLevel(index, row) {
-        this.$router.push({path: '/ums/menu', query: {parentId: row.id}})
-      },
-      handleUpdate(index, row) {
-        this.$router.push({path:'/ums/updateMenu',query:{id:row.id}});
-      },
-      handleDelete(index, row) {
-        this.$confirm('是否要删除该菜单', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          deleteMenu(row.id).then(response => {
-            this.$message({
-              message: '删除成功',
-              type: 'success',
-              duration: 1000
-            });
-            this.getList();
-          });
-        });
+      });
+    }
+  },
+  filters: {
+    levelFilter(value) {
+      if (value === 0) {
+        return '一级';
+      } else if (value === 1) {
+        return '二级';
       }
     },
-    filters: {
-      levelFilter(value) {
-        if (value === 0) {
-          return '一级';
-        } else if (value === 1) {
-          return '二级';
-        }
-      },
-      disableNextLevel(value) {
-        if (value === 0) {
-          return false;
-        } else {
-          return true;
-        }
+    disableNextLevel(value) {
+      if (value === 0) {
+        return false;
+      } else {
+        return true;
       }
     }
   }
+}
 </script>
 
 <style scoped>

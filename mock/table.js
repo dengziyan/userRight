@@ -13,7 +13,7 @@ const data = Mock.mock({
 
 module.exports = [
   {
-    url: '/user-rights-system/table/list',
+    url: '/user-rights-authoraty/table/list',
     type: 'get',
     response: config => {
       const items = data.items

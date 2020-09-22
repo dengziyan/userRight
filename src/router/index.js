@@ -26,6 +26,11 @@ export const constantRoutes = [
         component: () => import('@/views/Home/Home')
       },
       {
+        path: '/personal',
+        name: 'personal',
+        component: () => import('@/views/personal/index')
+      },
+      {
         path: '/userList',
         name: 'userList',
         component: () => import('@/views/Authoraty/UserList')
@@ -41,9 +46,19 @@ export const constantRoutes = [
         component: () => import('@/views/Authoraty/MenuList')
       },
       {
+        path: '/addMenu',
+        name: 'addMenu',
+        component: () => import('@/views/Authoraty/addMenu')
+      },
+      {
         path: '/resourceList',
         name: 'resourceList',
         component: () => import('@/views/Authoraty/ResourceList')
+      },
+      {
+        path: '/resourceCategory',
+        name: 'resourceCategory',
+        component: () => import('@/views/Authoraty/resourceCategory')
       },
       {
         path: '/opeDiary',
@@ -59,12 +74,8 @@ export const constantRoutes = [
         path: '/online',
         name: 'online',
         component: () => import('@/views/System/Online')
-      },
-      {
-        path: '/personal',
-        name: 'personal',
-        component: () => import('@/views/personal/index')
       }
+
     ]
 
   },
@@ -73,7 +84,7 @@ export const constantRoutes = [
 
 const createRouter = () => new Router({
   scrollBehavior: () => ({ y: 0 }),
-  mode: 'history',
+  mode: 'history', // 这一句删掉路由的#号
   routes: constantRoutes
 })
 

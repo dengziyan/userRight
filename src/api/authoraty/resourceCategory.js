@@ -1,12 +1,12 @@
 import request from '@/utils/request'
-
+// 查询所有后台资源分类
 export function listAllCate() {
   return request({
     url: '/sysResourcesCategory/listAll',
     method: 'get'
   })
 }
-
+// 添加后台资源分类
 export function createResourceCategory(data) {
   return request({
     url: '/sysResourcesCategory/create',

@@ -115,31 +115,22 @@
 </template>
 
 <script>
-import { list, delLogininfor, cleanLogininfor, exportLogininfor } from "@/api/logininfor";
-import { getLog } from "@/api/logDiary";
+import { list, delLogininfor, cleanLogininfor, exportLogininfor } from "@/api/system/logininfor";
+// import { getLog } from "@/api/logDiary";
 
 export default {
-  name: "Logininfor",
+  name: "LogDiary",
   data() {
     return {
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 总条数
-      total: 0,
-      // 表格数据
-      list: [],
-      // 状态数据字典
-      statusOptions: [],
-      // 日期范围
-      dateRange: [],
-      // 查询参数
-      queryParams: {
+      loading: true, // 遮罩层
+      ids: [], // 选中数组
+      multiple: true, // 非多个禁用
+      showSearch: true, // 显示搜索条件
+      total: 0, // 总条数
+      list: [], // 表格数据
+      statusOptions: [], // 状态数据字典
+      dateRange: [], // 日期范围
+      queryParams: { // 查询参数
         pageNum: 1,
         pageSize: 10,
         ipaddr: undefined,
@@ -155,24 +146,22 @@ export default {
     });
   },
   mounted(){
-
-      getLog().then(res=>{
-
-          this.list = res.data.row;
-          // this.listLoading=false
-          this.loading = false;
-          // debugger;
-      })
-    },
+    getLog().then(res=>{
+      this.list = res.data.row;
+      // this.listLoading=false
+      this.loading = false;
+      // debugger;
+    })
+  },
   methods: {
     // 查询登录日志列表
     getList() {
       // this.loading = true;
       list(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.list = response.rows;
-          this.total = response.total;
-          this.loading = false;
-        }
+        this.list = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      }
       );
     },
     // 登录状态字典翻译
@@ -199,41 +188,41 @@ export default {
     handleDelete(row) {
       const infoIds = row.infoId || this.ids;
       this.$confirm('是否确认删除访问编号为"' + infoIds + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delLogininfor(infoIds);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        }).catch(function() {});
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(function() {
+        return delLogininfor(infoIds);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess("删除成功");
+      }).catch(function() {});
     },
     /** 清空按钮操作 */
     handleClean() {
-        this.$confirm('是否确认清空所有登录日志数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return cleanLogininfor();
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("清空成功");
-        }).catch(function() {});
+      this.$confirm('是否确认清空所有登录日志数据项?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(function() {
+        return cleanLogininfor();
+      }).then(() => {
+        this.getList();
+        this.msgSuccess("清空成功");
+      }).catch(function() {});
     },
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
       this.$confirm('是否确认导出所有操作日志数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return exportLogininfor(queryParams);
-        }).then(response => {
-          this.download(response.msg);
-        }).catch(function() {});
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(function() {
+        return exportLogininfor(queryParams);
+      }).then(response => {
+        this.download(response.msg);
+      }).catch(function() {});
     }
   }
 };

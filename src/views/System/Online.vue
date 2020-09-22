@@ -63,22 +63,18 @@
 </template>
 
 <script>
-import { list, forceLogout, getOnline} from "@/api/online";
+import { list, forceLogout, getOnline} from "@/api/system/online";
 
 export default {
   name: "Online",
   data() {
     return {
-      // 遮罩层
-      loading: true,
-      // 总条数
-      total: 0,
-      // 表格数据
-      list: [],
+      loading: true, // 遮罩层
+      total: 0, // 总条数
+      list: [], // 表格数据
       pageNum: 1,
       pageSize: 10,
-      // 查询参数
-      queryParams: {
+      queryParams: { // 查询参数
         ipaddr: undefined,
         userName: undefined
       }
@@ -88,15 +84,13 @@ export default {
     this.getList();
   },
   mounted(){
-
-      getOnline().then(res=>{
-
-          this.list = res.data.row;
-          // this.listLoading=false
-          this.loading = false;
-          // debugger;
-      })
-    },
+    getOnline().then(res=>{
+      this.list = res.data.row;
+      // this.listLoading=false
+      this.loading = false;
+      // debugger;
+    })
+  },
   methods: {
     /* 查询登录日志列表 */
     getList() {
@@ -120,15 +114,15 @@ export default {
     /** 强退按钮操作 */
     handleForceLogout(row) {
       this.$confirm('是否确认强退名称为"' + row.userName + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return forceLogout(row.tokenId);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("强退成功");
-        }).catch(function() {});
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(function() {
+        return forceLogout(row.tokenId);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess("强退成功");
+      }).catch(function() {});
     }
   }
 };

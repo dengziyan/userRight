@@ -65,7 +65,7 @@ describe('Breadcrumb.vue', () => {
     const len = wrapper.findAll('.el-breadcrumb__inner').length
     expect(len).toBe(2)
   })
-  it('system route', () => {
+  it('authoraty route', () => {
     router.push('/menu/diary/diary-2/diary-2-1')
     const len = wrapper.findAll('.el-breadcrumb__inner').length
     expect(len).toBe(4)

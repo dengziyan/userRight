@@ -1,6 +1,6 @@
 import defaultSettings from '@/settings'
 
-const title = defaultSettings.title || 'user-rights-system'
+const title = defaultSettings.title || 'user-rights-authoraty'
 
 export default function getPageTitle(pageTitle) {
   if (pageTitle) {
