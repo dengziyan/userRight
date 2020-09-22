@@ -205,7 +205,6 @@ export default {
       dateRange: [], // 日期范围
       statusOptions: [], // 状态数据字典
       sexOptions: [], // 性别状态字典
-      postOptions: [], // 岗位选项
       roleOptions: [], // 角色选项
       form: {}, // 表单参数
       defaultProps: {
@@ -368,7 +367,6 @@ export default {
       this.reset()
       this.open = true
       getUser().then((response) => {
-        this.postOptions = response.posts
         this.roleOptions = response.roles
         this.title = '添加用户'
         this.form.password = this.initPassword
@@ -381,7 +379,6 @@ export default {
       const userId = row.userId || this.ids
       getUser(userId).then((response) => {
         this.form = response.data
-        this.postOptions = response.posts
         this.roleOptions = response.roles
         this.form.postIds = response.postIds
         this.form.roleIds = response.roleIds
@@ -499,11 +496,9 @@ export default {
   }
 }
 </script>
-<style>
-  .el-col-20 {
-    width: 100.33333%;
-  }
-  .el-submenu .el-menu-item {
-    min-width: auto;
+
+<style scoped>
+  .el-row button{
+    float: left;
   }
 </style>

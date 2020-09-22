@@ -37,4 +37,13 @@ export default {
     overflow-y: auto;
     height: 350px;
   }
+  .el-col-20 {
+    width: 100.33333%;
+  }
+  .el-submenu .el-menu-item {
+    min-width: auto;
+  }
+  .el-dialog__footer {
+    padding: 10px 20px 50px;
+  }
 </style>

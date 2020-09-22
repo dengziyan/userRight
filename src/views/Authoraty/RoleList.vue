@@ -176,7 +176,7 @@
 
 <script>
 import { listRole, getRole, delRole, addRole, updateRole, exportRole, dataScope, changeRoleStatus } from "@/api/authoraty/role";
-// import { treeselect as menuTreeselect, roleMenuTreeselect } from "@/api/authoraty/menu";
+import { treeselect as menuTreeselect, roleMenuTreeselect } from "@/api/authoraty/menu";
 // import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/authoraty/dept";
 
 export default {
@@ -366,14 +366,18 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
-      this.getMenuTreeselect();
       this.open = true;
-      this.title = "添加角色";
+      getRole().then(response => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "添加角色";
+      });
+      this.getMenuTreeselect();
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const roleId = row.roleId || this.ids
+      const roleId = row.id || this.ids
       const roleMenu = this.getRoleMenuTreeselect(roleId);
       getRole(roleId).then(response => {
         this.form = response.data;
@@ -470,3 +474,8 @@ export default {
   }
 };
 </script>
+<style scoped>
+.el-row button{
+  float: left;
+}
+</style>
