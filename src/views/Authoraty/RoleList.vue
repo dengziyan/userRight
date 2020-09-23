@@ -108,22 +108,11 @@
         </el-form-item>
         <el-form-item label="状态">
           <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictValue"
-            >{{dict.dictLabel}}</el-radio>
+            <el-radio v-for="dict in statusOptions" :key="dict" :label="dict" :value="dict"></el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="菜单权限">
-          <el-tree
-            :data="menuOptions"
-            show-checkbox
-            ref="menu"
-            node-key="id"
-            empty-text="加载中，请稍后"
-            :props="defaultProps"
-          ></el-tree>
+        <el-form-item label="菜单权限" prop="">
+          <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
         </el-form-item>
         <el-form-item label="备注">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
@@ -194,7 +183,7 @@ export default {
       open: false, // 是否显示弹出层
       openDataScope: false, // 是否显示弹出层（数据权限）
       dateRange: [], // 日期范围
-      statusOptions: [], // 状态数据字典
+      statusOptions: ['正常', '停用'], // 状态数据字典
       dataScopeOptions: [ // 数据范围选项
         {
           value: '1',
@@ -254,7 +243,6 @@ export default {
       listRole(this.addDateRange(this.queryParams, this.dateRange)).then(
         response => {
           this.roleList = response.data.rows;
-          console.log(this.roleList)
           this.total = response.data.total;
           this.loading = false;
         }
@@ -266,12 +254,6 @@ export default {
         this.menuOptions = response.data;
       });
     },
-    // /** 查询部门树结构 */
-    // getDeptTreeselect() {
-    //   deptTreeselect().then(response => {
-    //     this.deptOptions = response.data;
-    //   });
-    // },
     // 所有菜单节点数据
     getMenuAllCheckedKeys() {
       // 目前被选中的菜单节点
@@ -281,26 +263,10 @@ export default {
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkedKeys;
     },
-    // 所有部门节点数据
-    getDeptAllCheckedKeys() {
-      // 目前被选中的部门节点
-      let checkedKeys = this.$refs.dept.getHalfCheckedKeys();
-      // 半选中的部门节点
-      let halfCheckedKeys = this.$refs.dept.getCheckedKeys();
-      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
-      return checkedKeys;
-    },
     /** 根据角色ID查询菜单树结构 */
     getRoleMenuTreeselect(roleId) {
       return roleMenuTreeselect(roleId).then(response => {
         this.menuOptions = response.menus;
-        return response;
-      });
-    },
-    /** 根据角色ID查询部门树结构 */
-    getRoleDeptTreeselect(roleId) {
-      return roleDeptTreeselect(roleId).then(response => {
-        this.deptOptions = response.depts;
         return response;
       });
     },
@@ -359,7 +325,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.roleId)
+      this.ids = selection.map(item => item.id)
       this.single = selection.length!=1
       this.multiple = !selection.length
     },
@@ -367,26 +333,26 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      getRole().then(response => {
-        this.form = response.data;
+      listRole().then(response => {
+        // this.form = response.data;
         this.open = true;
-        this.title = "添加角色";
-      });
-      this.getMenuTreeselect();
+        this.title = '添加角色';
+      })
+      // this.getMenuTreeselect();
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const roleId = row.id || this.ids
-      const roleMenu = this.getRoleMenuTreeselect(roleId);
+      // const roleMenu = this.getRoleMenuTreeselect(roleId);
       getRole(roleId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.$nextTick(() => {
-          roleMenu.then(res => {
-            this.$refs.menu.setCheckedKeys(res.checkedKeys);
-          });
-        });
+        // this.$nextTick(() => {
+        //   roleMenu.then(res => {
+        //     this.$refs.menu.setCheckedKeys(res.checkedKeys);
+        //   });
+        // });
         this.title = "修改角色";
       });
     },
@@ -446,7 +412,8 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const roleIds = row.roleId || this.ids;
+      console.log(row)
+      const roleIds = row.id || this.ids;
       this.$confirm('是否确认删除角色编号为"' + roleIds + '"的数据项?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

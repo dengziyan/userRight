@@ -153,9 +153,9 @@ export default {
     handleShowNextLevel(index, row) {
       this.$router.push({path: '/addMenu', query: {parentId: row.id}})
     },
-    // handleUpdate(index, row) {
-    //   this.$router.push({path:'/ums/updateMenu',query:{id:row.id}});
-    // },
+    handleUpdate(index, row) {
+      this.$router.push({path:'/addMenu',query:{id:row.id}});
+    },
     handleDelete(index, row) {
       this.$confirm('是否要删除该菜单', '提示', {
         confirmButtonText: '确定',

@@ -78,16 +78,21 @@
               <el-input v-model="form.account" placeholder="请输入用户账号"/>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="12">
             <el-form-item label="手机号码" prop="mobilePhone">
               <el-input v-model="form.mobilePhone" placeholder="请输入手机号码" maxlength="11"/>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item label="邮箱" prop="email">
               <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="form.userId == undefined" label="用户密码" prop="password">
+              <el-input v-model="form.password" placeholder="请输入用户密码" type="password"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -97,38 +102,31 @@
               <el-input v-model="form.realName" placeholder="请输入用户姓名"/>
             </el-form-item>
           </el-col>
-          <!--  ？密码需要显示吗        -->
           <el-col :span="12">
-            <el-form-item v-if="form.userId == undefined" label="用户密码" prop="password">
-              <el-input v-model="form.password" placeholder="请输入用户密码" type="password"/>
+            <el-form-item label="角色">
+              <el-select v-model="form.roleIds" multiple placeholder="请选择">
+                <el-option v-for="item in roleOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId" :disabled="item.status == 1"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
+          <!--  ？密码需要显示吗        -->
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户性别">
               <el-select v-model="form.gender" placeholder="请选择">
-                <el-option v-for="dict in sexOptions" :key="dict.dictValue" :label="dict.dictLabel"
-                           :value="dict.dictValue"></el-option>
+                <el-option v-for="(dict) in sexOptions" :key="dict" :label="dict"
+                           :value="dict"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="状态">
               <el-radio-group v-model="form.status">
-                <el-radio v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictValue">
-                  {{ dict.dictLabel }}
+                <el-radio v-for="dict in statusOptions" :key="dict" :label="dict" :value="dict">
+<!--                  {{dict.dictValue}}-->
                 </el-radio>
               </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="角色">
-              <el-select v-model="form.roleIds" multiple placeholder="请选择">
-                <el-option v-for="item in roleOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId" :disabled="item.status == 1"></el-option>
-              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -203,8 +201,8 @@ export default {
       deptName: undefined, // 部门名称
       initPassword: undefined, // 默认密码
       dateRange: [], // 日期范围
-      statusOptions: [], // 状态数据字典
-      sexOptions: [], // 性别状态字典
+      statusOptions: ['正常', '停用'], // 状态数据字典
+      sexOptions: ['男', '女'], // 性别状态字典
       roleOptions: [], // 角色选项
       form: {}, // 表单参数
       defaultProps: {
@@ -269,7 +267,7 @@ export default {
     }
   },
   created() {
-    this.getList()
+    this.getList();
   },
   methods: {
     /** 查询用户列表 */
@@ -357,7 +355,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.userId)
+      this.ids = selection.map((item) => item.id)
       this.single = selection.length != 1
       this.multiple = !selection.length
     },
@@ -376,7 +374,7 @@ export default {
     handleUpdate(row) {
       this.reset()
       // this.getTreeselect();
-      const userId = row.userId || this.ids
+      const userId = row.id || this.ids
       getUser(userId).then((response) => {
         this.form = response.data
         this.roleOptions = response.roles
