@@ -4,9 +4,27 @@
       <el-col :span="20" :xs="24">
         <!-- 搜索框-->
         <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-          <el-form-item label="用户名称" prop="userName">
-            <el-input v-model="queryParams.userName" placeholder="请输入用户名称" clearable size="small" style="width: 240px"
-                      @keyup.enter.native="handleQuery"/>
+          <el-form-item label="账号" prop="account">
+            <el-input
+              v-model="queryParams.account"
+              placeholder="请输入用户账号"
+              clearable
+              size="small"
+              style="width: 180px"
+              @keyup.enter.native="handleQuery"
+              @clear="clearParams('account')"
+            />
+          </el-form-item>
+          <el-form-item label="用户名称" prop="realName">
+            <el-input
+              v-model="queryParams.realName"
+              placeholder="请输入用户名称"
+              clearable
+              size="small"
+              style="width: 180px"
+              @keyup.enter.native="handleQuery"
+              @clear="clearParams('realName')"
+            />
           </el-form-item>
           <el-form-item label="手机号码" prop="phonenumber">
             <el-input v-model="queryParams.phonenumber" placeholder="请输入手机号码" clearable size="small"
@@ -80,19 +98,14 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="手机号码" prop="mobilePhone">
-              <el-input v-model="form.mobilePhone" placeholder="请输入手机号码" maxlength="11"/>
+              <el-input v-model="form.mobilePhone" placeholder="请输入手机号码" maxlength="11" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="邮箱" prop="email">
-              <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item v-if="form.userId == undefined" label="用户密码" prop="password">
-              <el-input v-model="form.password" placeholder="请输入用户密码" type="password"/>
+              <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -103,37 +116,53 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="角色">
-              <el-select v-model="form.roleIds" multiple placeholder="请选择">
-                <el-option v-for="item in roleOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId" :disabled="item.status == 1"></el-option>
-              </el-select>
+            <el-form-item v-if="form.userId == undefined" label="用户密码" prop="password">
+              <el-input v-model="form.password" placeholder="请输入用户密码" type="password" />
             </el-form-item>
           </el-col>
-          <!--  ？密码需要显示吗        -->
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户性别">
               <el-select v-model="form.gender" placeholder="请选择">
-                <el-option v-for="(dict) in sexOptions" :key="dict" :label="dict"
-                           :value="dict"></el-option>
+                <el-option
+                  v-for="dict in sexOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="状态">
-              <el-radio-group v-model="form.status">
-                <el-radio v-for="dict in statusOptions" :key="dict" :label="dict" :value="dict">
-<!--                  {{dict.dictValue}}-->
+              <el-radio-group v-model="form.enabled">
+                <el-radio v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictValue">
+                  {{ dict.dictLabel }}
                 </el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
+          <el-col :span="12">
+            <el-form-item label="角色">
+              <el-select v-model="form.roleIds" multiple placeholder="请选择">
+                <el-option
+                  v-for="item in roleOptions"
+                  :key="item.roleId"
+                  :label="item.roleName"
+                  :value="item.roleId"
+                  :disabled="item.enabled == 1"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="24">
             <el-form-item label="备注">
-              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
+              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -146,20 +175,26 @@
 
     <!-- 用户导入对话框 -->
     <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
-      <el-upload ref="upload" :limit="1" accept=".xlsx, .xls" :headers="upload.headers"
-                 :action="upload.url + '?updateSupport=' + upload.updateSupport" :disabled="upload.isUploading"
-                 :on-progress="handleFileUploadProgress" :on-success="handleFileSuccess" :auto-upload="false" drag>
-        <i class="el-icon-upload"></i>
+      <el-upload
+        ref="upload"
+        :limit="1"
+        accept=".xlsx, .xls"
+        :headers="upload.headers"
+        :action="upload.url"
+        :disabled="upload.isUploading"
+        :http-request="handleFileUpload"
+        :on-success="handleFileSuccess"
+        :auto-upload="false"
+        drag
+      >
+        <i class="el-icon-upload" />
         <div class="el-upload__text">
           将文件拖到此处，或
           <em>点击上传</em>
         </div>
-        <div class="el-upload__tip" slot="tip">
-          <el-checkbox v-model="upload.updateSupport"/>
-          是否更新已经存在的用户数据
+        <div slot="tip" class="el-upload__tip" style="color:red">提示：仅允许导入“xls”或“xlsx”格式文件！
           <el-link type="info" style="font-size:12px" @click="importTemplate">下载模板</el-link>
         </div>
-        <div class="el-upload__tip" style="color:red" slot="tip">提示：仅允许导入“xls”或“xlsx”格式文件！</div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitFileForm">确 定</el-button>
@@ -201,8 +236,9 @@ export default {
       deptName: undefined, // 部门名称
       initPassword: undefined, // 默认密码
       dateRange: [], // 日期范围
-      statusOptions: ['正常', '停用'], // 状态数据字典
-      sexOptions: ['男', '女'], // 性别状态字典
+      statusOptions: [{ dictLabel: '启用', dictValue: 1 }, { dictLabel: '禁用', dictValue: 0 }], // 状态数据字典
+      sexOptions: [], // 性别状态字典
+      postOptions: [], // 岗位选项
       roleOptions: [], // 角色选项
       form: {}, // 表单参数
       defaultProps: {
@@ -260,12 +296,7 @@ export default {
       }
     }
   },
-  watch: {
-    // 根据名称筛选部门树
-    deptName(val) {
-      this.$refs.tree.filter(val)
-    }
-  },
+  watch: {},
   created() {
     this.getList();
   },
@@ -281,12 +312,6 @@ export default {
         }
       )
     },
-    /** 查询部门下拉树结构 */
-    getTreeselect() {
-      treeselect().then((response) => {
-        this.deptOptions = response.data
-      })
-    },
     // 筛选节点
     filterNode(value, data) {
       if (!value) return true
@@ -294,14 +319,25 @@ export default {
     },
     // 节点单击事件
     handleNodeClick(data) {
-      this.queryParams.deptId = data.id
       this.getList()
     },
+
+    // 置空参数
+    clearParams(val) {
+      alert(val)
+      if (val === 'enabled') { this.queryParams.enabled = undefined }
+      if (val === 'phone') { this.queryParams.mobilePhone = undefined }
+      if (val === 'account') { this.queryParams.account = undefined }
+      if (val === 'realName') { this.queryParams.realName = undefined }
+      if (val === 'date') { this.dateRange = [] }
+      console.log(this.dateRange)
+    },
+
     // 用户状态修改
     handleStatusChange(row) {
-      let text = row.status === '0' ? '启用' : '停用'
+      const text = row.enabled === '0' ? '启用' : '停用'
       this.$confirm(
-        '确认要"' + text + '""' + row.userName + '"用户吗?',
+        '确认要"' + text + '""' + row.account + '"用户吗?',
         '警告',
         {
           confirmButtonText: '确定',
@@ -310,13 +346,13 @@ export default {
         }
       )
         .then(function() {
-          return changeUserStatus(row.userId, row.status)
+          return changeUserStatus(row.userId, row.enabled)
         })
         .then(() => {
           this.msgSuccess(text + '成功')
         })
         .catch(function() {
-          row.status = row.status === '0' ? '1' : '0'
+          row.enabled = row.enabled === '0' ? '1' : '0'
         })
     },
     // 取消按钮
@@ -355,8 +391,8 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.id)
-      this.single = selection.length != 1
+      this.ids = selection.map((item) => item.userId)
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -365,6 +401,7 @@ export default {
       this.reset()
       this.open = true
       getUser().then((response) => {
+        this.postOptions = response.posts
         this.roleOptions = response.roles
         this.title = '添加用户'
         this.form.password = this.initPassword
@@ -471,20 +508,27 @@ export default {
     },
     /** 下载模板操作 */
     importTemplate() {
-      importTemplate().then((response) => {
-        this.download(response.msg)
+      importTemplates().then(res => {
+        fileDownload(res, '批量用户导入模板.xlsx')
+      })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    handleFileUpload(val) {
+      const formData = new FormData()
+      formData.append('file', val.file)
+      console.log(val)
+      batchAddUser(formData).then(res => {
+        val.onSuccess()
+      }).catch(res => {
+        val.onError()
       })
     },
-    // 文件上传中处理
-    handleFileUploadProgress(event, file, fileList) {
-      this.upload.isUploading = true
-    },
     // 文件上传成功处理
-    handleFileSuccess(response, file, fileList) {
+    handleFileSuccess() {
       this.upload.open = false
       this.upload.isUploading = false
-      this.$refs.upload.clearFiles()
-      this.$(response.msg, '导入结果', { dangerouslyUseHTMLString: true })
       this.getList()
     },
     // 提交上传文件
