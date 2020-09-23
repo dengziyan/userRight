@@ -37,8 +37,8 @@
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.deleteStatus"
-            active-value="0"
-            inactive-value="1"
+            active-value="1"
+            inactive-value="0"
             @change="handleStatusChange(scope.row)"
           ></el-switch>
         </template>
@@ -231,13 +231,13 @@ export default {
     // 角色状态修改
     handleStatusChange(row) {
       console.log(row)
-      const text = row.deleteStatus === '0' ? '启用' : '停用'
-      this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', '警告', {
+      const type = row.deleteStatus === '0' ? 'enable' : 'disable'
+      this.$confirm('确认要"' + type + '""' + row.roleName + '"角色吗?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return changeRoleStatus(row.id, row.deleteStatus)
+        return changeRoleStatus(row.id, type)
       }).then(() => {
         this.msgSuccess(text + '成功')
       }).catch(function() {

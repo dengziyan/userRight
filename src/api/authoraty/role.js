@@ -45,13 +45,13 @@ export function dataScope(data) {
 }
 
 // 角色状态修改
-export function changeRoleStatus(roleId, status) {
+export function changeRoleStatus(roleId, type) {
   const data = {
     roleId,
-    status
+    type
   }
   return request({
-    url: '/sys/role/status',
+    url: '/sys/role/status?id=' + roleId + '&type='+　type,
     method: 'put',
     data: data
   })
@@ -60,7 +60,7 @@ export function changeRoleStatus(roleId, status) {
 // 删除角色
 export function delRole(roleId) {
   return request({
-    url: '/sys/role/id=' + roleId,
+    url: '/sys/role?id=' + roleId,
     method: 'delete'
   })
 }
