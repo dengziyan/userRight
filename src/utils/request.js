@@ -50,15 +50,14 @@ service.interceptors.response.use(
     // console.log(response.headers.authorization)
     // // 判断是否携带token
     const token = response.headers.authorization
-
+    console.log(token)
     if (token) {
       // 判断与原有token是否相等
       // 不等就换成返回来的token
       token !== getToken() ? setToken(token) : ''
     }
-
     // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 2000) {
+    if (res.code !== 2000 && res.code !== undefined) {
       // 4001: Illegal token;Token expired;
       if (res.code === 4001) {
         // to re-login
