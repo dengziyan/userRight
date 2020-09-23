@@ -1,11 +1,10 @@
 import request from '@/utils/request'
 
 // 查询所有菜单
-export function fetchList(params) {
+export function fetchList() {
   return request({
     url: '/sysMenu/menuList',
-    method: 'get',
-    params: params
+    method: 'get'
   })
 }
 

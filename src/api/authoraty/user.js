@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { praseStrEmpty } from "@/utils/userright";
+import { praseStrEmpty } from '@/utils/userright'
 
 // 查询用户列表
 export function listUser(query) {
@@ -13,7 +13,7 @@ export function listUser(query) {
 // 查询用户详细
 export function getUser(id) {
   return request({
-    url: '/sys/user/' + praseStrEmpty(id),
+    url: '/sys/user-info/' + praseStrEmpty(id),
     method: 'get'
   })
 }
@@ -24,6 +24,14 @@ export function addUser(data) {
     url: '/sys/user',
     method: 'post',
     data: data
+  })
+}
+// 新增用户
+export function batchAddUser(data) {
+  return request({
+    url: '/sys/user/import',
+    method: 'post',
+    data
   })
 }
 
@@ -45,11 +53,11 @@ export function delUser(id) {
 }
 
 // 导出用户
-export function exportUser(query) {
+export function exportUser() {
   return request({
     url: '/sys/user/export',
     method: 'get',
-    params: query
+    responseType: 'arraybuffer'
   })
 }
 
@@ -119,9 +127,10 @@ export function uploadAvatar(data) {
 }
 
 // 下载用户导入模板
-export function importTemplate() {
+export function importTemplates() {
   return request({
     url: '/sys/user/template',
-    method: 'get'
+    method: 'get',
+    responseType: 'arraybuffer'
   })
 }

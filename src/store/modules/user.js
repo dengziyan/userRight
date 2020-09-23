@@ -1,12 +1,12 @@
-import { login, logout, getInfo } from '@/api/user'
-import { getToken, setCookies, removeCookies } from '@/utils/auth'
+import { login, logout, getInfo, setLoginStatus } from '@/api/user'
+import { getToken, getIDKey, setCookies, removeCookies } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    id: '',
+    id: getIDKey(),
     avatar: ''
   }
 }
@@ -43,6 +43,9 @@ const actions = {
         commit('SET_TOKEN', token) // token
         commit('SET_ID', data.id) // 用户编号
         setCookies(token, data.id)
+
+        setLoginStatus(data.id)
+
         resolve()
       }).catch(error => {
         reject(error)

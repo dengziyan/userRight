@@ -33,3 +33,13 @@ export function logout(username) {
     }
   })
 }
+
+export function setLoginStatus(id) {
+  return request({
+    url: '/sysUser/login-status?type=success',
+    method: 'post',
+    data: {
+      id: id
+    }
+  })
+}
