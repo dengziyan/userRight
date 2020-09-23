@@ -1,91 +1,120 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="20">
-      <el-col :span="20" :xs="24">
-        <!-- 搜索框-->
-        <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-          <el-form-item label="账号" prop="account">
-            <el-input
-              v-model="queryParams.account"
-              placeholder="请输入用户账号"
-              clearable
-              size="small"
-              style="width: 180px"
-              @keyup.enter.native="handleQuery"
-              @clear="clearParams('account')"
-            />
-          </el-form-item>
-          <el-form-item label="用户名称" prop="realName">
-            <el-input
-              v-model="queryParams.realName"
-              placeholder="请输入用户名称"
-              clearable
-              size="small"
-              style="width: 180px"
-              @keyup.enter.native="handleQuery"
-              @clear="clearParams('realName')"
-            />
-          </el-form-item>
-          <el-form-item label="手机号码" prop="phonenumber">
-            <el-input v-model="queryParams.phonenumber" placeholder="请输入手机号码" clearable size="small"
-                      style="width: 240px" @keyup.enter.native="handleQuery"/>
-          </el-form-item>
-          <el-form-item label="状态" prop="status">
-            <el-select v-model="queryParams.status" placeholder="用户状态" clearable size="small" style="width: 240px">
-              <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel"
-                         :value="dict.dictValue"/>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="创建时间">
-            <el-date-picker v-model="dateRange" size="small" style="width: 240px" value-format="yyyy-MM-dd"
-                            type="daterange" range-separator="-" start-placeholder="开始日期"
-                            end-placeholder="结束日期"></el-date-picker>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-          </el-form-item>
-        </el-form>
-        <!-- 各个操作按钮 -->
-        <el-row :gutter="10" class="mb8">
-            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
-            <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate">修改</el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除</el-button>
-            <el-button type="info" icon="el-icon-upload2" size="mini" @click="handleImport">导入</el-button>
-            <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
-<!--          <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>-->
-        </el-row>
-        <!-- 表格-->
-        <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="50" align="center"/>
-          <el-table-column label="编号" align="center" prop="id"/>
-          <el-table-column label="账号" align="center" prop="account"/>
-          <el-table-column label="姓名" align="center" prop="realName"/>
-          <el-table-column label="性别" align="center" prop="gender"/>
-          <el-table-column label="邮箱" align="center" prop="email"/>
-          <el-table-column label="手机号码" align="center" prop="mobilePhone" width="120"/>
-          <el-table-column label="创建时间" align="center" prop="createDate" width="160">
-            <template slot-scope="scope">
-              <span>{{ parseTime(scope.row.createDate) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="最后登录" align="center" prop="lastLoginTime" width="160">
-            <template slot-scope="scope">
-              <span>{{ parseTime(scope.row.lastLoginTime) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
-            <template slot-scope="scope">
-              <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" >修改</el-button>
-              <el-button v-if="scope.row.userId !== 1" size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
-              <el-button size="mini" type="text" icon="el-icon-key" @click="handleResetPwd(scope.row)">重置
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize" @pagination="getList"/>
-      </el-col>
+    <!-- 搜索框-->
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+      <el-form-item label="账号" prop="account">
+        <el-input
+          v-model="queryParams.account"
+          placeholder="请输入用户账号"
+          clearable
+          size="small"
+          style="width: 180px"
+          @keyup.enter.native="handleQuery"
+          @clear="clearParams('account')"
+        />
+      </el-form-item>
+      <el-form-item label="用户名称" prop="realName">
+        <el-input
+          v-model="queryParams.realName"
+          placeholder="请输入用户名称"
+          clearable
+          size="small"
+          style="width: 180px"
+          @keyup.enter.native="handleQuery"
+          @clear="clearParams('realName')"
+        />
+      </el-form-item>
+      <el-form-item label="手机号码" prop="phonenumber">
+        <el-input
+          v-model="queryParams.phonenumber"
+          placeholder="请输入手机号码"
+          clearable
+          size="small"
+          style="width: 240px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="用户状态" clearable size="small" style="width: 110px">
+          <el-option
+            v-for="dict in statusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="创建时间">
+        <el-date-picker
+          v-model="dateRange"
+          size="small"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
+
+    <!-- 各个操作按钮 -->
+    <el-row :gutter="10" class="mb8">
+      <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
+      <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate">修改
+      </el-button>
+      <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除
+      </el-button>
+      <el-button type="info" icon="el-icon-upload2" size="mini" @click="handleImport">导入</el-button>
+      <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
+      <!--          <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>-->
     </el-row>
+    <!-- 表格-->
+    <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="50" align="center" />
+      <el-table-column label="编号" align="center" prop="id" />
+      <el-table-column label="账号" align="center" prop="account" />
+      <el-table-column label="姓名" align="center" prop="realName" />
+      <el-table-column label="性别" align="center" prop="gender" />
+      <el-table-column label="邮箱" align="center" prop="email" />
+      <el-table-column label="手机号码" align="center" prop="mobilePhone" width="120" />
+      <el-table-column label="创建时间" align="center" prop="createDate" width="160">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.createDate) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="最后登录" align="center" prop="lastLoginTime" width="160">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.lastLoginTime) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-button
+            v-if="scope.row.userId !== 1"
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+          >删除
+          </el-button>
+          <el-button size="mini" type="text" icon="el-icon-key" @click="handleResetPwd(scope.row)">重置
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
 
     <!-- 添加或修改参数配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
@@ -93,7 +122,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户账号" prop="account">
-              <el-input v-model="form.account" placeholder="请输入用户账号"/>
+              <el-input v-model="form.account" placeholder="请输入用户账号" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -112,7 +141,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item v-if="form.id == undefined" label="用户姓名" prop="realName">
-              <el-input v-model="form.realName" placeholder="请输入用户姓名"/>
+              <el-input v-model="form.realName" placeholder="请输入用户姓名" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -298,7 +327,7 @@ export default {
   },
   watch: {},
   created() {
-    this.getList();
+    this.getList()
   },
   methods: {
     /** 查询用户列表 */
@@ -325,11 +354,21 @@ export default {
     // 置空参数
     clearParams(val) {
       alert(val)
-      if (val === 'enabled') { this.queryParams.enabled = undefined }
-      if (val === 'phone') { this.queryParams.mobilePhone = undefined }
-      if (val === 'account') { this.queryParams.account = undefined }
-      if (val === 'realName') { this.queryParams.realName = undefined }
-      if (val === 'date') { this.dateRange = [] }
+      if (val === 'enabled') {
+        this.queryParams.enabled = undefined
+      }
+      if (val === 'phone') {
+        this.queryParams.mobilePhone = undefined
+      }
+      if (val === 'account') {
+        this.queryParams.account = undefined
+      }
+      if (val === 'realName') {
+        this.queryParams.realName = undefined
+      }
+      if (val === 'date') {
+        this.dateRange = []
+      }
       console.log(this.dateRange)
     },
 
@@ -540,7 +579,7 @@ export default {
 </script>
 
 <style scoped>
-  .el-row button{
-    float: left;
-  }
+.el-row button {
+  float: left;
+}
 </style>
