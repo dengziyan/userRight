@@ -3,52 +3,15 @@
     <!--搜索框   -->
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true">
       <el-form-item label="角色名称" prop="roleName">
-        <el-input
-          v-model="queryParams.roleName"
-          placeholder="请输入角色名称"
-          clearable
-          size="small"
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
+        <el-input v-model="queryParams.roleName" placeholder="请输入角色名称" clearable size="small" style="width: 240px" @keyup.enter.native="handleQuery"/>
       </el-form-item>
-      <el-form-item label="权限字符" prop="roleKey">
-        <el-input
-          v-model="queryParams.roleKey"
-          placeholder="请输入权限字符"
-          clearable
-          size="small"
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select
-          v-model="queryParams.status"
-          placeholder="角色状态"
-          clearable
-          size="small"
-          style="width: 240px"
-        >
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
+      <el-form-item label="状态" prop="deleteStatus">
+        <el-select v-model="queryParams.deleteStatus" placeholder="角色状态" clearable size="small" style="width: 240px">
+          <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue"/>
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间">
-        <el-date-picker
-          v-model="dateRange"
-          size="small"
-          style="width: 240px"
-          value-format="yyyy-MM-dd"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
+        <el-date-picker v-model="dateRange" size="small" style="width: 240px" value-format="yyyy-MM-dd" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"/>
       </el-form-item>
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -70,14 +33,16 @@
       <el-table-column label="角色编号" prop="id" width="120" />
       <el-table-column label="角色名称" prop="roleName" width="150" />
       <el-table-column label="角色描述" prop="roleDesc" width="150" />
-      <!--        <template slot-scope="scope">-->
-      <!--                <el-switch-->
-      <!--                  v-model="scope.row.deleteStatus"-->
-      <!--                  active-value="0"-->
-      <!--                  inactive-value="1"-->
-      <!--                  @change="handleStatusChange(scope.row)"-->
-      <!--                ></el-switch>-->
-      <!--              </template>-->
+      <el-table-column label="是否启用" >
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.deleteStatus"
+            active-value="0"
+            inactive-value="1"
+            @change="handleStatusChange(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
@@ -101,20 +66,14 @@
         <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="form.roleName" placeholder="请输入角色名称" />
         </el-form-item>
-        <el-form-item label="权限字符" prop="roleKey">
-          <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
-        </el-form-item>
-        <el-form-item label="角色顺序" prop="roleSort">
-          <el-input-number v-model="form.roleSort" controls-position="right" :min="0" />
-        </el-form-item>
         <el-form-item label="状态">
-          <el-radio-group v-model="form.status">
+          <el-radio-group v-model="form.deleteStatus">
             <el-radio v-for="dict in statusOptions" :key="dict" :label="dict" :value="dict" />
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="菜单权限" prop="">
-          <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
-        </el-form-item>
+<!--        <el-form-item label="菜单权限" prop="">-->
+<!--          <el-input v-model="form.roleKey" placeholder="请输入权限字符" />-->
+<!--        </el-form-item>-->
         <el-form-item label="备注">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
@@ -147,7 +106,6 @@
         <el-form-item v-show="form.dataScope == 2" label="数据权限">
           <el-tree
             ref="dept"
-            :data="deptOptions"
             show-checkbox
             default-expand-all
             node-key="id"
@@ -173,6 +131,7 @@ export default {
   name: 'Role',
   data() {
     return {
+      deleteStatus: 0,
       loading: true, // 遮罩层
       ids: [], // 选中数组
       single: true, // 非单个禁用
@@ -208,13 +167,11 @@ export default {
         }
       ],
       menuOptions: [], // 菜单列表
-      deptOptions: [], // 部门列表
       queryParams: { // 查询参数
         pageNum: 1,
         pageSize: 10,
         roleName: undefined,
-        roleKey: undefined,
-        status: undefined
+        deleteStatus: undefined
       },
       form: {}, // 表单参数
       defaultProps: {
@@ -273,17 +230,18 @@ export default {
     },
     // 角色状态修改
     handleStatusChange(row) {
-      const text = row.status === '0' ? '启用' : '停用'
+      console.log(row)
+      const text = row.deleteStatus === '0' ? '启用' : '停用'
       this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return changeRoleStatus(row.roleId, row.status)
+        return changeRoleStatus(row.id, row.deleteStatus)
       }).then(() => {
         this.msgSuccess(text + '成功')
       }).catch(function() {
-        row.status = row.status === '0' ? '1' : '0'
+        row.deleteStatus = row.deleteStatus === '0' ? '1' : '0'
       })
     },
     // 取消按钮
@@ -304,18 +262,14 @@ export default {
       this.form = {
         roleId: undefined,
         roleName: undefined,
-        roleKey: undefined,
-        roleSort: 0,
-        status: '0',
-        menuIds: [],
-        deptIds: [],
+        deleteStatus: '0',
         remark: undefined
       }
       this.resetForm('form')
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1
+      this.queryParams.page = 1
       this.getList()
     },
     /** 重置按钮操作 */
