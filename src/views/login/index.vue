@@ -1,8 +1,8 @@
 <template>
   <div class="login-container">
-<!--    <div class="background">-->
-<!--      <img :src="imgSrc" width="100%" height="100%" alt="" />-->
-<!--    </div>-->
+    <!--    <div class="background">-->
+    <!--      <img :src="imgSrc" width="100%" height="100%" alt="" />-->
+    <!--    </div>-->
     <el-card class="login-form-layout">
       <el-form ref="loginForm" auto-complete="on" :model="loginForm" :rules="loginRules" label-position="left">
         <div style="text-align: center">

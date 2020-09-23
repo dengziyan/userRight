@@ -6,8 +6,11 @@
       size="small"
       :closable="tag.name !== 'home'"
       :disable-transitions="false"
+      :type="tag.type"
+      :effect="tag.effect"
       @close="handleClose(tag)"
       @click="changeMenu(tag)"
+
     >
       {{ tag.title }}
     </el-tag>
@@ -35,7 +38,9 @@ export default {
     }),
     handleClose(tag) {
       this.close(tag)
-      this.$router.go(-1)
+      console.log(this.tags[this.tags.length - 1])
+      const lastTag = this.tags[this.tags.length - 1]
+      this.changeMenu(lastTag)
     },
     changeMenu(item) {
       this.$router.push({ name: item.name })

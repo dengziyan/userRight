@@ -8,7 +8,9 @@ export default {
         path: '/',
         name: 'home',
         title: '首页',
-        icon: 'home'
+        icon: 'home',
+        type: '',
+        effect: 'dark'
       }
     ]
   },
@@ -18,8 +20,11 @@ export default {
         console.log(val.name)
         state.currentMenu = val
         const result = state.tabsList.findIndex(item => item.name === val.name)
+        state.tabsList[0].effect='plain'
+        val.effect = 'dark'
         result === -1 ? state.tabsList.push(val) : ''
       } else {
+        val.effect = 'dark'
         state.currentMenu = null
       }
       // val.name === 'home' ? (state.currentMenu = null) : (state.currentMenu = val)
