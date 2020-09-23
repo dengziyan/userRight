@@ -39,7 +39,6 @@
       <el-table-column label="操作系统" align="center" prop="os" />
       <el-table-column label="登录状态" align="center" prop="status" :formatter="statusFormat">
         <el-switch
-          v-model="value"
           active-color="#13ce66"
         >
         </el-switch>

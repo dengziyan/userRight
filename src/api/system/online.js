@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-//我自己用mock来测试的接口
+// 我自己用mock来测试的接口
 export function getOnline() {
   return request({
     url: '/online',

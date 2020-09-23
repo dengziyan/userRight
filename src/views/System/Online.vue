@@ -14,7 +14,7 @@
       </el-form-item>
     </el-form>
     <!-- 表格   -->
-    <el-table v-loading="loading" style="width: 100%;">
+    <el-table v-loading="loading" style="width: 100%;" :data="list">
       <el-table-column label="序号" type="index" align="center">
         <template slot-scope="scope">
           <span>{{(pageNum - 1) * pageSize + scope.$index + 1}}</span>
@@ -33,22 +33,16 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleForceLogout(scope.row)"
-          >强退</el-button>
+          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleForceLogout(scope.row)">强退</el-button>
         </template>
       </el-table-column>
     </el-table>
-
     <pagination v-show="total>0" :total="total" :page.sync="pageNum" :limit.sync="pageSize" />
   </div>
 </template>
 
 <script>
-import { list, forceLogout, getOnline} from "@/api/system/online";
+import { list, forceLogout} from "@/api/system/online";
 
 export default {
   name: "Online",
@@ -74,6 +68,7 @@ export default {
       this.loading = true;
       list(this.queryParams).then(response => {
         this.list = response.data;
+        console.log(this.list)
         // this.total = response.data.total;
         this.loading = false;
       });
@@ -88,6 +83,7 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
+
     /** 强退按钮操作 */
     handleForceLogout(row) {
       this.$confirm('是否确认强退名称为"' + row.userName + '"的数据项?', "警告", {
