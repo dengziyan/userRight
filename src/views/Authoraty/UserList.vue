@@ -24,9 +24,9 @@
           @clear="clearParams('realName')"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="phonenumber">
+      <el-form-item label="手机号码" prop="mobilePhone">
         <el-input
-          v-model="queryParams.phonenumber"
+          v-model="queryParams.mobilePhone"
           placeholder="请输入手机号码"
           clearable
           size="small"
@@ -34,8 +34,8 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="用户状态" clearable size="small" style="width: 110px">
+      <el-form-item label="状态" prop="enabled">
+        <el-select v-model="queryParams.enabled" placeholder="用户状态" clearable size="small" style="width: 110px">
           <el-option
             v-for="dict in statusOptions"
             :key="dict.dictValue"
@@ -79,7 +79,11 @@
       <el-table-column label="编号" align="center" prop="id" />
       <el-table-column label="账号" align="center" prop="account" />
       <el-table-column label="姓名" align="center" prop="realName" />
-      <el-table-column label="性别" align="center" prop="gender" />
+      <el-table-column label="性别" align="center" prop="gender">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.gender=='F'? '女':'男' }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="邮箱" align="center" prop="email" />
       <el-table-column label="手机号码" align="center" prop="mobilePhone" width="120" />
       <el-table-column label="创建时间" align="center" prop="createDate" width="160">
@@ -243,9 +247,12 @@ import {
   exportUser,
   resetUserPwd,
   changeUserStatus,
-  importTemplate
+  importTemplates,
+  batchAddUser
 } from '@/api/authoraty/user'
 import { getToken } from '@/utils/auth'
+import fileDownload from 'js-file-download'
+import moment from 'moment'
 
 export default {
   name: 'User',
@@ -265,8 +272,8 @@ export default {
       deptName: undefined, // 部门名称
       initPassword: undefined, // 默认密码
       dateRange: [], // 日期范围
-      statusOptions: [{ dictLabel: '启用', dictValue: 1 }, { dictLabel: '禁用', dictValue: 0 }], // 状态数据字典
-      sexOptions: [], // 性别状态字典
+      statusOptions: [{ dictLabel: '启用', dictValue: 1 }, { dictLabel: '停用', dictValue: 0 }], // 状态数据字典
+      sexOptions: [{ dictLabel: '男', dictValue: 'M' }, { dictLabel: '女', dictValue: 'F' }], // 性别状态字典
       postOptions: [], // 岗位选项
       roleOptions: [], // 角色选项
       form: {}, // 表单参数
@@ -280,24 +287,24 @@ export default {
         title: '', // 弹出层标题（用户导入）
         isUploading: false, // 是否禁用上传
         updateSupport: 0, // 是否更新已经存在的用户数据
-        headers: { Authorization: 'Bearer ' + getToken() }, // 设置上传的请求头部
-        url: process.env.VUE_APP_BASE_API + '/authoraty/user/importData' // 上传的地址
+        headers: { Authorization: getToken() }, // 设置上传的请求头部
+        url: process.env.VUE_APP_BASE_API + '/sys/user/import' // 上传的地址
       },
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        userName: undefined,
-        phonenumber: undefined,
-        status: undefined,
-        deptId: undefined
+        account: undefined,
+        realName: undefined,
+        mobilePhone: undefined,
+        enabled: undefined
       },
       // 表单校验
       rules: {
-        userName: [
+        account: [
           { required: true, message: '用户名称不能为空', trigger: 'blur' }
         ],
-        nickName: [
+        realName: [
           { required: true, message: '用户昵称不能为空', trigger: 'blur' }
         ],
         deptId: [
@@ -314,7 +321,7 @@ export default {
             trigger: ['blur', 'change']
           }
         ],
-        phonenumber: [
+        mobilePhone: [
           { required: true, message: '手机号码不能为空', trigger: 'blur' },
           {
             pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
@@ -353,7 +360,6 @@ export default {
 
     // 置空参数
     clearParams(val) {
-      alert(val)
       if (val === 'enabled') {
         this.queryParams.enabled = undefined
       }
@@ -369,7 +375,6 @@ export default {
       if (val === 'date') {
         this.dateRange = []
       }
-      console.log(this.dateRange)
     },
 
     // 用户状态修改
@@ -404,13 +409,13 @@ export default {
       this.form = {
         userId: undefined,
         deptId: undefined,
-        userName: undefined,
-        nickName: undefined,
+        account: undefined,
+        realName: undefined,
         password: undefined,
-        phonenumber: undefined,
+        mobilePhone: undefined,
         email: undefined,
         sex: undefined,
-        status: '0',
+        enabled: undefined,
         remark: undefined,
         postIds: [],
         roleIds: []
@@ -419,7 +424,6 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.page = 1
       this.getList()
     },
     /** 重置按钮操作 */
@@ -463,7 +467,7 @@ export default {
     },
     /** 重置密码按钮操作 */
     handleResetPwd(row) {
-      this.$prompt('请输入"' + row.userName + '"的新密码', '提示', {
+      this.$prompt('请输入"' + row.account + '"的新密码', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       })
@@ -481,7 +485,8 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          if (this.form.userId != undefined) {
+          // eslint-disable-next-line eqeqeq
+          if (this.form.id != undefined) {
             updateUser(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess('修改成功')
@@ -525,17 +530,21 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      const queryParams = this.queryParams
       this.$confirm('是否确认导出所有用户数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(function() {
-          return exportUser(queryParams)
-        })
-        .then((response) => {
-          this.download(response.msg)
+          exportUser().then(res => {
+            console.log(res)
+            const sysDate = moment(new Date()).format('YYYY-MM-DDHHmm')
+            console.log(sysDate)
+            fileDownload(res, sysDate + '用户信息表.xlsx')
+          })
+            .catch(err => {
+              console.log(err)
+            })
         })
         .catch(function() {
         })
