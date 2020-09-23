@@ -256,7 +256,7 @@ export default {
     },
     // 表单重置
     reset() {
-      if (this.$refs.menu != undefined) {
+      if (this.$refs.menu !== undefined) {
         this.$refs.menu.setCheckedKeys([])
       }
       this.form = {

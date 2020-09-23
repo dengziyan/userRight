@@ -5,9 +5,8 @@
         <el-button type="primary" icon="el-icon-s-fold" @click="collapseMenu" />
         <!-- 面包屑-->
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item v-if="current" :to="current.path">{{ current.label }}</el-breadcrumb-item>
-
+          <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item v-if="current" :to="'/'+current.name" :replace="true">{{ current.title }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
       <div class="r-content">

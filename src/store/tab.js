@@ -14,10 +14,8 @@ export default {
   },
   mutations: {
     selectMenu(state, val) {
-      // console.log(state)
-      // console.log(val)
       if (val.name !== 'home') {
-        // console.log(val.name)
+        console.log(val.name)
         state.currentMenu = val
         const result = state.tabsList.findIndex(item => item.name === val.name)
         result === -1 ? state.tabsList.push(val) : ''

@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import Qs from 'qs'
 
 // 查询角色列表
 export function listRole(query) {
@@ -45,15 +46,22 @@ export function dataScope(data) {
 }
 
 // 角色状态修改
-export function changeRoleStatus(roleId, type) {
+export function changeRoleStatus(id, type) {
   const data = {
-    roleId,
+    id,
     type
   }
   return request({
-    url: '/sys/role/status?id=' + roleId + '&type='+　type,
+    url: '/sys/role/status',
     method: 'put',
-    data: data
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    },
+    transformRequest: [function(data) { // 在请求之前对data传参进行格式转换
+      data = Qs.stringify(data)
+      return data
+    }],
+    data
   })
 }
 
