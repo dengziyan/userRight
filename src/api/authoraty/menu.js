@@ -8,6 +8,14 @@ export function fetchList() {
   })
 }
 
+// 查询所有菜单
+export function treeList() {
+  return request({
+    url: '/sysMenu/treeList',
+    method: 'get'
+  })
+}
+
 // 根据ID删除菜单
 export function deleteMenu(id) {
   return request({

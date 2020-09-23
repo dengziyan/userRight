@@ -1,8 +1,8 @@
 <template>
   <div class="tags">
-    <el-tag :key="tag.name" size="small" v-for="tag in tags" :closable="tag.name !== 'home'" :disable-transitions="false" 
+    <el-tag :key="tag.name" size="small" v-for="tag in tags" :closable="tag.name !== 'home'" :disable-transitions="false"
     @close="handleClose(tag)" @click="changeMenu(tag)">
-      {{tag.label}}
+      {{tag.title}}
     </el-tag>
   </div>
 </template>
