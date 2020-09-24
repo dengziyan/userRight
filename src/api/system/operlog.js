@@ -31,5 +31,5 @@ export function exportOperlog() {
     url: '/sys/log/operation-log/export',
     method: 'get',
     responseType: 'arraybuffer'
-  })
+  }, { timeout: 60000 })
 }

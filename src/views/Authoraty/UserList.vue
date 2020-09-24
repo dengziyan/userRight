@@ -32,6 +32,7 @@
           size="small"
           style="width: 240px"
           @keyup.enter.native="handleQuery"
+          @clear="clearParams('mobilePhone')"
         />
       </el-form-item>
       <el-form-item label="状态" prop="enabled">
@@ -77,28 +78,28 @@
     <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="50" align="center" />
       <el-table-column label="编号" align="center" prop="id" />
-      <el-table-column label="账号" align="center" prop="account" :show-overflow-tooltip="true"/>
-      <el-table-column label="姓名" align="center" prop="realName" :show-overflow-tooltip="true"/>
+      <el-table-column label="账号" align="center" prop="account" :show-overflow-tooltip="true" />
+      <el-table-column label="姓名" align="center" prop="realName" :show-overflow-tooltip="true" />
       <el-table-column label="性别" align="center" prop="gender">
         <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.gender=='F'? '女':'男' }}</span>
+          <span style="margin-left: 10px">{{ scope.row.gender == 'F' ? '女' : '男' }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="邮箱" align="center" prop="email" :show-overflow-tooltip="true"/>
-      <el-table-column label="手机号码" align="center" prop="mobilePhone" width="120" :show-overflow-tooltip="true"/>
+      <el-table-column label="邮箱" align="center" prop="email" :show-overflow-tooltip="true" />
+      <el-table-column label="手机号码" align="center" prop="mobilePhone" width="120" :show-overflow-tooltip="true" />
       <el-table-column label="创建时间" align="center" prop="createDate" width="160" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createDate) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="是否启用" >
+      <el-table-column label="是否启用">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.enabled"
-            active-value="1"
-            inactive-value="0"
+            :active-value="1"
+            :inactive-value="0"
             @change="handleStatusChange(scope.row)"
-          ></el-switch>
+          />
         </template>
       </el-table-column>
       <el-table-column label="最后登录" align="center" prop="lastLoginTime" width="160" :show-overflow-tooltip="true">
@@ -264,6 +265,7 @@ import {
 import { getToken } from '@/utils/auth'
 import fileDownload from 'js-file-download'
 import moment from 'moment'
+import { changeRoleStatus } from '@/api/authoraty/role'
 
 export default {
   name: 'User',
@@ -343,7 +345,16 @@ export default {
       }
     }
   },
-  watch: {},
+  computed: {
+    newEnable() {
+      return this.queryParams.enabled;
+    }
+  },
+  watch: {
+    newEnable() {
+      this.getList()
+    }
+  },
   created() {
     this.getList()
   },
@@ -380,9 +391,6 @@ export default {
       if (val === 'account') {
         this.queryParams.account = undefined
       }
-      if (val === 'realName') {
-        this.queryParams.realName = undefined
-      }
       if (val === 'date') {
         this.dateRange = []
       }
@@ -390,25 +398,22 @@ export default {
 
     // 用户状态修改
     handleStatusChange(row) {
-      const text = row.enabled === '0' ? '启用' : '停用'
+      const type = row.enabled === 1 ? { label: '启用', value: 'enable' } : { label: '停用', value: 'disable' }
       this.$confirm(
-        '确认要"' + text + '""' + row.account + '"用户吗?',
+        '确认要"' + type.label + '""' + row.account + '"用户吗?',
         '警告',
         {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }
-      )
-        .then(function() {
-          return changeUserStatus(row.id, row.enabled)
+      ).then(function() {
+        changeRoleStatus(row.id, type.value).then(response => {
+          this.getList()
         })
-        .then(() => {
-          this.msgSuccess(text + '成功')
-        })
-        .catch(function() {
-          row.enabled = row.enabled === '0' ? '1' : '0'
-        })
+      }).catch(function() {
+        row.enabled = row.enabled === 0 ? 1 : 0
+      })
     },
     // 取消按钮
     cancel() {
@@ -433,6 +438,7 @@ export default {
       }
       this.resetForm('form')
     },
+
     /** 搜索按钮操作 */
     handleQuery() {
       this.getList()

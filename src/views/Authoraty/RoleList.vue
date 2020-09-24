@@ -3,16 +3,37 @@
     <!--搜索框   -->
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true">
       <el-form-item label="角色名称" prop="roleName">
-        <el-input v-model="queryParams.roleName" placeholder="请输入角色名称" clearable size="small" style="width: 240px" @keyup.enter.native="handleQuery" />
+        <el-input
+          v-model="queryParams.roleName"
+          placeholder="请输入角色名称"
+          clearable
+          size="small"
+          style="width: 240px"
+          @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
-      <el-form-item label="状态" prop="deleteStatus">
-        <el-select v-model="queryParams.deleteStatus" placeholder="角色状态" clearable size="small" style="width: 240px">
-          <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
+      <el-form-item label="状态" prop="enabled">
+        <el-select v-model="queryParams.enabled" placeholder="角色状态" clearable size="small" style="width: 120px">
+          <el-option
+            v-for="dict in statusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
         </el-select>
       </el-form-item>
-      <el-form-item label="创建时间">
-        <el-date-picker v-model="dateRange" size="small" style="width: 240px" value-format="yyyy-MM-dd" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" />
-      </el-form-item>
+<!--      <el-form-item label="创建时间">-->
+<!--        <el-date-picker-->
+<!--          v-model="dateRange"-->
+<!--          size="small"-->
+<!--          style="width: 240px"-->
+<!--          value-format="yyyy-MM-dd"-->
+<!--          type="daterange"-->
+<!--          range-separator="-"-->
+<!--          start-placeholder="开始日期"-->
+<!--          end-placeholder="结束日期"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -23,7 +44,8 @@
     <el-row :gutter="10" class="mb8">
       <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
       <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate">修改</el-button>
-      <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除</el-button>
+      <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除
+      </el-button>
       <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
       <!--      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>-->
     </el-row>
@@ -46,7 +68,8 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
-          <el-button size="mini" type="text" icon="el-icon-circle-check" @click="handleDataScope(scope.row)">数据权限</el-button>
+          <el-button size="mini" type="text" icon="el-icon-circle-check" @click="handleDataScope(scope.row)">数据权限
+          </el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -67,8 +90,8 @@
           <el-input v-model="form.roleName" placeholder="请输入角色名称" />
         </el-form-item>
         <el-form-item label="状态">
-          <el-radio-group v-model="form.deleteStatus">
-            <el-radio v-for="dict in statusOptions" :key="dict" :label="dict" :value="dict" />
+          <el-radio-group v-model="form.enabled">
+            <el-radio v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
           </el-radio-group>
         </el-form-item>
         <!--        <el-form-item label="菜单权限" prop="">-->
@@ -123,7 +146,16 @@
 </template>
 
 <script>
-import { listRole, getRole, delRole, addRole, updateRole, exportRole, dataScope, changeRoleStatus } from '@/api/authoraty/role'
+import {
+  listRole,
+  getRole,
+  delRole,
+  addRole,
+  updateRole,
+  exportRole,
+  dataScope,
+  changeRoleStatus
+} from '@/api/authoraty/role'
 import { treeselect as menuTreeselect, roleMenuTreeselect } from '@/api/authoraty/menu'
 // import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/authoraty/dept";
 
@@ -131,7 +163,7 @@ export default {
   name: 'Role',
   data() {
     return {
-      deleteStatus: 0,
+      enabled: 0,
       loading: true, // 遮罩层
       ids: [], // 选中数组
       single: true, // 非单个禁用
@@ -143,7 +175,7 @@ export default {
       open: false, // 是否显示弹出层
       openDataScope: false, // 是否显示弹出层（数据权限）
       dateRange: [], // 日期范围
-      statusOptions: ['正常', '停用'], // 状态数据字典
+      statusOptions: [{ dictLabel: '启用', dictValue: 1 }, { dictLabel: '停用', dictValue: 0 }], // 状态数据字典
       dataScopeOptions: [ // 数据范围选项
         {
           value: '1',
@@ -171,7 +203,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         roleName: undefined,
-        deleteStatus: undefined
+        enabled: undefined
       },
       form: {}, // 表单参数
       defaultProps: {
@@ -189,6 +221,23 @@ export default {
           { required: true, message: '角色顺序不能为空', trigger: 'blur' }
         ]
       }
+    }
+  },
+  computed: {
+    newEnable() {
+      return this.queryParams.enabled
+    },
+    newAccount() {
+      return this.queryParams.roleName
+    }
+  },
+  watch: {
+    newEnable(val) {
+      this.queryParams.enabled = val === '' ? undefined : val
+      this.getList()
+    },
+    newAccount(val) {
+      this.queryParams.roleName = val === '' ? undefined : val
     }
   },
   created() {
@@ -262,14 +311,13 @@ export default {
       this.form = {
         roleId: undefined,
         roleName: undefined,
-        deleteStatus: '0',
+        enabled: undefined,
         remark: undefined
       }
       this.resetForm('form')
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.page = 1
       this.getList()
     },
     /** 重置按钮操作 */
@@ -281,7 +329,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length != 1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -378,7 +426,8 @@ export default {
       }).then(() => {
         this.getList()
         this.msgSuccess('删除成功')
-      }).catch(function() {})
+      }).catch(function() {
+      })
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -391,13 +440,14 @@ export default {
         return exportRole(queryParams)
       }).then(response => {
         this.download(response.msg)
-      }).catch(function() {})
+      }).catch(function() {
+      })
     }
   }
 }
 </script>
 <style scoped>
-.el-row button{
+.el-row button {
   float: left;
 }
 </style>
