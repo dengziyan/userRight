@@ -86,16 +86,15 @@ export default {
 
     /** 强退按钮操作 */
     handleForceLogout(row) {
-      this.$confirm('是否确认强退名称为"' + row.userName + '"的数据项?', "警告", {
+      this.$confirm('是否强退账号为"' + row.userName + '"的用户?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(function() {
-        return forceLogout(row.tokenId);
+        return forceLogout(row.userName)
       }).then(() => {
-        this.getList();
-        this.msgSuccess("强退成功");
-      }).catch(function() {});
+        this.getList()
+      }).catch(function() {})
     }
   }
 };

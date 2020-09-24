@@ -10,7 +10,6 @@
       :effect="tag.effect"
       @close="handleClose(tag)"
       @click="changeMenu(tag)"
-
     >
       {{ tag.title }}
     </el-tag>
@@ -19,12 +18,8 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
+import { importTemplates } from '@/api/authoraty/user'
 export default {
-  computed: {
-    ...mapState({
-      tags: state => state.tab.tabsList
-    })
-  },
   data() {
     return {
       dynamicTags: ['标签一', '标签二', '标签三'],
@@ -32,19 +27,47 @@ export default {
       inputValue: ''
     }
   },
+  computed: {
+    ...mapState({
+      tags: state => state.tab.tabsList
+    })
+  },
+  mounted() {
+    // 页面刷新前缓存和赋值
+    this.beforeUnload()
+  },
   methods: {
     ...mapMutations({
       close: 'closeTab'
     }),
     handleClose(tag) {
+      const index = this.tags.findIndex(item => item.effect === 'dark')
       this.close(tag)
-      console.log(this.tags[this.tags.length - 1])
-      const lastTag = this.tags[this.tags.length - 1]
+      const lastTag = index === 0 ? this.tags[0] : this.tags[this.tags.length - 1]
       this.changeMenu(lastTag)
     },
     changeMenu(item) {
+      // console.log(this.tags)
       this.$router.push({ name: item.name })
       this.$store.commit('selectMenu', item)
+    },
+    // 刷新前缓存tab
+    beforeUnload() {
+      // 监听页面刷新
+      window.addEventListener('beforeunload', () => {
+        // visitedViews数据结构太复杂无法直接JSON.stringify处理，先转换需要的数据
+        const tabViews = this.tags.map(item => {
+          return {
+            path: '/' + item.name,
+            name: item.name,
+            title: item.title,
+            icon: item.icon,
+            type: item.type,
+            effect: item.effect
+          }
+        })
+        sessionStorage.setItem('tabViews', JSON.stringify(tabViews))
+      })
     }
   }
 }

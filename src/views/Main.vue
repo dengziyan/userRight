@@ -5,8 +5,9 @@
       <el-header><common-header /></el-header>
       <common-tab />
       <el-main>
+        <keep-alive>
         <router-view />
-        <!-- <router-view></router-view> -->
+        </keep-alive>
       </el-main>
     </el-container>
   </el-container>

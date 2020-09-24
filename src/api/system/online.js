@@ -20,7 +20,7 @@ export function list(query) {
 // 强退用户
 export function forceLogout(tokenId) {
   return request({
-    url: '/sys/online/force-logout' + tokenId,
+    url: '/sys/online/force-logout?account=' + tokenId,
     method: 'delete'
   })
 }

@@ -99,13 +99,8 @@ export default {
   created() {
     this.resetParentId();
     this.getList();
-  },
-  watch: {
-    $route(route) {
-      this.resetParentId();
-      this.getList();
-    }
-  },
+  }
+  ,
   methods: {
     resetParentId(){
       this.listQuery.pageNum = 1;

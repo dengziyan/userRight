@@ -17,7 +17,7 @@ export const constantRoutes = [
   },
 
   {
-    path: '/',
+    path: '/home',
     component: () => import('@/views/Main.vue'),
     children: [
       {

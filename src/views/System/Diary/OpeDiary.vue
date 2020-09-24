@@ -114,7 +114,8 @@
 <script>
 import { list, delOperlog, cleanOperlog, exportOperlog } from '@/api/system/operlog'
 // import { getOpe } from '@/api/opeDiary'
-
+import fileDownload from 'js-file-download'
+import moment from 'moment'
 export default {
   name: 'OpeDiary',
   data() {
@@ -226,22 +227,23 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      const queryParams = this.queryParams
       this.$confirm('是否确认导出所有操作日志数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return exportOperlog(queryParams)
+        return exportOperlog()
       }).then(response => {
-        this.download(response.msg)
+        console.log(response)
+        const sysDate = moment(new Date()).format('YYYY-MM-DDHHmm')
+        console.log(sysDate)
+        fileDownload(response, sysDate + '用户操作日志.xlsx')
       }).catch(function() {})
     }
   }
 }
 </script>
-
-<style scoped>
+tyle scoped>
   .el-row button{
     float: left;
   }

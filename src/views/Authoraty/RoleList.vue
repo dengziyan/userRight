@@ -3,15 +3,15 @@
     <!--搜索框   -->
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true">
       <el-form-item label="角色名称" prop="roleName">
-        <el-input v-model="queryParams.roleName" placeholder="请输入角色名称" clearable size="small" style="width: 240px" @keyup.enter.native="handleQuery"/>
+        <el-input v-model="queryParams.roleName" placeholder="请输入角色名称" clearable size="small" style="width: 240px" @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="状态" prop="deleteStatus">
         <el-select v-model="queryParams.deleteStatus" placeholder="角色状态" clearable size="small" style="width: 240px">
-          <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue"/>
+          <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间">
-        <el-date-picker v-model="dateRange" size="small" style="width: 240px" value-format="yyyy-MM-dd" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"/>
+        <el-date-picker v-model="dateRange" size="small" style="width: 240px" value-format="yyyy-MM-dd" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -32,15 +32,15 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="角色编号" prop="id" width="120" />
       <el-table-column label="角色名称" prop="roleName" width="150" />
-      <el-table-column label="角色描述" prop="roleDesc" width="300" :show-overflow-tooltip="true"/>
-      <el-table-column label="是否启用" >
+      <el-table-column label="角色描述" prop="roleDesc" width="300" :show-overflow-tooltip="true" />
+      <el-table-column label="是否启用">
         <template slot-scope="scope">
           <el-switch
-            v-model="scope.row.deleteStatus"
-            active-value="1"
-            inactive-value="0"
+            v-model="scope.row.enabled"
+            :active-value="1"
+            :inactive-value="0"
             @change="handleStatusChange(scope.row)"
-          ></el-switch>
+          />
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -71,9 +71,9 @@
             <el-radio v-for="dict in statusOptions" :key="dict" :label="dict" :value="dict" />
           </el-radio-group>
         </el-form-item>
-<!--        <el-form-item label="菜单权限" prop="">-->
-<!--          <el-input v-model="form.roleKey" placeholder="请输入权限字符" />-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item label="菜单权限" prop="">-->
+        <!--          <el-input v-model="form.roleKey" placeholder="请输入权限字符" />-->
+        <!--        </el-form-item>-->
         <el-form-item label="备注">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
@@ -231,20 +231,17 @@ export default {
     // 角色状态修改
     handleStatusChange(row) {
       // console.log(row)
-      const type = row.deleteStatus === '0' ? 'enable' : 'disable'
-      this.$confirm('确认要"' + type + '""' + row.roleName + '"角色吗?', '警告', {
+      const type = row.enabled === 1 ? { label: '启用', value: 'enable' } : { label: '停用', value: 'disable' }
+      this.$confirm('确认要"' + type.label + '""' + row.roleName + '"角色吗?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        changeRoleStatus(row.id, type)
-        setTimeout(() => {
-          // console.log(this.roleList)
-        }, 3000)
-      }).then(() => {
-        this.msgSuccess(text + '成功')
+        changeRoleStatus(row.id, type.value).then(response => {
+          this.getList()
+        })
       }).catch(function() {
-        row.deleteStatus = row.deleteStatus === '0' ? '1' : '0'
+        row.enabled = row.enabled === 0 ? 1 : 0
       })
     },
     // 取消按钮

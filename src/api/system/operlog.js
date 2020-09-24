@@ -26,10 +26,10 @@ export function cleanOperlog() {
 }
 
 // 导出操作日志
-export function exportOperlog(query) {
+export function exportOperlog() {
   return request({
     url: '/sys/log/operation-log/export',
     method: 'get',
-    params: query
+    responseType: 'arraybuffer'
   })
 }
