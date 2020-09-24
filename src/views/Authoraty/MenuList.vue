@@ -1,20 +1,14 @@
 <template>
   <div class="app-container">
+    <!--   添加按钮-->
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets" style="margin-top: 5px"></i>
       <span style="margin-top: 5px">数据列表</span>
-      <el-button
-        class="btn-add"
-        @click="handleAddMenu()"
-        size="mini">
-        添加
-      </el-button>
+      <el-button class="btn-add" @click="handleAddMenu()" size="mini">添加</el-button>
     </el-card>
+    <!--  表格    -->
     <div class="table-container">
-      <el-table ref="menuTable"
-                style="width: 100%"
-                :data="list"
-                v-loading="listLoading" border>
+      <el-table ref="menuTable" style="width: 100%" :data="list" v-loading="listLoading" border>
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
@@ -96,7 +90,8 @@ export default {
       listLoading: true,
       listQuery: {
         pageNum: 1,
-        pageSize: 5
+        pageSize: 5,
+        menuType: 0
       },
       parentId: 0
     }

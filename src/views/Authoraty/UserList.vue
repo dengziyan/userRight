@@ -77,30 +77,41 @@
     <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="50" align="center" />
       <el-table-column label="编号" align="center" prop="id" />
-      <el-table-column label="账号" align="center" prop="account" />
-      <el-table-column label="姓名" align="center" prop="realName" />
+      <el-table-column label="账号" align="center" prop="account" :show-overflow-tooltip="true"/>
+      <el-table-column label="姓名" align="center" prop="realName" :show-overflow-tooltip="true"/>
       <el-table-column label="性别" align="center" prop="gender">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.gender=='F'? '女':'男' }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="邮箱" align="center" prop="email" />
-      <el-table-column label="手机号码" align="center" prop="mobilePhone" width="120" />
-      <el-table-column label="创建时间" align="center" prop="createDate" width="160">
+      <el-table-column label="邮箱" align="center" prop="email" :show-overflow-tooltip="true"/>
+      <el-table-column label="手机号码" align="center" prop="mobilePhone" width="120" :show-overflow-tooltip="true"/>
+      <el-table-column label="创建时间" align="center" prop="createDate" width="160" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createDate) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="最后登录" align="center" prop="lastLoginTime" width="160">
+      <el-table-column label="是否启用" >
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.enabled"
+            active-value="1"
+            inactive-value="0"
+            @change="handleStatusChange(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="最后登录" align="center" prop="lastLoginTime" width="160" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.lastLoginTime) }}</span>
         </template>
       </el-table-column>
+      <!--  每行的操作按钮-->
       <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
           <el-button
-            v-if="scope.row.userId !== 1"
+            v-if="scope.row.id !== 1"
             size="mini"
             type="text"
             icon="el-icon-delete"
@@ -149,7 +160,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.userId == undefined" label="用户密码" prop="password">
+            <el-form-item v-if="form.id == undefined" label="用户密码" prop="password">
               <el-input v-model="form.password" placeholder="请输入用户密码" type="password" />
             </el-form-item>
           </el-col>
@@ -183,7 +194,7 @@
               <el-select v-model="form.roleIds" multiple placeholder="请选择">
                 <el-option
                   v-for="item in roleOptions"
-                  :key="item.roleId"
+                  :key="item.id"
                   :label="item.roleName"
                   :value="item.roleId"
                   :disabled="item.enabled == 1"
@@ -390,7 +401,7 @@ export default {
         }
       )
         .then(function() {
-          return changeUserStatus(row.userId, row.enabled)
+          return changeUserStatus(row.id, row.enabled)
         })
         .then(() => {
           this.msgSuccess(text + '成功')
@@ -407,7 +418,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        userId: undefined,
+        id: undefined,
         deptId: undefined,
         account: undefined,
         realName: undefined,
@@ -434,7 +445,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.userId)
+      this.ids = selection.map((item) => item.id)
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
@@ -472,7 +483,7 @@ export default {
         cancelButtonText: '取消'
       })
         .then(({ value }) => {
-          resetUserPwd(row.userId, value).then((response) => {
+          resetUserPwd(row.id, value).then((response) => {
             if (response.code === 200) {
               this.msgSuccess('修改成功，新密码是：' + value)
             }
@@ -508,7 +519,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const userIds = row.userId || this.ids
+      const userIds = row.id || this.ids
       this.$confirm(
         '是否确认删除用户编号为"' + userIds + '"的数据项?',
         '警告',

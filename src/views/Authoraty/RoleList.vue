@@ -32,7 +32,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="角色编号" prop="id" width="120" />
       <el-table-column label="角色名称" prop="roleName" width="150" />
-      <el-table-column label="角色描述" prop="roleDesc" width="150" />
+      <el-table-column label="角色描述" prop="roleDesc" width="300" :show-overflow-tooltip="true"/>
       <el-table-column label="是否启用" >
         <template slot-scope="scope">
           <el-switch
@@ -230,14 +230,17 @@ export default {
     },
     // 角色状态修改
     handleStatusChange(row) {
-      console.log(row)
+      // console.log(row)
       const type = row.deleteStatus === '0' ? 'enable' : 'disable'
       this.$confirm('确认要"' + type + '""' + row.roleName + '"角色吗?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(function() {
-        return changeRoleStatus(row.id, type)
+      }).then(() => {
+        changeRoleStatus(row.id, type)
+        setTimeout(() => {
+          // console.log(this.roleList)
+        }, 3000)
       }).then(() => {
         this.msgSuccess(text + '成功')
       }).catch(function() {
@@ -367,7 +370,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      console.log(row)
+      // console.log(row)
       const roleIds = row.id || this.ids
       this.$confirm('是否确认删除角色编号为"' + roleIds + '"的数据项?', '警告', {
         confirmButtonText: '确定',

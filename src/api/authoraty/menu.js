@@ -7,7 +7,13 @@ export function fetchList() {
     method: 'get'
   })
 }
-
+// 根据ID删除菜单
+export function deleteMenu(id) {
+  return request({
+    url: '/sysMenu/delete?id=' + id,
+    method: 'post'
+  })
+}
 // 查询所有菜单
 export function treeList() {
   return request({
@@ -16,13 +22,6 @@ export function treeList() {
   })
 }
 
-// 根据ID删除菜单
-export function deleteMenu(id) {
-  return request({
-    url: '/sysMenu/delete' + id,
-    method: 'post'
-  })
-}
 // 添加菜单信息
 export function createMenu(data) {
   return request({
@@ -34,16 +33,9 @@ export function createMenu(data) {
 // 更新菜单
 export function updateMenu(id, data) {
   return request({
-    url: '/sysMenu/update' + id,
+    url: '/sysMenu/update?id=' + id,
     method: 'post',
     data: data
-  })
-}
-
-export function getMenu(id) {
-  return request({
-    url: '/sysMenu/' + id,
-    method: 'get',
   })
 }
 // 修改菜单显示状态
@@ -52,6 +44,12 @@ export function updateHidden(id, params) {
     url: '/sysMenu/updateHidden/' + id,
     method: 'post',
     params: params
+  })
+}
+export function getMenu(id) {
+  return request({
+    url: '/sysMenu/' + id,
+    method: 'get'
   })
 }
 
