@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import Qs from "qs";
+import Qs from 'qs';
 // 查询资源列表
 export function fetchList(params) {
   return request({

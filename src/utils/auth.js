@@ -10,7 +10,7 @@ export function getToken() {
 
 export function setCookies(token, id) {
   const date = new Date()
-  date.setTime(date.getTime() + (29 * 60 * 1000))
+  date.setTime(date.getTime() + (30 * 60 * 1000))
   Cookies.set(id, token, { expires: date })
   return Cookies.set(IDKey, id, { expires: date })
 }
@@ -26,7 +26,7 @@ export function removeCookies() {
 
 export function setToken(token) {
   const date = new Date()
-  date.setTime(date.getTime() + (29 * 60 * 1000))
+  date.setTime(date.getTime() + (30 * 60 * 1000))
   Cookies.set(Cookies.get(IDKey), token, { expires: date })
   return Cookies.set(IDKey, Cookies.get(IDKey), { expires: date })
 }

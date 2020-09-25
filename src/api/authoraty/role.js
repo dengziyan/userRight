@@ -32,7 +32,7 @@ export function updateRole(data) {
   return request({
     url: '/sys/role',
     method: 'put',
-    data: data
+    data
   })
 }
 

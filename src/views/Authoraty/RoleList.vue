@@ -86,7 +86,7 @@
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="isEdit?'编辑角色':'添加角色'" :visible.sync="dialogVisible" width="60%">
       <el-form :model="role" ref="www" label-width="150px" :rules="rules" size="small">
-        <el-form-item label="角色名称" prop="roleName">-->
+        <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="role.roleName" placeholder="请输入角色名称" />
         </el-form-item>
         <el-form-item label="状态">
@@ -409,13 +409,8 @@ export default {
     },
     // 对话框按确定键之后的方法
     handleDialogConfirm() {
-      this.$confirm('是否要确认?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
         if (this.isEdit) { // 更新资源数据（即编辑修改）
-          updateRole(this.role.id,this.role).then(response => {
+          updateRole(this.role).then(response => {
             this.$message({
               message: '修改成功！',
               type: 'success'
@@ -433,7 +428,6 @@ export default {
             this.getList();
           })
         }
-      })
     },
     /** 分配数据权限操作 */
     // handleDataScope(row) {

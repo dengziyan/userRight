@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken, setToken } from '@/utils/auth'
+import { getToken, setToken, getIDKey } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -34,14 +34,14 @@ service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
-  */
+   */
 
   /**
    * Determine the request status by custom code
    * Here is just an example
    * You can also judge the status by HTTP Status Code
    */
-  response => {
+  async response => {
     const res = response.data
 
     // 判断是否携带token
@@ -54,22 +54,40 @@ service.interceptors.response.use(
     if (token) {
       // 判断与原有token是否相等
       // 不等就换成返回来的token
-      setToken(token)
+      await setToken(token)
     }
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 2000 && res.code !== undefined) {
       // 4001: Illegal token;Token expired;
       if (res.code === 4001) {
-        // to re-login
-        MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
+        if (getIDKey()) {
+          axios.get(process.env.VUE_APP_BASE_API+'/sys/user-info/' + getIDKey(), { headers: { Authorization: getToken() } }).then(res => {
+            console.log(res)
+            if (res.data.code === 4001) {
+              // to re-login
+              MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
+                confirmButtonText: '重新登录',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                store.dispatch('user/resetToken').then(() => {
+                  location.reload()
+                })
+              })
+            }
           })
-        })
+        } else {
+          // to re-login
+          MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
+            confirmButtonText: '重新登录',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            store.dispatch('user/resetToken').then(() => {
+              location.reload()
+            })
+          })
+        }
       } else {
         Message({
           message: res.message || 'Error',
