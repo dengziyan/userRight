@@ -23,7 +23,7 @@ export function addRole(data) {
   return request({
     url: '/sys/role',
     method: 'post',
-    data: data
+    data
   })
 }
 
@@ -68,7 +68,7 @@ export function changeRoleStatus(id, type) {
 // 删除角色
 export function delRole(roleId) {
   return request({
-    url: '/sys/role?id=' + roleId,
+    url: '/sys/role/' + roleId,
     method: 'delete'
   })
 }

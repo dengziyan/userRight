@@ -18,7 +18,7 @@ export function createRole(data) {
 
 export function updateRole(id, data) {
   return request({
-    url: '/role/update/' + id,
+    url: '/sys/role' + id,
     method: 'post',
     data: data
   })

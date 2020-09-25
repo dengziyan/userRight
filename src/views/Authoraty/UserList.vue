@@ -408,29 +408,6 @@ export default {
         row.enabled = row.enabled === 0 ? 1 : 0
       })
     },
-    // // 取消按钮
-    // cancel() {
-    //   this.open = false
-    //   this.reset()
-    // },
-    // // 表单重置
-    // reset() {
-    //   this.form = {
-    //     id: undefined,
-    //     deptId: undefined,
-    //     account: undefined,
-    //     realName: undefined,
-    //     password: undefined,
-    //     mobilePhone: undefined,
-    //     email: undefined,
-    //     sex: undefined,
-    //     enabled: undefined,
-    //     remark: undefined,
-    //     postIds: [],
-    //     roleIds: []
-    //   }
-    //   this.resetForm('form')
-    // },
 
     /** 搜索按钮操作 */
     handleQuery() {
@@ -448,38 +425,13 @@ export default {
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
-    /** 新增按钮操作 */
-    // handleAdd() {
-    //   // this.getTreeselect();
-    //   this.reset()
-    //   this.open = true
-    //   listUser().then((response) => {
-    //     this.roleOptions = response.roles
-    //     this.title = '添加用户'
-    //     this.form.password = this.initPassword
-    //   })
-    // },
     // 按添加按钮，弹出对话框
     handleAdd() {
       this.dialogVisible = true;
       this.isEdit = false;
-      this.user = Object.assign({},defaultUser);
+      this.user = Object.assign({},defaultUser); // 默认值为空
     },
-    /** 修改按钮操作 */
-    // handleUpdate(row) {
-    //   this.reset()
-    //   // this.getTreeselect();
-    //   const userId = row.id || this.ids
-    //   getUser(userId).then((response) => {
-    //     this.form = response.data
-    //     this.roleOptions = response.roles
-    //     this.form.postIds = response.postIds
-    //     this.form.roleIds = response.roleIds
-    //     this.open = true
-    //     this.title = '修改用户'
-    //     this.form.password = ''
-    //   })
-    // },
+    // 按修改键弹出对话框（传入当前行的数据）
     handleUpdate(row) {
       this.dialogVisible = true;
       this.isEdit = true;
