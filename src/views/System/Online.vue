@@ -18,9 +18,9 @@
         </template>
       </el-table-column>
       <el-table-column label="序号" align="center" prop="id" :show-overflow-tooltip="true" />
-      <el-table-column label="登录名称" align="center" prop="account" :show-overflow-tooltip="true" />
+      <el-table-column label="登录名称" align="center" prop="userName" :show-overflow-tooltip="true" />
       <el-table-column label="主机" align="center" prop="loginIp" :show-overflow-tooltip="true" />
-      <el-table-column label="登录地点" align="center" prop="loginIp" :show-overflow-tooltip="true" />
+      <el-table-column label="登录地点" align="center" prop="operLocation" :show-overflow-tooltip="true" />
       <el-table-column label="浏览器" align="center" prop="browser" :show-overflow-tooltip="true" />
       <el-table-column label="操作系统" align="center" prop="os" :show-overflow-tooltip="true" />
       <el-table-column label="登录时间" align="center" prop="loginTime" width="180">
@@ -93,12 +93,12 @@ export default {
 
     /** 强退按钮操作 */
     handleForceLogout(row) {
-      this.$confirm('是否强退账号为"' + row.account + '"的用户?', '警告', {
+      this.$confirm('是否强退账号为"' + row.userName + '"的用户?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return forceLogout(row.account)
+        return forceLogout(row.userName)
       }).then(() => {
         this.getList()
       }).catch(function() {})

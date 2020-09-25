@@ -17,8 +17,9 @@ export const constantRoutes = [
   },
 
   {
-    path: '/home',
+    path: '/',
     component: () => import('@/views/Main.vue'),
+    redirect: '/home',
     children: [
       {
         path: '/home',
