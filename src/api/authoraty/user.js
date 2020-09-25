@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import { praseStrEmpty } from '@/utils/userright'
+import Qs from "qs";
 
 // 查询用户列表
 export function listUser(query) {
@@ -73,19 +74,26 @@ export function resetUserPwd(id, password) {
     data: data
   })
 }
-
 // 用户状态修改
-export function changeUserStatus(userId, status) {
+export function changeUserStatus(id, type) {
   const data = {
-    userId,
-    status
+    id,
+    type
   }
   return request({
     url: '/sys/user/status',
     method: 'put',
-    data: data
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    },
+    transformRequest: [function(data) { // 在请求之前对data传参进行格式转换
+      data = Qs.stringify(data)
+      return data
+    }],
+    data
   })
 }
+
 
 // 查询用户个人信息
 export function getUserProfile() {

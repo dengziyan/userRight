@@ -1,8 +1,6 @@
 <template>
   <div class="login-container">
-    <!--    <div class="background">-->
-    <!--      <img :src="imgSrc" width="100%" height="100%" alt="" />-->
-    <!--    </div>-->
+    <!--    通过ref可以获取到表单对象，如this.$refs.loginForm.-->
     <el-card class="login-form-layout">
       <el-form ref="loginForm" auto-complete="on" :model="loginForm" :rules="loginRules" label-position="left">
         <div style="text-align: center">
@@ -67,12 +65,12 @@ export default {
       }
     }
     return {
-      loginForm: {
+      loginForm: { // 登录表单的数据绑定对象
         // imgSrc:require('../../assets/6.jpg'),
         username: 'wuyuan',
         password: 'wuyuan'
       },
-      loginRules: {
+      loginRules: { // 表单的验证规则对象
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
@@ -108,7 +106,7 @@ export default {
       this.loginForm.password = ''
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate(valid => { // 表单的验证
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {

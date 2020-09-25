@@ -61,7 +61,7 @@
 <!--          </template>-->
 <!--        </el-table-column>-->
         <el-table-column label="添加时间" width="160" align="center">
-          <template slot-scope="scope">{{scope.row.createTime | formatDateTime}}</template>
+          <template slot-scope="scope">{{scope.row.createDate | formatDateTime}}</template>
         </el-table-column>
         <el-table-column label="操作" width="140" align="center">
           <template slot-scope="scope">
@@ -136,7 +136,8 @@ const defaultResource = {
   resourceTag: '',
   permissionTag: '',
   deleteStatus: 0,
-  enabled: 1
+  enabled: 1,
+  createDate:null
 };
 export default {
   name: 'resourceList',

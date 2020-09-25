@@ -131,93 +131,6 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-
-    <!-- 添加或修改参数配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="用户账号" prop="account">
-              <el-input v-model="form.account" placeholder="请输入用户账号" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="手机号码" prop="mobilePhone">
-              <el-input v-model="form.mobilePhone" placeholder="请输入手机号码" maxlength="11" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="邮箱" prop="email">
-              <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item v-if="form.id == undefined" label="用户姓名" prop="realName">
-              <el-input v-model="form.realName" placeholder="请输入用户姓名" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item v-if="form.id == undefined" label="用户密码" prop="password">
-              <el-input v-model="form.password" placeholder="请输入用户密码" type="password" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="用户性别">
-              <el-select v-model="form.gender" placeholder="请选择">
-                <el-option
-                  v-for="dict in sexOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="状态">
-              <el-radio-group v-model="form.enabled">
-                <el-radio v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictValue">
-                  {{ dict.dictLabel }}
-                </el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="角色">
-              <el-select v-model="form.roleIds" multiple placeholder="请选择">
-                <el-option
-                  v-for="item in roleOptions"
-                  :key="item.id"
-                  :label="item.roleName"
-                  :value="item.roleId"
-                  :disabled="item.enabled == 1"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="备注">
-              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
-
     <!-- 用户导入对话框 -->
     <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
       <el-upload
@@ -246,54 +159,134 @@
         <el-button @click="upload.open = false">取 消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 添加资源或编辑资源弹出的对话框   -->
+    <el-dialog :title="isEdit?'编辑用户':'添加用户'" :visible.sync="dialogVisible" width="60%">
+      <el-form :model="user" ref="www" label-width="150px" :rules="rules" size="small">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="用户账号" prop="account">
+              <el-input v-model="user.account" placeholder="请输入用户账号" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="手机号码" prop="mobilePhone">
+              <el-input v-model="user.mobilePhone" placeholder="请输入手机号码" maxlength="11" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item v-if="user.id == undefined" label="用户姓名" prop="realName">
+              <el-input v-model="user.realName" placeholder="请输入用户姓名" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="user.id == undefined" label="用户密码" prop="password">
+              <el-input v-model="user.password" placeholder="请输入用户密码" type="password" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="user.email" placeholder="请输入邮箱" maxlength="50" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="状态">
+              <el-radio-group v-model="user.enabled">
+                <el-radio v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictValue">
+                  {{ dict.dictLabel }}
+                </el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="用户性别">
+              <el-select v-model="user.gender" placeholder="请选择">
+                <el-option
+                  v-for="dict in sexOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="角色">
+              <el-select v-model="user.roleIds" multiple placeholder="请选择">
+                <el-option
+                  v-for="item in roleOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.enabled == 1"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="handleDialogConfirm()" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import {
-  listUser,
-  getUser,
-  delUser,
-  addUser,
-  updateUser,
-  exportUser,
-  resetUserPwd,
-  changeUserStatus,
-  importTemplates,
-  batchAddUser
+import { listUser, delUser, addUser, updateUser, exportUser, resetUserPwd, importTemplates, batchAddUser,changeUserStatus
 } from '@/api/authoraty/user'
 import { getToken } from '@/utils/auth'
 import fileDownload from 'js-file-download'
 import moment from 'moment'
-import { changeRoleStatus } from '@/api/authoraty/role'
+import { listRole } from '@/api/authoraty/role'
 
+// 用于复制给user
+const defaultUser = {
+  account: '',
+  accountNonExpired: 0,
+  accountNonLocked: 1,
+  avatarUrl: '',
+  mobilePhone: '',
+  email: '',
+  userName: null,
+  gender: '',
+  password: '',
+  userTag: '',
+  deleteStatus: 0,
+  enabled: 1,
+  realName: '',
+  roleIds: null
+};
 export default {
   name: 'User',
   // components: { Treeselect },
   data() {
     return {
+      dialogVisible: false,
+      isEdit: false,
+      user: Object.assign({}, defaultUser), // user为对话框中:model
+      defaultRoleId: null,
       loading: true, // 遮罩层
-      ids: [], // 选中数组
+      ids: [], // 多选时选中数组
       single: true, // 非单个禁用
       multiple: true, // 非多个禁用
       showSearch: true, // 显示搜索条件
       total: 0, // 总条数
       userList: null, // 用户表格数据
-      title: '', // 弹出层标题
-      deptOptions: undefined, // 部门树选项
       open: false, // 是否显示弹出层
-      deptName: undefined, // 部门名称
       initPassword: undefined, // 默认密码
       dateRange: [], // 日期范围
       statusOptions: [{ dictLabel: '启用', dictValue: 1 }, { dictLabel: '停用', dictValue: 0 }], // 状态数据字典
       sexOptions: [{ dictLabel: '男', dictValue: 'M' }, { dictLabel: '女', dictValue: 'F' }], // 性别状态字典
-      postOptions: [], // 岗位选项
       roleOptions: [], // 角色选项
       form: {}, // 表单参数
-      defaultProps: {
-        children: 'children',
-        label: 'label'
-      },
       // 用户导入参数
       upload: {
         open: false, // 是否显示弹出层（用户导入）
@@ -315,13 +308,11 @@ export default {
       // 表单校验
       rules: {
         account: [
-          { required: true, message: '用户名称不能为空', trigger: 'blur' }
+          { required: true, message: '用户账号不能为空', trigger: 'blur' },
+          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
         ],
         realName: [
-          { required: true, message: '用户昵称不能为空', trigger: 'blur' }
-        ],
-        deptId: [
-          { required: true, message: '归属部门不能为空', trigger: 'blur' }
+          { required: true, message: '用户姓名不能为空', trigger: 'blur' }
         ],
         password: [
           { required: true, message: '用户密码不能为空', trigger: 'blur' }
@@ -356,7 +347,8 @@ export default {
     }
   },
   created() {
-    this.getList()
+    this.getList();
+    this.getRoleList(); // 获取角色
   },
   methods: {
     /** 查询用户列表 */
@@ -370,16 +362,17 @@ export default {
         }
       )
     },
-    // 筛选节点
-    filterNode(value, data) {
-      if (!value) return true
-      return data.label.indexOf(value) !== -1
+    // 获取到角色
+    getRoleList(){
+      listRole().then(response=>{
+        let roleList = response.data.rows ;
+        for(let i=0;i<roleList.length;i++) {
+          let role = roleList[i];
+          this.roleOptions.push({ label: role.roleName,value:role.id});
+        }
+        this.defaultRoleId = roleList[0].id;
+      })
     },
-    // 节点单击事件
-    handleNodeClick(data) {
-      this.getList()
-    },
-
     // 置空参数
     clearParams(val) {
       if (val === 'enabled') {
@@ -408,36 +401,36 @@ export default {
           type: 'warning'
         }
       ).then(function() {
-        changeRoleStatus(row.id, type.value).then(response => {
+        changeUserStatus(row.id, type.value).then(response => {
           this.getList()
         })
       }).catch(function() {
         row.enabled = row.enabled === 0 ? 1 : 0
       })
     },
-    // 取消按钮
-    cancel() {
-      this.open = false
-      this.reset()
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        id: undefined,
-        deptId: undefined,
-        account: undefined,
-        realName: undefined,
-        password: undefined,
-        mobilePhone: undefined,
-        email: undefined,
-        sex: undefined,
-        enabled: undefined,
-        remark: undefined,
-        postIds: [],
-        roleIds: []
-      }
-      this.resetForm('form')
-    },
+    // // 取消按钮
+    // cancel() {
+    //   this.open = false
+    //   this.reset()
+    // },
+    // // 表单重置
+    // reset() {
+    //   this.form = {
+    //     id: undefined,
+    //     deptId: undefined,
+    //     account: undefined,
+    //     realName: undefined,
+    //     password: undefined,
+    //     mobilePhone: undefined,
+    //     email: undefined,
+    //     sex: undefined,
+    //     enabled: undefined,
+    //     remark: undefined,
+    //     postIds: [],
+    //     roleIds: []
+    //   }
+    //   this.resetForm('form')
+    // },
 
     /** 搜索按钮操作 */
     handleQuery() {
@@ -456,30 +449,68 @@ export default {
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
+    // handleAdd() {
+    //   // this.getTreeselect();
+    //   this.reset()
+    //   this.open = true
+    //   listUser().then((response) => {
+    //     this.roleOptions = response.roles
+    //     this.title = '添加用户'
+    //     this.form.password = this.initPassword
+    //   })
+    // },
+    // 按添加按钮，弹出对话框
     handleAdd() {
-      // this.getTreeselect();
-      this.reset()
-      this.open = true
-      getUser().then((response) => {
-        this.postOptions = response.posts
-        this.roleOptions = response.roles
-        this.title = '添加用户'
-        this.form.password = this.initPassword
-      })
+      this.dialogVisible = true;
+      this.isEdit = false;
+      this.user = Object.assign({},defaultUser);
     },
     /** 修改按钮操作 */
+    // handleUpdate(row) {
+    //   this.reset()
+    //   // this.getTreeselect();
+    //   const userId = row.id || this.ids
+    //   getUser(userId).then((response) => {
+    //     this.form = response.data
+    //     this.roleOptions = response.roles
+    //     this.form.postIds = response.postIds
+    //     this.form.roleIds = response.roleIds
+    //     this.open = true
+    //     this.title = '修改用户'
+    //     this.form.password = ''
+    //   })
+    // },
     handleUpdate(row) {
-      this.reset()
-      // this.getTreeselect();
-      const userId = row.id || this.ids
-      getUser(userId).then((response) => {
-        this.form = response.data
-        this.roleOptions = response.roles
-        this.form.postIds = response.postIds
-        this.form.roleIds = response.roleIds
-        this.open = true
-        this.title = '修改用户'
-        this.form.password = ''
+      this.dialogVisible = true;
+      this.isEdit = true;
+      this.user = Object.assign({},row);
+    },
+    // 对话框按确定键之后的方法
+    handleDialogConfirm() {
+      this.$confirm('是否要确认?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (this.isEdit) { // 更新资源数据（即编辑修改）
+          updateUser(this.user.id,this.user).then(response => {
+            this.$message({
+              message: '修改成功！',
+              type: 'success'
+            });
+            this.dialogVisible =false;
+            this.getList();
+          })
+        } else { // 插入一条资源数据（即添加）
+          addUser(this.user).then(response => {
+            this.$message({
+              message: '添加成功！',
+              type: 'success'
+            });
+            this.dialogVisible =false;
+            this.getList();
+          })
+        }
       })
     },
     /** 重置密码按钮操作 */
