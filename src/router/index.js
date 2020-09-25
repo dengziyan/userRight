@@ -57,6 +57,11 @@ export const constantRoutes = [
         component: () => import('@/views/Authoraty/ResourceList')
       },
       {
+        path: '/allocResource',
+        name: 'allocResource',
+        component: () => import('@/views/Authoraty/allocResource')
+      },
+      {
         path: '/resourceCategory',
         name: 'resourceCategory',
         component: () => import('@/views/Authoraty/resourceCategory')

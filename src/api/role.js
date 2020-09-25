@@ -47,12 +47,7 @@ export function fetchAllRoleList() {
   })
 }
 
-export function listMenuByRole(roleId) {
-  return request({
-    url: '/role/listMenu/'+roleId,
-    method: 'get'
-  })
-}
+
 
 export function listResourceByRole(roleId) {
   return request({

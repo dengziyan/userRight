@@ -51,6 +51,12 @@ export function createResource(data) {
   })
 }
 
+export function fetchAllResourceList() {
+  return request({
+    url: '/resource/listAll',
+    method: 'get'
+  })
+}
 
 
 

@@ -81,3 +81,10 @@ export function exportRole(query) {
     params: query
   })
 }
+
+export function listMenuByRole(roleId) {
+  return request({
+    url: '/role/listMenu/'+roleId,
+    method: 'get'
+  })
+}

@@ -68,9 +68,9 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
-          <el-button size="mini" type="text" icon="el-icon-circle-check" @click="handleSelectMenu(scope.$index, scope.row)">分配菜单
-          </el-button>
+          <el-button size="mini" type="text" icon="el-icon-circle-check" @click="handleSelectMenu(scope.row)">分配菜单</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button size="mini" type="text" icon="el-icon-circle-check" @click="handleSelectResource(scope.$index,scope.row)">分配资源</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -140,9 +140,10 @@ import {
   updateRole,
   exportRole,
   dataScope,
-  changeRoleStatus
+  changeRoleStatus,
+  listMenuByRole
 } from '@/api/authoraty/role'
-import { treeselect as menuTreeselect, roleMenuTreeselect } from '@/api/authoraty/menu'
+import { treeselect as menuTreeselect, roleMenuTreeselect,fetchTreeList } from '@/api/authoraty/menu'
 // import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/authoraty/dept";
 // 用于复制给user
 const defaultUser = {
@@ -260,6 +261,9 @@ export default {
       fetchTreeList().then(response => {
         this.menuTreeList = response.data;
       });
+    },
+    handleSelectResource(index,row){
+      this.$router.push({path:'/allocResource',query:{roleId:row.id}})
     },
     getRoleMenu(roleId){
       listMenuByRole(roleId).then(response=>{
@@ -393,6 +397,9 @@ export default {
       this.dialogVisible = true;
       this.isEdit = false;
       this.user = Object.assign({},defaultUser); // 默认值为空
+    },
+    handleSelectMenu(row){
+      this.openDataScope = true;
     },
     // 按修改键弹出对话框（传入当前行的数据）
     handleUpdate(row) {
