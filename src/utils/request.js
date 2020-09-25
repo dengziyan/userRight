@@ -54,7 +54,7 @@ service.interceptors.response.use(
     if (token) {
       // 判断与原有token是否相等
       // 不等就换成返回来的token
-      token !== getToken() ? setToken(token) : ''
+      setToken(token)
     }
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 2000 && res.code !== undefined) {
@@ -77,7 +77,7 @@ service.interceptors.response.use(
           duration: 5 * 1000
         })
       }
-      return Promise.reject(new Error(res.message || 'Error'))
+      return res
     } else {
       return res
     }

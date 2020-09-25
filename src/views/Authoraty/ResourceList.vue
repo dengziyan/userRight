@@ -5,8 +5,6 @@
       <div>
         <i class="el-icon-search"></i>
         <span>筛选搜索</span>
-        <el-button style="float:right" type="primary" @click="handleSearchList()" size="small">查询搜索</el-button>
-        <el-button style="float:right;margin-right: 15px" @click="handleResetSearch()" size="small">重置</el-button>
       </div>
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
@@ -20,6 +18,10 @@
             <el-select v-model="listQuery.categoryId" placeholder="全部" clearable class="input-width">
               <el-option v-for="item in categoryOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleSearchList">搜索</el-button>
+            <el-button icon="el-icon-refresh" size="mini" @click="handleResetSearch">重置</el-button>
           </el-form-item>
         </el-form>
       </div>

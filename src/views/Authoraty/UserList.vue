@@ -36,7 +36,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="enabled">
-        <el-select v-model="queryParams.enabled" placeholder="用户状态" clearable size="small" style="width: 110px">
+        <el-select v-model="queryParams.enabled" placeholder="用户状态" clearable  @clear="clearParams('enabled')" size="small" style="width: 110px">
           <el-option
             v-for="dict in statusOptions"
             :key="dict.dictValue"
@@ -338,7 +338,7 @@ export default {
   },
   computed: {
     newEnable() {
-      return this.queryParams.enabled;
+      return this.queryParams.enabled
     }
   },
   watch: {

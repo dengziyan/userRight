@@ -1,5 +1,4 @@
 // eslint-disable-next-line no-unused-vars
-import { importTemplates } from '@/api/authoraty/user'
 
 const baseTabList = [{
   path: '/',
@@ -7,7 +6,7 @@ const baseTabList = [{
   title: '首页',
   icon: 'home',
   type: '',
-  effect: 'dark'
+  effect: 'plain'
 }]
 
 export default {
@@ -53,16 +52,15 @@ export default {
     collapseMenu(state) {
       state.isCollapse = !state.isCollapse
     },
-    setTabList(state){
-      console.log(JSON.parse(sessionStorage.getItem('tabViews')))
-      const tabsList = JSON.parse(sessionStorage.getItem('tabViews')) || baseTabList
-      state.tabsList = tabsList.filter(item => item.effect === 'dark' || item.name === 'home')
-      return true
-    },
-    setCurrentMenu(state) {
-      const result = state.tabsList.findIndex(item => item.effect === 'dark')
-      result > 0 ? (state.currentMenu = state.tabsList[result] || null) : ''
-      return true
+    setTabList(state, menu) {
+      console.log(menu)
+      state.tabsList.forEach(function(value, index) {
+        value.effect = 'plain'
+        state.tabsList.splice(index, 1, value)
+      })
+      const result = state.tabsList.findIndex(item => item.name === menu.name)
+      result === -1 ? state.tabsList.push(menu) : state.tabsList.splice(result, 1, menu)
+      state.currentMenu = menu.name === 'home' ? null : menu
     }
   },
   actions: {}

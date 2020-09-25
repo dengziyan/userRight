@@ -17,7 +17,7 @@
 
       <el-submenu v-for="(item,index) in hasChildren" :key="index" :index="index+''">
         <template slot="title">
-          <i :class="'el-icon-'+item.icon" />
+          <i :class="'el-icon-'+item.icon"/>
           <span slot="title">{{ item.title }}</span>
         </template>
         <el-menu-item-group>
@@ -38,7 +38,8 @@ import { treeList } from '@/api/authoraty/menu'
 export default {
   data() {
     return {
-      asideMenu: []
+      asideMenu: [],
+      treeMenu: []
     }
   },
   computed: {
@@ -47,6 +48,11 @@ export default {
     },
     hasChildren() {
       return this.asideMenu.filter(item => item.children)
+    },
+    routePathNow() {
+      const activePath = this.treeMenu.filter(item => item.path === this.$route.path)
+      activePath[0].effect = 'dark'
+      return activePath[0]
     },
     isCollapse() {
       return this.$store.state.tab.isCollapse
@@ -59,9 +65,12 @@ export default {
     // 获取列表数据
     getList() {
       this.listLoading = true
-      treeList().then( response => {
-        this.$store.commit('setTabList')
-        this.$store.commit('setCurrentMenu')
+      treeList().then(response => {
+        this.dynamicRouter(response.data)
+        console.log(this.routePathNow)
+        this.$store.commit('setTabList', this.routePathNow)
+        console.log(this.$route.path)
+        // this.$store.commit('setCurrentMenu')
         this.listLoading = false
         this.asideMenu = response.data
         this.total = response.data.total
@@ -70,6 +79,26 @@ export default {
     clickMenu(item) {
       this.$router.push({ name: item.name })
       this.$store.commit('selectMenu', item)
+    },
+    dynamicRouter(item) {
+      for (const val in item) {
+        const obj = item[val]
+        // console.log(obj)
+        if (obj.children) {
+          this.dynamicRouter(obj.children)
+        } else {
+          this.treeMenu.push({
+            path: '/' + obj.name,
+            name: obj.name,
+            title: obj.title,
+            icon: obj.icon,
+            type: '',
+            effect: 'plain'
+          })
+          // console.log(this.treeMenu)
+          // console.log(obj)
+        }
+      }
     }
   }
 

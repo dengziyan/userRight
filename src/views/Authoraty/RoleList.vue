@@ -143,7 +143,6 @@ import {
   changeRoleStatus
 } from '@/api/authoraty/role'
 import { treeselect as menuTreeselect, roleMenuTreeselect } from '@/api/authoraty/menu'
-import {addUser, updateUser} from "@/api/authoraty/user";
 // import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/authoraty/dept";
 // 用于复制给user
 const defaultUser = {

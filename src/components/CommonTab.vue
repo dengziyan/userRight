@@ -18,7 +18,7 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
-import { importTemplates } from '@/api/authoraty/user'
+
 export default {
   data() {
     return {
@@ -31,10 +31,6 @@ export default {
     ...mapState({
       tags: state => state.tab.tabsList
     })
-  },
-  mounted() {
-    // 页面刷新前缓存和赋值
-    this.beforeUnload()
   },
   methods: {
     ...mapMutations({
@@ -50,24 +46,6 @@ export default {
       // console.log(this.tags)
       this.$router.push({ name: item.name })
       this.$store.commit('selectMenu', item)
-    },
-    // 刷新前缓存tab
-    beforeUnload() {
-      // 监听页面刷新
-      window.addEventListener('beforeunload', () => {
-        // visitedViews数据结构太复杂无法直接JSON.stringify处理，先转换需要的数据
-        const tabViews = this.tags.map(item => {
-          return {
-            path: '/' + item.name,
-            name: item.name,
-            title: item.title,
-            icon: item.icon,
-            type: item.type,
-            effect: item.effect
-          }
-        })
-        sessionStorage.setItem('tabViews', JSON.stringify(tabViews))
-      })
     }
   }
 }

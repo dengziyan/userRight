@@ -17,15 +17,20 @@
         </el-form-item>
         <!--  密码      -->
         <el-form-item prop="password">
-          <el-input v-model="loginForm.password" name="password" type="password" auto-complete="on" placeholder="请输入密码" @keyup.enter.native="handleLogin">
-            <span slot="prefix">
+          <el-input
+            v-model.trim="loginForm.password"
+            placeholder="请输入密码"
+            :type="passwordType"
+            @blur="onBlur"
+          >
+                        <span slot="prefix">
               <svg-icon icon-class="password" class="color-main" />
             </span>
-            <span slot="suffix" @click="showPwd">
-              <svg-icon icon-class="eye" class="color-main" />
-            </span>
+            <!-- input中加图标必须要有slot="suffix"属性，不然无法显示图标 -->
+            <i slot="suffix" :class="icon" @click="showPass" />
           </el-input>
         </el-form-item>
+
         <!--   记住密码，忘记密码     -->
         <el-form-item>
           <el-checkbox v-model="checked">记住密码</el-checkbox>
@@ -75,9 +80,10 @@ export default {
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
-      passwordType: 'password',
       redirect: undefined,
-      checked: true
+      checked: true,
+      icon: 'el-input__icon el-icon-view',
+      passwordType: 'password'
     }
   },
   watch: {
@@ -89,16 +95,25 @@ export default {
     }
   },
   methods: {
-    // 点击眼睛，显示密码
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
+    // 密码的隐藏和显示
+    showPass() {
+      // 点击图标是密码隐藏或显示
+      if (this.passwordType === 'text') {
         this.passwordType = 'password'
+        // 更换图标
+        this.icon = 'el-input__icon el-icon-view'
+      } else {
+        this.passwordType = 'text'
+        this.icon = 'el-input__icon el-icon-loading'
+        setTimeout(() => {
+          this.icon = ''
+        }, 500)
       }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
+    },
+    // 密码失焦事件
+    onBlur() {
+      this.passwordType = 'password'
+      this.icon = 'el-input__icon el-icon-view'
     },
     // 重置表单
     resetForm() {

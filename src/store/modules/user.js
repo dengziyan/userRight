@@ -92,6 +92,7 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       removeCookies() // must remove  token  first
+      sessionStorage.clear();
       commit('RESET_STATE')
       resolve()
     })
