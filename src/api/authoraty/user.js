@@ -75,9 +75,9 @@ export function resetUserPwd(id, password) {
   })
 }
 // 用户状态修改
-export function changeUserStatus(id, type) {
+export function changeUserStatus(account, type) {
   const data = {
-    id,
+    account,
     type
   }
   return request({

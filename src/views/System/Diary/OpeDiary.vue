@@ -3,23 +3,74 @@
     <!-- 搜索框   -->
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
       <el-form-item label="系统模块" prop="title">
-        <el-input v-model="queryParams.title" placeholder="请输入系统模块" clearable style="width: 240px;" size="small" @keyup.enter.native="handleQuery"/>
+        <el-select
+          v-model="queryParams.title"
+          placeholder="系统模块"
+          clearable
+          filterable
+          size="small"
+          style="width: 240px"
+          @clear="clearParams('title')"
+        >
+          <el-option
+            v-for="dict in statusOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="操作人员" prop="operName">
-        <el-input v-model="queryParams.operName" placeholder="请输入操作人员" clearable style="width: 240px;" size="small" @keyup.enter.native="handleQuery"/>
+        <el-input
+          v-model="queryParams.operName"
+          placeholder="请输入操作人员"
+          clearable
+          style="width: 240px;"
+          size="small"
+          @keyup.enter.native="handleQuery"
+          @clear="clearParams('title')"
+        />
       </el-form-item>
-      <el-form-item label="类型" prop="businessType">
-        <el-select v-model="queryParams.businessType" placeholder="操作类型" clearable size="small" style="width: 240px">
-          <el-option v-for="dict in typeOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue"/>
+      <el-form-item label="类型" prop="operName">
+        <el-select
+          v-model="queryParams.operName"
+          placeholder="操作类型"
+          clearable
+          size="small"
+          style="width: 240px"
+          @clear="clearParams('operName')"
+        >
+          <el-option v-for="dict in typeOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
         </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="操作状态" clearable size="small" style="width: 240px">
-          <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue"/>
+        <el-select
+          v-model="queryParams.status"
+          placeholder="操作状态"
+          clearable
+          size="small"
+          style="width: 100px"
+          @clear="clearParams('status')"
+        >
+          <el-option
+            v-for="dict in statusOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="操作时间">
-        <el-date-picker v-model="dateRange" size="small" style="width: 240px" value-format="yyyy-MM-dd" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"/>
+        <el-date-picker
+          v-model="dateRange"
+          size="small"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -28,27 +79,38 @@
     </el-form>
     <!-- 各个操作按钮 -->
     <el-row :gutter="10" class="mb8">
-        <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除</el-button>
-        <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleClean">清空</el-button>
-        <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
-<!--      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />-->
+      <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除
+      </el-button>
+      <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleClean">清空</el-button>
+      <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
+      <!--      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />-->
     </el-row>
     <!--表格-->
     <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="日志编号" align="center" prop="id" />
-      <el-table-column label="系统模块" align="center" prop="title" :show-overflow-tooltip="true"/>
-      <el-table-column label="操作类型" align="center" prop="method" :show-overflow-tooltip="true"/>
-      <el-table-column label="请求方式" align="center" prop="requestMethod" :show-overflow-tooltip="true"/>
-      <el-table-column label="操作人员" align="center" prop="operName" :show-overflow-tooltip="true"/>
+      <el-table-column label="系统模块" align="center" prop="title" :show-overflow-tooltip="true" />
+      <el-table-column label="操作类型" align="center" prop="method" :show-overflow-tooltip="true" />
+      <el-table-column label="请求方式" align="center" prop="requestMethod" :show-overflow-tooltip="true" />
+      <el-table-column label="操作人员" align="center" prop="operName" :show-overflow-tooltip="true" />
       <el-table-column label="主机" align="center" prop="operIp" width="130" :show-overflow-tooltip="true" />
       <el-table-column label="操作地点" align="center" prop="operLocation" :show-overflow-tooltip="true" />
-      <el-table-column label="操作状态" align="center" prop="status" :formatter="statusFormat" >
-        <el-switch
-          active-color="#13ce66"
-        >
-        </el-switch>
+      <el-table-column
+        prop="status"
+        label="操作状态"
+        width="100"
+      >
+        <template slot-scope="scope">
+          <el-tag
+            size="medium"
+            :type="scope.row.status === 1 ? 'success': 'danger'"
+            effect="dark"
+            disable-transitions
+          >{{ statusOptions[scope.row.status].label }}
+          </el-tag>
+        </template>
       </el-table-column>
+
       <el-table-column label="操作日期" align="center" prop="operTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.operTime) }}</span>
@@ -56,7 +118,8 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-view" @click="handleView(scope.row,scope.index)">详细</el-button>
+          <el-button size="mini" type="text" icon="el-icon-view" @click="handleView(scope.row,scope.index)">详细
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -75,32 +138,31 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="操作模块：">{{ form.title }} / {{ typeFormat(form) }}</el-form-item>
-            <el-form-item label="操作人员：">{{ form.operName }} / {{ form.operIp }} / {{ form.operLocation }}</el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="类型：">{{ form.businessType }}</el-form-item>
-            <el-form-item label="请求方式：">{{ form.requestMethod }}</el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="操作类型：">{{ form.method }}</el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="主机：">{{ form.operIp }}</el-form-item>
-          </el-col>
-          <el-col :span="24">
+            <el-form-item label="操作人员：">{{ form.operName }}</el-form-item>
             <el-form-item label="操作地点：">{{ form.operLocation }}</el-form-item>
+            <el-form-item label="请求参数：">{{ form.operParam || [] }}</el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="操作类型：">{{ form.method }}</el-form-item>
+            <el-form-item label="主机：">{{ form.operIp }}</el-form-item>
+            <el-form-item label="请求地址：">{{ form.operUrl }}</el-form-item>
+            <el-form-item label="请求方名称：">{{ form.requestMethod }}</el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="响应参数：">{{ form.jsonResult || [] }}</el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="操作状态：">
-              <div v-if="form.status === 0">正常</div>
-              <div v-else-if="form.status === 1">失败</div>
+              <div v-if="form.status === 1">正常</div>
+              <div v-else-if="form.status === 0">失败</div>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="操作时间：">{{ parseTime(form.operTime) }}</el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item v-if="form.status === 1" label="异常信息：">{{ form.errorMsg }}</el-form-item>
+            <el-form-item v-if="form.status === 0" label="异常信息：">{{ form.errorMsg }}</el-form-item>
           </el-col>
         </el-row>
       </el-form>
@@ -116,6 +178,7 @@ import { list, delOperlog, cleanOperlog, exportOperlog } from '@/api/system/oper
 // import { getOpe } from '@/api/opeDiary'
 import fileDownload from 'js-file-download'
 import moment from 'moment'
+
 export default {
   name: 'OpeDiary',
   data() {
@@ -128,7 +191,8 @@ export default {
       list: [], // 表格数据
       open: false, // 是否显示弹出层
       typeOptions: [], // 类型数据字典
-      statusOptions: [], // 类型数据字典
+      statusOptions: [{ label: '失败', value: 0 }, { label: '成功', value: 1 }], // 类型数据字典
+      systemOptions: [],
       dateRange: [], // 日期范围
       form: {}, // 表单参数
       queryParams: { // 查询参数
@@ -136,38 +200,61 @@ export default {
         pageSize: 10,
         title: undefined,
         operName: undefined,
-        businessType: undefined,
+        method: undefined,
         status: undefined
       }
     }
   },
+  computed: {
+    newTitle() {
+      return this.queryParams.title
+    },
+    newOperation() {
+      return this.queryParams.operName
+    },
+    newStatus() {
+      return this.queryParams.status
+    }
+  },
+  watch: {
+    newTitle() {
+      this.getList()
+    },
+    newOperation() {
+      this.getList()
+    },
+    newStatus() {
+      this.getList()
+    }
+  },
   created() {
     this.getList()
-    // this.getDicts('sys_oper_type').then(response => {
-    //   this.typeOptions = response.data
-    // })
-    // this.getDicts('sys_common_status').then(response => {
-    //   this.statusOptions = response.data
-    // })
   },
-  // mounted() {
-  //   getOpe().then(res => {
-  //     this.list = res.data.row
-  //     // this.listLoading=false
-  //     this.loading = false
-  //     // debugger;
-  //   })
-  // },
   methods: {
     // 查询登录日志
     getList() {
-      this.loading = true;
+      this.loading = true
       list(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.list = response.data.rows
         this.total = response.data.total
         this.loading = false
       }
       )
+    },
+    // 置空参数
+    clearParams(val) {
+      if (val === 'operName') {
+        this.queryParams.operName = undefined
+      }
+      if (val === 'title') {
+        this.queryParams.title = undefined
+      }
+      if (val === 'status') {
+        this.queryParams.status = undefined
+      }
+      if (val === 'method') {
+        this.queryParams.method = undefined
+      }
     },
     // 操作日志状态字典翻译
     statusFormat(row, column) {
@@ -210,7 +297,8 @@ export default {
       }).then(() => {
         this.getList()
         this.msgSuccess('删除成功')
-      }).catch(function() {})
+      }).catch(function() {
+      })
     },
     /** 清空按钮操作 */
     handleClean() {
@@ -223,7 +311,8 @@ export default {
       }).then(() => {
         this.getList()
         this.msgSuccess('清空成功')
-      }).catch(function() {})
+      }).catch(function() {
+      })
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -238,16 +327,21 @@ export default {
         const sysDate = moment(new Date()).format('YYYY-MM-DDHHmm')
         console.log(sysDate)
         fileDownload(response, sysDate + '用户操作日志.xlsx')
-      }).catch(function() {})
+      }).catch(function() {
+      })
     }
   }
 }
 </script>
 <style scoped>
-  .el-row button{
-    float: left;
-  }
-  right-toolbar{
-    float: left;
-  }
-</style>
+.el-row button{
+float: left;
+}
+right-toolbar{
+float: left;
+}
+</
+
+style
+
+>
