@@ -390,22 +390,23 @@ export default {
     // 用户状态修改
     handleStatusChange(row) {
       const type = row.enabled === 1 ? { label: '启用', value: 'enable' } : { label: '停用', value: 'disable' }
-      this.$confirm(
-        '确认要"' + type.label + '""' + row.account + '"用户吗?',
-        '警告',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).then(function() {
-        changeUserStatus(row.id, type.value).then(response => {
+      changeUserStatus(row.account, type.value).then(response => {
           this.getList()
-        })
-      }).catch(function() {
+        }).catch(function() {
         row.enabled = row.enabled === 0 ? 1 : 0
       })
     },
+      // this.$confirm(
+      //   // '确认要"' + type.label + '""' + row.account + '"用户吗?',
+      //   // '警告',
+      //   // {
+      //   //   confirmButtonText: '确定',
+      //   //   cancelButtonText: '取消',
+      //   //   type: 'warning'
+      //   // }
+      // ).then(function() {
+      //   )
+
 
     /** 搜索按钮操作 */
     handleQuery() {
@@ -437,31 +438,25 @@ export default {
     },
     // 对话框按确定键之后的方法
     handleDialogConfirm() {
-      this.$confirm('是否要确认?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        if (this.isEdit) { // 更新资源数据（即编辑修改）
-          updateUser(this.user.id,this.user).then(response => {
-            this.$message({
-              message: '修改成功！',
-              type: 'success'
-            });
-            this.dialogVisible =false;
-            this.getList();
-          })
-        } else { // 插入一条资源数据（即添加）
-          addUser(this.user).then(response => {
-            this.$message({
-              message: '添加成功！',
-              type: 'success'
-            });
-            this.dialogVisible =false;
-            this.getList();
-          })
-        }
-      })
+      if (this.isEdit) { // 更新资源数据（即编辑修改）
+        updateUser(this.user).then(response => {
+          this.$message({
+            message: '修改成功！',
+            type: 'success'
+          });
+          this.dialogVisible =false;
+          this.getList();
+        })
+      } else { // 插入一条资源数据（即添加）
+        addUser(this.user).then(response => {
+          this.$message({
+            message: '添加成功！',
+            type: 'success'
+          });
+          this.dialogVisible =false;
+          this.getList();
+        })
+      }
     },
     /** 重置密码按钮操作 */
     handleResetPwd(row) {
