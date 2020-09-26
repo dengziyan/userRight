@@ -92,7 +92,7 @@
           <span>{{ parseTime(scope.row.createDate) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="是否启用">
+      <el-table-column label="是否启用" width="80">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.enabled"
@@ -384,9 +384,6 @@ export default {
       }
       if (val === 'account') {
         this.queryParams.account = undefined
-      }
-      if (val === 'date') {
-        this.dateRange = []
       }
     },
 
