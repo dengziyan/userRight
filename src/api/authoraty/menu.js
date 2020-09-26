@@ -17,9 +17,9 @@ export function deleteMenu(id) {
   })
 }
 // 查询所有菜单
-export function treeList() {
+export function treeList(userId) {
   return request({
-    url: '/sysMenu/treeList',
+    url: '/sysMenu/userTreeList/' + userId,
     method: 'get'
   })
 }
@@ -55,10 +55,10 @@ export function getMenu(id) {
   })
 }
 
-export function fetchTreeList() {
-  return request({
-    url: '/sysMenu/treeList',
-    method: 'get'
-  })
-}
+// export function fetchTreeList() {
+//   return request({
+//     url: '/sysMenu/treeList',
+//     method: 'get'
+//   })
+// }
 

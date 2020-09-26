@@ -65,12 +65,9 @@ export default {
     // 获取列表数据
     getList() {
       this.listLoading = true
-      treeList().then(response => {
+      treeList(this.$store.getters.id).then(response => {
         this.dynamicRouter(response.data)
-        console.log(this.routePathNow)
         this.$store.commit('setTabList', this.routePathNow)
-        console.log(this.$route.path)
-        // this.$store.commit('setCurrentMenu')
         this.listLoading = false
         this.asideMenu = response.data
         this.total = response.data.total
@@ -83,7 +80,6 @@ export default {
     dynamicRouter(item) {
       for (const val in item) {
         const obj = item[val]
-        // console.log(obj)
         if (obj.children) {
           this.dynamicRouter(obj.children)
         } else {
@@ -95,8 +91,6 @@ export default {
             type: '',
             effect: 'plain'
           })
-          // console.log(this.treeMenu)
-          // console.log(obj)
         }
       }
     }
