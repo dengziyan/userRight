@@ -10,35 +10,25 @@
       text-color="#fff"
       active-text-color="#ffd04b"
     >
-      <el-menu-item v-for="item in noChildren" :key="item.name" :index="'/'+item.name" @click="clickMenu(item)">
-        <i :class="'el-icon-'+item.icon"/>
-        <span slot="title">{{ item.title }}</span>
-      </el-menu-item>
 
-      <el-submenu v-for="(item,index) in hasChildren" :key="index" :index="index+''">
-        <template slot="title">
-          <i :class="'el-icon-'+item.icon"/>
-          <span slot="title">{{ item.title }}</span>
-        </template>
-        <el-menu-item-group>
-          <el-menu-item v-for=" (subItem,subIndex) in item.children" :key="subIndex" :index="'/'+subItem.name"
-                        @click="clickMenu(subItem)">
-            <i :class="'el-icon-'+subItem.icon"/>
-            {{ subItem.title }}
-          </el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
+      <menutree :data="menu_data" />
     </el-menu>
   </div>
+
 </template>
 
 <script>
 import { treeList } from '@/api/authoraty/menu'
+import menutree from '@/components/menutree'
 
 export default {
+  components: {
+    menutree: menutree
+  },
   data() {
     return {
       asideMenu: [],
+      menu_data: [],
       treeMenu: []
     }
   },
@@ -48,11 +38,6 @@ export default {
     },
     hasChildren() {
       return this.asideMenu.filter(item => item.children)
-    },
-    routePathNow() {
-      const activePath = this.treeMenu.filter(item => item.path === this.$route.path)
-      activePath[0].effect = 'dark'
-      return activePath[0]
     },
     isCollapse() {
       return this.$store.state.tab.isCollapse
@@ -65,15 +50,13 @@ export default {
     // 获取列表数据
     getList() {
       this.listLoading = true
-      treeList().then(response => {
+      treeList(this.$store.getters.id).then(response => {
         this.dynamicRouter(response.data)
-        console.log(this.routePathNow)
-        this.$store.commit('setTabList', this.routePathNow)
-        console.log(this.$route.path)
-        // this.$store.commit('setCurrentMenu')
+        // this.$store.commit('setTabList', this.routePathNow)
         this.listLoading = false
         this.asideMenu = response.data
         this.total = response.data.total
+        this.menu_data = response.data
       })
     },
     clickMenu(item) {
@@ -83,7 +66,6 @@ export default {
     dynamicRouter(item) {
       for (const val in item) {
         const obj = item[val]
-        // console.log(obj)
         if (obj.children) {
           this.dynamicRouter(obj.children)
         } else {
@@ -95,31 +77,29 @@ export default {
             type: '',
             effect: 'plain'
           })
-          // console.log(this.treeMenu)
-          // console.log(obj)
         }
       }
-    }
+    },
   }
 
 }
 </script>
 
 <style lang="scss" scoped>
-.el-menu-vertical-demo {
-  height: 100vh;
-}
+  .el-menu-vertical-demo {
+    height: 100vh;
+  }
 
-.el-menu {
-  border: none;
-}
+  .el-menu {
+    border: none;
+  }
 
-.el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 160px;
-  min-height: 400px;
-}
+  .el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 160px;
+    min-height: 400px;
+  }
 
-.el-submenu .el-menu-item {
-  min-width: auto;
-}
+  .el-submenu .el-menu-item {
+    min-width: auto;
+  }
 </style>
