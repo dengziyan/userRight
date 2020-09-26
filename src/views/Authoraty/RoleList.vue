@@ -146,7 +146,7 @@ import {
 import { treeselect as menuTreeselect, roleMenuTreeselect,fetchTreeList } from '@/api/authoraty/menu'
 // import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/authoraty/dept";
 // 用于复制给user
-const defaultUser = {
+const defaultRole = {
   roleDesc: '',
   deleteStatus: 0,
   enabled: 1,
@@ -161,7 +161,7 @@ export default {
       roleId:null,
       dialogVisible: false,
       isEdit: false,
-      role: Object.assign({}, defaultUser), // user为对话框中:model
+      role: Object.assign({}, defaultRole), // user为对话框中:model
       defaultRoleId: null,
       enabled: 0,
       loading: true, // 遮罩层
@@ -409,25 +409,25 @@ export default {
     },
     // 对话框按确定键之后的方法
     handleDialogConfirm() {
-        if (this.isEdit) { // 更新资源数据（即编辑修改）
-          updateRole(this.role).then(response => {
-            this.$message({
-              message: '修改成功！',
-              type: 'success'
-            });
-            this.dialogVisible =false;
-            this.getList();
-          })
-        } else { // 插入一条资源数据（即添加）
-          addRole(this.role).then(response => {
-            this.$message({
-              message: '添加成功！',
-              type: 'success'
-            });
-            this.dialogVisible =false;
-            this.getList();
-          })
-        }
+      if (this.isEdit) { // 更新资源数据（即编辑修改）
+        updateRole(this.role).then(response => {
+          this.$message({
+            message: '修改成功！',
+            type: 'success'
+          });
+          this.dialogVisible =false;
+          this.getList();
+        })
+      } else { // 插入一条资源数据（即添加）
+        addRole(this.role).then(response => {
+          this.$message({
+            message: '添加成功！',
+            type: 'success'
+          });
+          this.dialogVisible =false;
+          this.getList();
+        })
+      }
     },
     /** 分配数据权限操作 */
     // handleDataScope(row) {

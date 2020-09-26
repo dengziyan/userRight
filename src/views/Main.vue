@@ -34,9 +34,14 @@ export default {
     /*height: 100%;*/
     overflow-y:hidden;
   }
-  .el-table {
+  /*.el-table {*/
+  /*  overflow-y: auto;*/
+  /*  height: 350px;*/
+  /*}*/
+  .app-container {
+    padding: 20px;
     overflow-y: auto;
-    height: 350px;
+    height: 560px;
   }
   .el-col-20 {
     width: 100.33333%;
