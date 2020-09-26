@@ -84,8 +84,7 @@
           <el-input v-model="menu.title"></el-input>
         </el-form-item>
         <el-form-item label="上级菜单：">
-          <el-select v-model="menu.parentId"
-                     placeholder="请选择菜单">
+          <el-select v-model="menu.parentId" placeholder="请选择菜单">
             <el-option
               v-for="item in selectMenuList"
               :key="item.id"
@@ -151,7 +150,7 @@ export default {
     return {
       dialogVisible: false,
       isEdit: false,
-      menu: Object.assign({}, defaultMenu), // user为对话框中:model
+      menu: Object.assign({}, defaultMenu), // menu为对话框中:model
       list: [],
       total: null,
       listLoading: true,
@@ -207,7 +206,8 @@ export default {
       this.menu = Object.assign({},defaultMenu); // 默认值为空
     },
     // 按修改键弹出对话框（传入当前行的数据）
-    handleUpdate(row) {
+    handleUpdate(index, row) {
+      console.log('row' + row)
       this.dialogVisible = true;
       this.isEdit = true;
       this.menu = Object.assign({},row);
@@ -215,7 +215,7 @@ export default {
     // 对话框按确定键之后的方法
     handleDialogConfirm() {
       if (this.isEdit) { // 更新资源数据（即编辑修改）
-        updateMenu(this.menu).then(response => {
+        updateMenu(this.menu.id,this.menu).then(response => {
           this.$message({
             message: '修改成功！',
             type: 'success'

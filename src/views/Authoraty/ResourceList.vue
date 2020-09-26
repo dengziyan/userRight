@@ -218,6 +218,7 @@ export default {
       });
     },
     handleUpdate(index, row) {
+      console.log('资源的row' + row)
       this.dialogVisible = true;
       this.isEdit = true;
       this.resource = Object.assign({},row);

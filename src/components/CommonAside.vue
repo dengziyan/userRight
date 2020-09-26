@@ -50,7 +50,9 @@ export default {
       return this.asideMenu.filter(item => item.children)
     },
     routePathNow() {
+      console.log(this.$route.path)
       const activePath = this.treeMenu.filter(item => item.path === this.$route.path)
+      console.log(this.treeMenu)
       activePath[0].effect = 'dark'
       return activePath[0]
     },
@@ -67,6 +69,7 @@ export default {
       this.listLoading = true
       treeList(this.$store.getters.id).then(response => {
         this.dynamicRouter(response.data)
+        console.log( this.routePathNow)
         this.$store.commit('setTabList', this.routePathNow)
         this.listLoading = false
         this.asideMenu = response.data
@@ -78,11 +81,12 @@ export default {
       this.$store.commit('selectMenu', item)
     },
     dynamicRouter(item) {
+      console.log(item)
       for (const val in item) {
         const obj = item[val]
         if (obj.children) {
           this.dynamicRouter(obj.children)
-        } else {
+        }
           this.treeMenu.push({
             path: '/' + obj.name,
             name: obj.name,
@@ -91,7 +95,6 @@ export default {
             type: '',
             effect: 'plain'
           })
-        }
       }
     }
   }
