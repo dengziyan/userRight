@@ -31,17 +31,10 @@ export default {
   }
 
   #app {
-    /*height: 100%;*/
     overflow-y:hidden;
   }
-  /*.el-table {*/
-  /*  overflow-y: auto;*/
-  /*  height: 350px;*/
-  /*}*/
   .app-container {
     padding: 20px;
-    overflow-y: auto;
-    height: 560px;
   }
   .el-col-20 {
     width: 100.33333%;
@@ -51,5 +44,12 @@ export default {
   }
   .el-dialog__footer {
     padding: 10px 20px 50px;
+  }
+  .el-main{
+    overflow: unset;
+  }
+  .el-container.is-vertical {
+    overflow-y: auto;
+    height: 100vh;
   }
 </style>
