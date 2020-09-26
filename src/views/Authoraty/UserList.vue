@@ -36,7 +36,14 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="enabled">
-        <el-select v-model="queryParams.enabled" placeholder="用户状态" clearable  @clear="clearParams('enabled')" size="small" style="width: 110px">
+        <el-select
+          v-model="queryParams.enabled"
+          placeholder="用户状态"
+          clearable
+          size="small"
+          style="width: 110px"
+          @clear="clearParams('enabled')"
+        >
           <el-option
             v-for="dict in statusOptions"
             :key="dict.dictValue"
@@ -163,7 +170,7 @@
 
     <!-- 添加资源或编辑资源弹出的对话框   -->
     <el-dialog :title="isEdit?'编辑用户':'添加用户'" :visible.sync="dialogVisible" width="60%">
-      <el-form :model="user" ref="www" label-width="150px" :rules="rules" size="small">
+      <el-form ref="www" :model="user" label-width="150px" :rules="rules" size="small">
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户账号" prop="account">
@@ -233,15 +240,16 @@
         </el-row>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="handleDialogConfirm()" size="small">确 定</el-button>
+        <el-button size="small" @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" size="small" @click="handleDialogConfirm()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { listUser, delUser, addUser, updateUser, exportUser, resetUserPwd, importTemplates, batchAddUser,changeUserStatus
+import {
+  listUser, delUser, addUser, updateUser, exportUser, resetUserPwd, importTemplates, batchAddUser, changeUserStatus
 } from '@/api/authoraty/user'
 import { getToken } from '@/utils/auth'
 import fileDownload from 'js-file-download'
@@ -264,7 +272,7 @@ const defaultUser = {
   enabled: 1,
   realName: '',
   roleIds: null
-};
+}
 export default {
   name: 'User',
   // components: { Treeselect },
@@ -348,8 +356,8 @@ export default {
     }
   },
   created() {
-    this.getList();
-    this.getRoleList(); // 获取角色
+    this.getList()
+    this.getRoleList() // 获取角色
   },
   methods: {
     /** 查询用户列表 */
@@ -364,14 +372,14 @@ export default {
       )
     },
     // 获取到角色
-    getRoleList(){
-      listRole().then(response=>{
-        let roleList = response.data.rows ;
-        for(let i=0;i<roleList.length;i++) {
-          let role = roleList[i];
-          this.roleOptions.push({ label: role.roleName,value:role.id});
+    getRoleList() {
+      listRole().then(response => {
+        const roleList = response.data.rows
+        for (let i = 0; i < roleList.length; i++) {
+          const role = roleList[i]
+          this.roleOptions.push({ label: role.roleName, value: role.id })
         }
-        this.defaultRoleId = roleList[0].id;
+        this.defaultRoleId = roleList[0].id
       })
     },
     // 置空参数
@@ -391,23 +399,11 @@ export default {
     handleStatusChange(row) {
       const type = row.enabled === 1 ? { label: '启用', value: 'enable' } : { label: '停用', value: 'disable' }
       changeUserStatus(row.account, type.value).then(response => {
-          this.getList()
-        }).catch(function() {
+        this.getList()
+      }).catch(function() {
         row.enabled = row.enabled === 0 ? 1 : 0
       })
     },
-      // this.$confirm(
-      //   // '确认要"' + type.label + '""' + row.account + '"用户吗?',
-      //   // '警告',
-      //   // {
-      //   //   confirmButtonText: '确定',
-      //   //   cancelButtonText: '取消',
-      //   //   type: 'warning'
-      //   // }
-      // ).then(function() {
-      //   )
-
-
     /** 搜索按钮操作 */
     handleQuery() {
       this.getList()
@@ -420,21 +416,27 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.id)
+      // const deleteList = []
+      // selection.forEach(function(val) {
+      //   deleteList.push(val.id)
+      // })
+      // this.ids = deleteList
+      this.ids = selection.map(item => item.id)
+      // console.log(this.ids)
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     // 按添加按钮，弹出对话框
     handleAdd() {
-      this.dialogVisible = true;
-      this.isEdit = false;
-      this.user = Object.assign({},defaultUser); // 默认值为空
+      this.dialogVisible = true
+      this.isEdit = false
+      this.user = Object.assign({}, defaultUser) // 默认值为空
     },
     // 按修改键弹出对话框（传入当前行的数据）
     handleUpdate(row) {
-      this.dialogVisible = true;
-      this.isEdit = true;
-      this.user = Object.assign({},row);
+      this.dialogVisible = true
+      this.isEdit = true
+      this.user = Object.assign({}, row)
     },
     // 对话框按确定键之后的方法
     handleDialogConfirm() {
@@ -443,36 +445,40 @@ export default {
           this.$message({
             message: '修改成功！',
             type: 'success'
-          });
-          this.dialogVisible =false;
-          this.getList();
+          })
+          this.dialogVisible = false
+          this.getList()
         })
       } else { // 插入一条资源数据（即添加）
         addUser(this.user).then(response => {
           this.$message({
             message: '添加成功！',
             type: 'success'
-          });
-          this.dialogVisible =false;
-          this.getList();
+          })
+          this.dialogVisible = false
+          this.getList()
         })
       }
     },
     /** 重置密码按钮操作 */
     handleResetPwd(row) {
-      this.$prompt('请输入"' + row.account + '"的新密码', '提示', {
+      //   resetUserPwd(row.account, row.email).then((response) => {
+      //     if (response.code === 200) {
+      //       this.msgSuccess('修改成功，新密码是：' + value)
+      //     }
+      //   })
+      // },
+      this.$confirm('向"' + row.email + '"邮箱发邮件？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
+      }).then((response) => {
+        resetUserPwd(row.account, row.email).then((response) => {
+          if (response.code === 200) {
+            this.msgSuccess('修改成功')
+          }
+        })
+      }).catch(() => {
       })
-        .then(({ value }) => {
-          resetUserPwd(row.id, value).then((response) => {
-            if (response.code === 200) {
-              this.msgSuccess('修改成功，新密码是：' + value)
-            }
-          })
-        })
-        .catch(() => {
-        })
     },
     /** 提交按钮 */
     submitForm: function() {
@@ -581,7 +587,7 @@ export default {
 </script>
 
 <style scoped>
-.el-row button {
-  float: left;
-}
+  .el-row button {
+    float: left;
+  }
 </style>

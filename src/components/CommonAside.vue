@@ -53,7 +53,7 @@ export default {
       treeList(this.$store.getters.id).then(response => {
         this.dynamicRouter(response.data)
         // this.$store.commit('setTabList', this.routePathNow)
-        this.listLoading = false
+        // this.listLoading = false
         this.asideMenu = response.data
         this.total = response.data.total
         this.menu_data = response.data
@@ -101,5 +101,8 @@ export default {
 
   .el-submenu .el-menu-item {
     min-width: auto;
+  }
+  .el-menu-vertical-demo[data-v-a28ad4e6]:not(.el-menu--collapse) {
+    /*width: auto;*/
   }
 </style>

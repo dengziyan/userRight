@@ -46,10 +46,13 @@ export function updateUser(data) {
 }
 
 // 删除用户
-export function delUser(id) {
+export function delUser(ids) {
   return request({
-    url: '/sys/user?id=' + id,
-    method: 'delete'
+    url: '/sys/user',
+    method: 'delete',
+    params: {
+      ids: ids + ''
+    }
   })
 }
 
@@ -63,15 +66,22 @@ export function exportUser() {
 }
 
 // 用户密码重置
-export function resetUserPwd(id, password) {
+export function resetUserPwd(account, email) {
   const data = {
-    id,
-    password
+    account,
+    email
   }
   return request({
     url: '/sys/user/reset-password',
     method: 'put',
-    data: data
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    },
+    transformRequest: [function(data) { // 在请求之前对data传参进行格式转换
+      data = Qs.stringify(data)
+      return data
+    }],
+    data
   })
 }
 // 用户状态修改

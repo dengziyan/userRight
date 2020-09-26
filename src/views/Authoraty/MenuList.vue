@@ -337,16 +337,20 @@ export default {
   filters: {
     levelFilter(value) {
       if (value === 0) {
-        return '一级';
+        return '一级'
       } else if (value === 1) {
-        return '二级';
+        return '二级'
+      } else if (value === 2) {
+        return '三级'
+      } else {
+        return '四级'
       }
     },
     disableNextLevel(value) {
       if (value === 0) {
-        return false;
+        return false
       } else {
-        return true;
+        return true
       }
     }
   }
