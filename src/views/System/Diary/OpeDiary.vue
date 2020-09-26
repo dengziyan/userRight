@@ -243,7 +243,7 @@ export default {
   }
 }
 </script>
-tyle scoped>
+<style scoped>
   .el-row button{
     float: left;
   }

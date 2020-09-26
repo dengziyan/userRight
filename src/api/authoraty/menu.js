@@ -1,10 +1,12 @@
 import request from '@/utils/request'
 
 // 查询所有菜单
-export function fetchList() {
+export function fetchList(query) {
+  console.log(query)
   return request({
-    url: '/sysMenu/menuList',
-    method: 'get'
+    url: '/sysMenu/getMenuList',
+    method: 'get',
+    params: query
   })
 }
 // 根据ID删除菜单

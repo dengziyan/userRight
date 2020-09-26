@@ -8,7 +8,7 @@
     </el-card>
     <!--  表格    -->
     <div class="table-container">
-      <el-table ref="menuTable" style="width: 100%" :data="list" v-loading="listLoading" border>
+      <el-table ref="menuTable" style="width: 100%" :data="list" v-loading="listLoading">
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
@@ -69,9 +69,9 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         layout="total, sizes,prev, pager, next,jumper"
-        :page-size="listQuery.pageSize"
+        :page-size="queryParams.pageSize"
         :page-sizes="[10,15,20]"
-        :current-page.sync="listQuery.pageNum"
+        :current-page.sync="queryParams.pageNum"
         :total="total">
       </el-pagination>
     </div>
@@ -110,10 +110,10 @@
         <el-form-item label="排序：">
           <el-input v-model="menu.sort"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit('menuFrom')">提交</el-button>
-          <el-button v-if="!isEdit" @click="resetForm('menuFrom')">重置</el-button>
-        </el-form-item>
+<!--        <el-form-item>-->
+<!--          <el-button type="primary" @click="onSubmit('menuFrom')">提交</el-button>-->
+<!--          <el-button v-if="!isEdit" @click="resetForm('menuFrom')">重置</el-button>-->
+<!--        </el-form-item>-->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
@@ -155,9 +155,9 @@ export default {
       list: [],
       total: null,
       listLoading: true,
-      listQuery: {
+      queryParams: {
         pageNum: 1,
-        pageSize: 5,
+        pageSize: 10,
         menuType: 0
       },
       parentId: 0,
@@ -188,12 +188,12 @@ export default {
     } else {
       this.menu = Object.assign({}, defaultMenu);
     }
-    this.getSelectMenuList();
+    // this.getSelectMenuList();
   }
   ,
   methods: {
     resetParentId(){
-      this.listQuery.pageNum = 1;
+      this.queryParams.pageNum = 1;
       if (this.$route.query.parentId != null) {
         this.parentId = this.$route.query.parentId;
       } else {
@@ -210,7 +210,7 @@ export default {
     handleUpdate(row) {
       this.dialogVisible = true;
       this.isEdit = true;
-      this.role = Object.assign({},row);
+      this.menu = Object.assign({},row);
     },
     // 对话框按确定键之后的方法
     handleDialogConfirm() {
@@ -237,23 +237,24 @@ export default {
     // 获取列表数据
     getList() {
       this.listLoading = true;
-      fetchList(this.parentId, this.listQuery).then(response => {
+      console.log(this.queryParams)
+      fetchList(this.queryParams).then(response => {
         this.listLoading = false;
-        this.list = response.data;
+        this.list = response.data.rows;
         this.total = response.data.total;
       });
     },
     handleSizeChange(val) {
-      this.listQuery.pageNum = 1;
-      this.listQuery.pageSize = val;
+      this.queryParams.pageNum = 1;
+      this.queryParams.pageSize = val;
       this.getList();
     },
     handleCurrentChange(val) {
-      this.listQuery.pageNum = val;
+      this.queryParams.pageNum = val;
       this.getList();
     },
     handleHiddenChange(index, row) {
-      updateHidden(row.id,{hidden:row.hidden}).then(response=>{
+      updateHidden(row.id,{hidden: row.hidden}).then(response=>{
         this.$message({
           message: '修改成功',
           type: 'success',
@@ -262,60 +263,60 @@ export default {
       });
     },
     handleShowNextLevel(index, row) {
-      this.$router.push({path: '/menuList', query: {parentId: row.id}})
+      this.$router.push({ path: '/menuList', query: { parentId: row.id }})
     },
-    getSelectMenuList() {
+/*    getSelectMenuList() {
       fetchList(0, {pageSize: 100, pageNum: 1}).then(response => {
         this.selectMenuList = response.data.list;
         this.selectMenuList.unshift({id: 0, title: '无上级菜单'});
       });
-    },
-    onSubmit(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.$confirm('是否提交数据', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            if (this.isEdit) {
-              updateMenu(this.$route.query.id, this.menu).then(response => {
-                this.$message({
-                  message: '修改成功',
-                  type: 'success',
-                  duration: 1000
-                });
-                this.$router.back();
-              });
-            } else {
-              createMenu(this.menu).then(response => {
-                this.$refs[formName].resetFields();
-                this.resetForm(formName);
-                this.$message({
-                  message: '提交成功',
-                  type: 'success',
-                  duration: 1000
-                });
-                this.$router.back();
-              });
-            }
-          });
-
-        } else {
-          this.$message({
-            message: '验证失败',
-            type: 'error',
-            duration: 1000
-          });
-          return false;
-        }
-      });
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-      this.menu = Object.assign({}, defaultMenu);
-      this.getSelectMenuList();
-    },
+    },*/
+    // onSubmit(formName) {
+    //   this.$refs[formName].validate((valid) => {
+    //     if (valid) {
+    //       this.$confirm('是否提交数据', '提示', {
+    //         confirmButtonText: '确定',
+    //         cancelButtonText: '取消',
+    //         type: 'warning'
+    //       }).then(() => {
+    //         if (this.isEdit) {
+    //           updateMenu(this.$route.query.id, this.menu).then(response => {
+    //             this.$message({
+    //               message: '修改成功',
+    //               type: 'success',
+    //               duration: 1000
+    //             });
+    //             this.$router.back();
+    //           });
+    //         } else {
+    //           createMenu(this.menu).then(response => {
+    //             this.$refs[formName].resetFields();
+    //             this.resetForm(formName);
+    //             this.$message({
+    //               message: '提交成功',
+    //               type: 'success',
+    //               duration: 1000
+    //             });
+    //             this.$router.back();
+    //           });
+    //         }
+    //       });
+    //
+    //     } else {
+    //       this.$message({
+    //         message: '验证失败',
+    //         type: 'error',
+    //         duration: 1000
+    //       });
+    //       return false;
+    //     }
+    //   });
+    // },
+    // resetForm(formName) {
+    //   this.$refs[formName].resetFields();
+    //   this.menu = Object.assign({}, defaultMenu);
+    //   this.getSelectMenuList();
+    // },
     handleDelete(index, row) {
       this.$confirm('是否要删除该菜单', '提示', {
         confirmButtonText: '确定',
@@ -353,5 +354,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .el-card{
+    border: 0px;
+  }
 </style>

@@ -80,6 +80,7 @@
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
+      :page-sizes="[10,15,20]"
       @pagination="getList"
     />
 
@@ -201,7 +202,7 @@ export default {
       menuOptions: [], // 菜单列表
       queryParams: { // 查询参数
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 5,
         roleName: undefined,
         enabled: undefined
       },

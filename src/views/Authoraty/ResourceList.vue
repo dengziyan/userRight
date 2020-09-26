@@ -2,10 +2,10 @@
   <div class="app-container">
     <!-- 搜索框   -->
     <el-card class="filter-container" shadow="never">
-      <div>
-        <i class="el-icon-search"></i>
-        <span>筛选搜索</span>
-      </div>
+<!--      <div>-->
+<!--        <i class="el-icon-search"></i>-->
+<!--        <span>筛选搜索</span>-->
+<!--      </div>-->
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
           <el-form-item label="资源名称：">
@@ -28,15 +28,15 @@
     </el-card>
     <!--表格    -->
     <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button size="mini" class="btn-add" @click="handleAdd()" style="margin-left: 20px">添加</el-button>
+<!--      <i class="el-icon-tickets"></i>-->
+<!--      <span>数据列表</span>-->
+      <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleAdd()" style="margin-left: 20px">新增</el-button>
       <router-link to="/resourceCategory">
-        <el-button size="mini" class="btn-add" @click="handleShowCategory()">资源分类</el-button>
+        <el-button size="mini" type="success" icon="el-icon-edit" @click="handleShowCategory()">资源分类</el-button>
       </router-link>
     </el-card>
     <div class="table-container">
-      <el-table ref="resourceTable" :data="list" style="width: 100%;" v-loading="listLoading" border>
+      <el-table ref="resourceTable" :data="list" style="width: 100%;" v-loading="listLoading" >
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.id}}</template>
         </el-table-column>
@@ -88,10 +88,10 @@
     <el-dialog :title="isEdit?'编辑资源':'添加资源'" :visible.sync="dialogVisible" width="40%">
       <el-form :model="resource" ref="resourceForm" label-width="150px" size="small">
         <el-form-item label="资源名称：">
-          <el-input v-model="resource.resourceName" style="width: 250px"></el-input>
+          <el-input v-model="resource.resourceName"></el-input>
         </el-form-item>
         <el-form-item label="资源路径：">
-          <el-input v-model="resource.url" style="width: 250px"></el-input>
+          <el-input v-model="resource.url"></el-input>
         </el-form-item>
         <el-form-item label="状态：">
           <el-switch
@@ -103,11 +103,16 @@
             @change="handleStatusChange()"
           ></el-switch>
         </el-form-item>
+        <el-form-item label="资源分类：">
+          <el-select v-model="resource.categoryId" placeholder="全部" clearable class="input-width">
+            <el-option v-for="item in categoryOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="资源描述：">
-          <el-input v-model="resource.resourceTag" type="textarea" :rows="5" style="width: 250px"></el-input>
+          <el-input v-model="resource.resourceTag" type="textarea" :rows="5"></el-input>
         </el-form-item>
         <el-form-item label="权限描述：">
-          <el-input v-model="resource.permissionTag" type="textarea" :rows="5" style="width: 250px"></el-input>
+          <el-input v-model="resource.permissionTag" type="textarea" :rows="5" ></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -133,13 +138,14 @@ const defaultListQuery = {
 // 用于复制给resource
 const defaultResource = {
   id: null,
+  categoryId: null,
   resourceName: null,
   url: null,
   resourceTag: '',
   permissionTag: '',
   deleteStatus: 0,
   enabled: 1,
-  createDate:null
+  createDate: 0
 };
 export default {
   name: 'resourceList',
@@ -284,6 +290,20 @@ export default {
   }
 }
 </script>
-<style></style>
+<style scoped>
+  .el-button--mini{
+    float: left;
+    margin-left: 10px;
+  }
+  .el-card{
+    border: 0px;
+  }
+  .el-card__body{
+    padding: 0px;
+  }
+  .el-main{
+    padding: 0px;
+  }
+</style>
 
 

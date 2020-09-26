@@ -129,6 +129,7 @@
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
+      :page-sizes="[5,15,20]"
       @pagination="getList"
     />
     <!-- 用户导入对话框 -->
@@ -299,7 +300,7 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 5,
         account: undefined,
         realName: undefined,
         mobilePhone: undefined,
