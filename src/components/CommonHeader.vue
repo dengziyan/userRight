@@ -15,7 +15,7 @@
       <div class="r-content">
         <el-dropdown trigger="click" size="mini">
           <span class="el-dropdown-link">
-            <img :src="userImg" class="user" alt="">
+            <img :src="baseUrl+userImg" class="user" alt="">
           </span>
           <el-dropdown-menu slot="dropdown">
             <router-link to="/personal">
@@ -37,9 +37,8 @@ import store from '../store'
 export default {
   data() {
     return {
-      userImg: store.getters.avatar
-      // screenWidth: '',
-      // screenHeight: ''
+      userImg: store.getters.avatar,
+      baseUrl : 'http://192.168.1.107'
     }
   },
   computed: {

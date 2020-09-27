@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img :src="options.img" title="点击上传头像" class="img-circle img-lg" @click="editCropper()">
+    <img :src="baselUrl+options.img" title="点击上传头像" class="img-circle img-lg" @click="editCropper()">
     <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body @opened="modalOpened">
       <el-row>
         <el-col :xs="24" :md="12" :style="{height: '350px'}">
@@ -18,7 +18,7 @@
         </el-col>
         <el-col :xs="24" :md="12" :style="{height: '350px'}">
           <div class="avatar-upload-preview">
-            <img :src="previews.url" :style="previews.img">
+            <img :src="previews.url||baselUrl+options.img" :style="previews.img">
           </div>
         </el-col>
       </el-row>
@@ -28,21 +28,21 @@
           <el-upload action="#" :http-request="requestUpload" :show-file-list="false" :before-upload="beforeUpload">
             <el-button size="small">
               上传
-              <i class="el-icon-upload el-icon--right" />
+              <i class="el-icon-upload el-icon--right"/>
             </el-button>
           </el-upload>
         </el-col>
         <el-col :lg="{span: 1, offset: 2}" :md="2">
-          <el-button icon="el-icon-plus" size="small" @click="changeScale(1)" />
+          <el-button icon="el-icon-plus" size="small" @click="changeScale(1)"/>
         </el-col>
         <el-col :lg="{span: 1, offset: 1}" :md="2">
-          <el-button icon="el-icon-minus" size="small" @click="changeScale(-1)" />
+          <el-button icon="el-icon-minus" size="small" @click="changeScale(-1)"/>
         </el-col>
         <el-col :lg="{span: 1, offset: 1}" :md="2">
-          <el-button icon="el-icon-refresh-left" size="small" @click="rotateLeft()" />
+          <el-button icon="el-icon-refresh-left" size="small" @click="rotateLeft()"/>
         </el-col>
         <el-col :lg="{span: 1, offset: 1}" :md="2">
-          <el-button icon="el-icon-refresh-right" size="small" @click="rotateRight()" />
+          <el-button icon="el-icon-refresh-right" size="small" @click="rotateRight()"/>
         </el-col>
         <el-col :lg="{span: 2, offset: 6}" :md="2">
           <el-button type="primary" size="small" @click="uploadImg()">提 交</el-button>
@@ -80,7 +80,8 @@ export default {
         fixedBox: true // 固定截图框大小 不允许改变
       },
       file: undefined,
-      previews: {}
+      previews: {},
+      baselUrl: 'http://192.168.1.107'
     }
   },
   methods: {
@@ -146,8 +147,8 @@ export default {
 }
 </script>
 <style scoped>
-  img{
-    width: 120px;
-    height: 120px;
-  }
+img {
+  width: 120px;
+  height: 120px;
+}
 </style>

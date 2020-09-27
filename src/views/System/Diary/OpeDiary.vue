@@ -192,7 +192,7 @@ export default {
       checkAll: false,
       typeOptions: [], // 类型数据字典
       statusOptions: [{ label: '失败', value: 0 }, { label: '成功', value: 1 }], // 类型数据字典
-      systemOptions: [{ value: '系统管理模块' }, { value: '用户登录注册和登出模块' }, { value: '用户个人信息模块' }, { value: '用户管理模块' }, { value: '角色管理模块' }, { value: '菜单管理模块' }, { value: '资源类别管理模块' }, { value: '资源管理模块' }],
+      systemOptions: [{ value: '系统管理模块' }, { value: '用户登录注册和登出模块' }, { value: '用户个人信息模块' }, { value: '用户管理模块' }, { value: '角色管理模块' }, { value: '菜单管理模块' }, { value: '资源管理模块' }],
       dateRange: [], // 日期范围
       form: {}, // 表单参数
       queryParams: { // 查询参数
