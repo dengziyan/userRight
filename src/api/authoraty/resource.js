@@ -58,12 +58,14 @@ export function fetchAllResourceList() {
   })
 }
 
+export function allocResources(ids, params) {
+  return request({
+    url: '/sys/role/assign-resource',
+    method: 'get',
+    params: {
+      resource: ids,
+      role: params
 
-
-
-// export function fetchAllResourceList() {
-//   return request({
-//     url: '/resource/listAll',
-//     method: 'get'
-//   })
-// }
+    }
+  })
+}

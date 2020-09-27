@@ -41,11 +41,14 @@ export function updateMenu(id, data) {
   })
 }
 // 修改菜单显示状态
-export function updateHidden(id, params) {
+export function updateEnable(id, enabled) {
   return request({
-    url: '/sysMenu/update',
+    url: '/sysMenu/updateEnable',
     method: 'post',
-    params: params
+    params: {
+      id: id,
+      enabled: enabled
+    }
   })
 }
 export function getMenu(id) {

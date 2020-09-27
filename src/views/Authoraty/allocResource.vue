@@ -2,9 +2,10 @@
   <el-card class="form-container" shadow="never">
     <div v-for="(cate,index) in allResourceCate" :class="index===0?'top-line':null" :key="'cate'+cate.id">
       <el-row class="table-layout" style="background: #F2F6FC;">
-        <el-checkbox v-model="cate.checked"
-                     :indeterminate="isIndeterminate(cate.id)"
-                     @change="handleCheckAllChange(cate)">
+        <el-checkbox
+          :model="cate.checked"
+          :indeterminate="isIndeterminate(cate.id)"
+          @change="handleCheckAllChange(cate)">
           {{cate.name}}
         </el-checkbox>
       </el-row>
@@ -25,12 +26,12 @@
 </template>
 
 <script>
-import {fetchAllResourceList} from '@/api/authoraty/resource';
-import {listAllCate} from '@/api/authoraty/resourceCategory';
-import {allocResource,listResourceByRole} from '@/api/role';
+import { allocResources } from '@/api/authoraty/resource'
+import { listAllCate } from '@/api/authoraty/resourceCategory'
+import { allocResource, listResourceByRole} from '@/api/role'
 
 export default {
-  name: "allocResource",
+  name: 'AllocResource',
   data() {
     return {
       roleId: null,
@@ -44,7 +45,7 @@ export default {
   },
   methods: {
     getAllResourceList() {
-      fetchAllResourceList().then(response => {
+      allocResources().then(response => {
         this.allResource = response.data;
         for (let i = 0; i < this.allResource.length; i++) {
           this.allResource[i].checked = false;
@@ -62,7 +63,7 @@ export default {
       });
     },
     getResourceByCate(categoryId) {
-      let cateResource = [];
+      let cateReso0urce = []
       if (this.allResource == null) return null;
       for (let i = 0; i < this.allResource.length; i++) {
         let resource = this.allResource[i];

@@ -10,7 +10,7 @@
     <div class="table-container">
       <el-table ref="menuTable" style="width: 100%" :data="list" v-loading="listLoading">
         <el-table-column label="编号" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.id}}</template>
+          <template slot-scope="scope" v-modle="queryParams.parentId">{{scope.row.id}}</template>
         </el-table-column>
         <el-table-column label="菜单名称" align="center">
           <template slot-scope="scope">{{scope.row.title}}</template>
@@ -42,7 +42,7 @@
             <el-button
               size="mini"
               type="text"
-              :disabled="scope.row.level | disableNextLevel"
+              :disabled="scope.row.menuType | disableNextLevel"
               @click="handleShowNextLevel(scope.$index, scope.row)">查看下级
             </el-button>
           </template>
@@ -138,7 +138,7 @@
 </template>
 
 <script>
-  import {fetchList, deleteMenu, updateMenu, updateHidden, createMenu, getMenu} from '@/api/authoraty/menu'
+  import {fetchList, deleteMenu, updateMenu, updateEnable, createMenu, getMenu} from '@/api/authoraty/menu'
 import {addRole, updateRole} from "@/api/authoraty/role";
 // 用于复制给user
 const defaultMenu = {
@@ -171,7 +171,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        menuType: 0
+        menuType: 0,
+        parentId: '0'
       },
       parentId: 0,
       selectMenuList: [],
@@ -202,13 +203,12 @@ export default {
       this.menu = Object.assign({}, defaultMenu);
     }
     // this.getSelectMenuList();
-  }
-  ,
+  },
   methods: {
     resetParentId(){
-      this.queryParams.pageNum = 1;
+      this.queryParams.pageNum = 1
       if (this.$route.query.parentId != null) {
-        this.parentId = this.$route.query.parentId;
+        this.parentId = this.$route.query.parentId
       } else {
         this.parentId = 0;
       }
@@ -234,8 +234,8 @@ export default {
             message: '修改成功！',
             type: 'success'
           });
-          this.dialogVisible =false;
-          this.getList();
+          this.dialogVisible = false
+          this.getList()
         })
       } else { // 插入一条资源数据（即添加）
         createMenu(this.menu).then(response => {
@@ -250,37 +250,38 @@ export default {
     },
     // 获取列表数据
     getList() {
-      this.listLoading = true;
-      console.log(this.queryParams)
+      this.listLoading = true
       fetchList(this.queryParams).then(response => {
-        this.listLoading = false;
-        this.list = response.data.rows;
-        this.total = response.data.total;
-      });
+        this.listLoading = false
+        this.list = response.data.rows
+        this.total = response.data.total
+      })
     },
     handleSizeChange(val) {
-      this.queryParams.pageNum = 1;
-      this.queryParams.pageSize = val;
-      this.getList();
+      this.queryParams.pageNum = 1
+      this.queryParams.pageSize = val
+      this.getList()
     },
     handleCurrentChange(val) {
-      this.queryParams.pageNum = val;
-      this.getList();
+      this.queryParams.pageNum = val
+      this.getList()
     },
     handleHiddenChange(index, row) {
-      updateHidden(row.id,{hidden: row.hidden}).then(response =>{
-        if (response.code===2000)
-        {
-          this.$message({
-            message: '修改成功',
-            type: 'success',
-            duration: 1000
-          });
-        }
+      updateEnable(row.id, row.enabled).then(response =>{
+        this.$message({
+          message: '修改成功',
+          type: 'success',
+          duration: 1000
+        });
       });
     },
     handleShowNextLevel(index, row) {
-      this.$router.push({ path: '/menuList', query: { parentId: row.id }})
+      this.queryParams.parentId = row.id
+      fetchList(this.queryParams).then(response => {
+        this.listLoading = false
+        this.list = response.data.rows
+        this.total = response.data.total
+      })
     },
 /*    getSelectMenuList() {
       fetchList(0, {pageSize: 100, pageNum: 1}).then(response => {
@@ -364,7 +365,7 @@ export default {
       }
     },
     disableNextLevel(value) {
-      if (value === 0) {
+      if (value === 1) {
         return false
       } else {
         return true

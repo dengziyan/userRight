@@ -30,12 +30,6 @@ export default {
     }
   },
   computed: {
-    noChildren() {
-      return this.asideMenu.filter(item => !item.children)
-    },
-    hasChildren() {
-      return this.asideMenu.filter(item => item.children)
-    },
     routePathNow() {
       const activePath = this.treeMenu.filter(item => item.path === this.$route.path)
       !activePath ? activePath[0].effect = 'dark' : ''
