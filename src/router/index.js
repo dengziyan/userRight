@@ -85,6 +85,11 @@ export const constantRoutes = [
     ]
 
   },
+  {
+    path: '/forgetPwd',
+    name: 'forgetPwd',
+    component: () => import('@/views/personal/forgetPwd')
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 

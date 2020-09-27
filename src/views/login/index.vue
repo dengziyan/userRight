@@ -34,7 +34,7 @@
         <!--   记住密码，忘记密码     -->
         <el-form-item>
           <el-checkbox v-model="checked">记住密码</el-checkbox>
-          <el-link type="primary">忘记密码</el-link>
+          <el-link type="primary"><router-link to="forgetPwd">忘记密码</router-link></el-link>
         </el-form-item>
         <el-form-item style="margin-bottom: 60px;text-align: center">
           <el-button style="width: 45%" type="primary" :loading="loading" @click.native.prevent="handleLogin">登录</el-button>

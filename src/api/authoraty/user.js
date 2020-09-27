@@ -105,7 +105,6 @@ export function changeUserStatus(account, type) {
   })
 }
 
-
 // 查询用户个人信息
 export function getUserProfile() {
   return request({
@@ -151,5 +150,19 @@ export function importTemplates() {
     url: '/sys/user/template',
     method: 'get',
     responseType: 'arraybuffer'
+  })
+}
+// 发送短信验证码找回密码
+export function getCode(phoneNumber) {
+  return request({
+    url: '/sysUser/getCode/' + phoneNumber,
+    method: 'get'
+  })
+}
+// 发送短信验证码找回密码
+export function codeEquals(code) {
+  return request({
+    url: '/sysUser/codeEquals/' + code,
+    method: 'get'
   })
 }
