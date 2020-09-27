@@ -61,7 +61,10 @@
     </el-form>
     <!--    各个操作按钮-->
     <el-row :gutter="10" class="mb8">
-      <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除
+      <el-button
+        v-for="resource in resources"
+        v-if="resource.url==='111'"
+        type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除
       </el-button>
       <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="!multiple" @click="handleClean">清空</el-button>
       <el-button type="warning" icon="el-icon-download" size="mini" :disabled="!multiple" @click="handleExport">导出</el-button>
@@ -112,6 +115,8 @@ import { list, delLogininfor, cleanLogininfor, exportLogininfor } from '@/api/sy
 import moment from 'moment'
 import fileDownload from 'js-file-download'
 // import { getLog } from "@/api/logDiary";
+import { getUserProfile } from '@/api/authoraty/user'
+import { listRoleResources } from '@/api/authoraty/role'
 
 export default {
   name: 'LogDiary',
@@ -132,7 +137,9 @@ export default {
         ipaddr: undefined,
         userName: undefined,
         status: undefined
-      }
+      },
+      flag: false,
+      resources: []
     }
   },
   computed: {
@@ -147,7 +154,8 @@ export default {
     }
   },
   created() {
-    this.getList()
+    this.getList(),
+      this.getUrl()
   },
   methods: {
   // 查询登录日志列表
@@ -157,10 +165,20 @@ export default {
         this.list = response.data.rows
         this.total = response.data.total
         this.loading = false
-      }
+      },
       )
     },
-    /** 搜索按钮操作 */
+    getUrl() {
+      let roleList = []
+      getUserProfile(this.$store.getters.id).then(response => {
+        console.log(response.data)
+        roleList = response.data
+      })
+      listRoleResources(roleList).then(response => {
+        this.resources = response.data
+      })
+    },
+      /** 搜索按钮操作 */
     handleQuery() {
       this.getList()
     },

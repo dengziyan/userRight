@@ -13,23 +13,23 @@
             <ul class="list-group list-group-striped">
               <li class="list-group-item">
                 <svg-icon icon-class="user" />用户名称
-                <div class="pull-right">{{ user.name }}</div>
+                <i class="pull-right">{{ user.name }}</i>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="phone" />手机号码
-                <div class="pull-right">{{ user.mobilePhone }}</div>
+                <i class="pull-right">{{ user.mobilePhone }}</i>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="email" />用户邮箱
-                <div class="pull-right">{{ user.email }}</div>
+                <i class="pull-right">{{ user.email }}</i>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="peoples" />性别
-                <div class="pull-right">{{ user.gender }}</div>
+                <i class="pull-right">{{ user.gender }}</i>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="date" />创建日期
-                <div class="pull-right">{{ user.createDate }}</div>
+                <i class="pull-right">{{ user.createDate }}</i>
               </li>
             </ul>
           </div>

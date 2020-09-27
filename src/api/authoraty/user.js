@@ -105,23 +105,24 @@ export function changeUserStatus(account, type) {
   })
 }
 
-// 查询用户个人信息
-export function getUserProfile() {
-  return request({
-    url: '/sys/user/profile',
-    method: 'get'
-  })
-}
+
 
 // 修改用户个人信息
 export function updateUserProfile(data) {
   return request({
-    url: '/sys/user/profile',
+    url: '/sys/user-info',
     method: 'put',
     data: data
   })
 }
-
+// 查询用户个人信息
+export function getUserProfile(id){
+  return request({
+    url: '/sys/user-info/' + id,
+    method: 'put',
+    data: id
+  })
+}
 // // 用户密码重置
 // export function updateUserPwd(oldPassword, newPassword) {
 //   const data = {
