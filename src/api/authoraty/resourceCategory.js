@@ -38,7 +38,7 @@ export function changecategoryStatus(id, type) {
     type
   }
   return request({
-    url: '/sysResourcesCategory/status',
+    url: '/sysResourcesCategory/update/status',
     method: 'put',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'

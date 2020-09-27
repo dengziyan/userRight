@@ -28,8 +28,8 @@
           <template slot-scope="scope">
             <el-switch
               @change="handleHiddenChange(scope.$index, scope.row)"
-              :active-value="0"
-              :inactive-value="1"
+              :active-value="1"
+              :inactive-value="0"
               v-model="scope.row.hidden">
             </el-switch>
           </template>
@@ -102,10 +102,24 @@
         </el-form-item>
         <el-form-item label="是否显示：">
           <el-radio-group v-model="menu.hidden">
-            <el-radio :label="0">是</el-radio>
-            <el-radio :label="1">否</el-radio>
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-table-column label="是否启用" width="150">
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.enabled"
+              :active-value="1"
+              :inactive-value="0"
+              @change="handleStatusChange(scope.row)"
+            />
+          </template>
+        </el-table-column>
+
+
+
+
         <el-form-item label="排序：">
           <el-input v-model="menu.sort"></el-input>
         </el-form-item>
@@ -254,12 +268,15 @@ export default {
       this.getList();
     },
     handleHiddenChange(index, row) {
-      updateHidden(row.id,{hidden: row.hidden}).then(response=>{
-        this.$message({
-          message: '修改成功',
-          type: 'success',
-          duration: 1000
-        });
+      updateHidden(row.id,{hidden: row.hidden}).then(response =>{
+        if (response.code===2000)
+        {
+          this.$message({
+            message: '修改成功',
+            type: 'success',
+            duration: 1000
+          });
+        }
       });
     },
     handleShowNextLevel(index, row) {

@@ -3,7 +3,7 @@ import Qs from 'qs';
 // 查询资源列表
 export function fetchList(params) {
   return request({
-    url: '/sysResources/resourceList',
+    url: '/sysResources/getResourceList',
     method: 'get',
     params: params
   })
@@ -30,7 +30,7 @@ export function changeResourceStatus(id, type) {
     type
   }
   return request({
-    url: '/sys/Resource/status',
+    url: '/sysResources/update/status',
     method: 'put',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'

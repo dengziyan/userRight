@@ -14,6 +14,7 @@
         >
           <el-option
             v-for="dict in systemOptions"
+            :key="dict.value"
             :label="dict.value"
             :value="dict.value"
           />
@@ -315,7 +316,7 @@ export default {
       if (this.checkAll) {
         queryParams.pageNum = undefined
         queryParams.pageSize = undefined
-        queryParams.type='all'
+        queryParams.type = 'all'
       }
       this.$confirm('是否确认导出所有操作日志数据项?', '警告', {
         confirmButtonText: '确定',
@@ -335,7 +336,7 @@ export default {
 }
 </script>
 <style scoped>
-  .el-button {
+.el-row button {
   float: left;
 }
 .el-checkbox{

@@ -96,7 +96,7 @@ export function listMenuRole(roleId) {
 
 export function listMenuByRole(menuIds, roleId) {
   const data = {
-    ids: menuIds,
+    ids: menuIds + '',
     role: roleId
   }
   return request({

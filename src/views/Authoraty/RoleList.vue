@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
-    <!--搜索框   -->
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true">
+    <!-- 搜索框-->
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
       <el-form-item label="角色名称" prop="roleName">
         <el-input
           v-model="queryParams.roleName"
@@ -21,25 +21,12 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
-      <!--      <el-form-item label="创建时间"-->
-      <!--        <el-date-picker-->
-      <!--          v-model="dateRange"-->
-      <!--          size="small"-->
-      <!--          style="width: 240px"-->
-      <!--          value-format="yyyy-MM-dd"-->
-      <!--          type="daterange"-->
-      <!--          range-separator="-"-->
-      <!--          start-placeholder="开始日期"-->
-      <!--          end-placeholder="结束日期"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-form-item>
+          <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
       </el-form-item>
     </el-form>
-
     <!--各个操作按钮-->
     <el-row :gutter="10" class="mb8">
       <el-button type="primary" icon="el-icon-plus" size="mini" :disabled="!multiple" @click="handleAdd">新增</el-button>
@@ -53,10 +40,10 @@
     </el-row>
     <!--表格-->
     <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="角色编号" prop="id" width="120" />
-      <el-table-column label="角色名称" prop="roleName" width="150" />
-      <el-table-column label="角色描述" prop="roleDesc" width="300" :show-overflow-tooltip="true" />
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="角色编号" prop="id" width="120"/>
+      <el-table-column label="角色名称" prop="roleName" width="150"/>
+      <el-table-column label="角色描述" prop="roleDesc" width="300" :show-overflow-tooltip="true"/>
       <el-table-column label="是否启用" width="150">
         <template slot-scope="scope">
           <el-switch
@@ -97,7 +84,7 @@
     <el-dialog :title="isEdit?'编辑角色':'添加角色'" :visible.sync="dialogVisible" width="60%">
       <el-form ref="www" :model="role" label-width="150px" :rules="rules" size="small">
         <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="role.roleName" placeholder="请输入角色名称" />
+          <el-input v-model="role.roleName" placeholder="请输入角色名称"/>
         </el-form-item>
         <el-form-item label="状态">
           <el-radio-group v-model="role.enabled">
@@ -106,11 +93,8 @@
             </el-radio>
           </el-radio-group>
         </el-form-item>
-        <!--        <el-form-item label="菜单权限" prop="">-->
-        <!--          <el-input v-model="form.roleKey" placeholder="请输入权限字符" />-->
-        <!--        </el-form-item>-->
         <el-form-item label="角色描述">
-          <el-input v-model="role.roleDesc" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="role.roleDesc" type="textarea" placeholder="请输入内容"/>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -126,8 +110,8 @@
           ref="tree"
           :data="menuTreeList"
           show-checkbox
-          :default-checked-keys="[5]"
-          :default-expanded-keys="[5]"
+          :default-checked-keys="menuRoleIds"
+          :default-expanded-keys="menuRoleIds"
           node-key="id"
           highlight-current
           :props="defaultProps"
@@ -136,6 +120,7 @@
         <div style="margin-top: 20px" align="center">
           <el-button type="primary" @click="handleSave()">保存</el-button>
           <el-button @click="handleClear()">清空</el-button>
+          <el-button type="success" size="mini" @click="handleClear('reset')">还原</el-button>
         </div>
 
       </el-card>
@@ -155,10 +140,9 @@ import {
   listMenuRole,
   listMenuByRole
 } from '@/api/authoraty/role'
-import { treeselect as menuTreeselect, roleMenuTreeselect, fetchTreeList } from '@/api/authoraty/menu'
+import { fetchTreeList } from '@/api/authoraty/menu'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
-// import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/authoraty/dept";
 // 用于复制给user
 const defaultRole = {
   roleDesc: '',
@@ -179,6 +163,8 @@ export default {
       enabled: 0,
       loading: true, // 遮罩层
       ids: [], // 选中数组
+      menuRoleIds: [], // 用户所拥有的菜单
+      menuNoChildren: [],
       single: true, // 非单个禁用
       multiple: true, // 非多个禁用
       showSearch: true, // 显示搜索条件
@@ -235,8 +221,6 @@ export default {
   },
   created() {
     this.getList()
-    this.treeList()
-    // this.getRoleMenu(this.);
   },
   methods: {
     /** 查询角色列表 */
@@ -250,29 +234,8 @@ export default {
         }
       )
     },
-    treeList() {
-      fetchTreeList().then(response => {
-        this.menuTreeList = response.data
-      })
-    },
     handleSelectResource(index, row) {
-      this.$router.push({ path: '/allocResource', query: { roleId: row.id }})
-    },
-    getRoleMenu(account, id) {
-      console.log(1111111)
-      listMenuByRole(account, id).then(response => {
-        const menuList = response.data
-        const checkedMenuIds = []
-        if (menuList != null && menuList.length > 0) {
-          for (let i = 0; i < menuList.length; i++) {
-            const menu = menuList[i]
-            if (menu.parentId !== 0) {
-              checkedMenuIds.push(menu.id)
-            }
-          }
-        }
-        this.$refs.tree.setCheckedKeys(checkedMenuIds)
-      })
+      this.$router.push({ path: '/allocResource', query: { roleId: row.id } })
     },
     //  保存分配的菜单
     handleSave() {
@@ -287,35 +250,35 @@ export default {
           }
         }
       }
-      this.$confirm('是否分配菜单？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const params = new URLSearchParams()
-        params.append('roleId', this.roleId)
-        params.append('menuIds', Array.from(checkedMenuIds))
-        allocMenu(params).then(response => {
+      console.log()
+      listMenuByRole(Array.from(checkedMenuIds), this.roleId).then(response => {
+        if (response.code === 2000) {
           this.$message({
             message: '分配成功',
             type: 'success',
             duration: 1000
           })
-          this.$router.back()
-        })
+          this.openDataScope = false
+          this.menuRoleIds = this.menuNoChildren
+        }
+
       })
     },
     // 清空保存的菜单
-    handleClear() {
-      this.$refs.tree.setCheckedKeys([])
+    handleClear(val) {
+      if (val === 'reset') {
+        this.$refs.tree.setCheckedKeys(this.menuRoleIds)
+      } else {
+        const index = []
+        this.menuTreeList.forEach(function(val) {
+          if (!val.children) {
+            index.push(val.id)
+          }
+        })
+        this.menuNoChildren = index
+        this.$refs.tree.setCheckedKeys(index)
+      }
     },
-    // /** 查询菜单树结构 */
-    // getMenuTreeselect() {
-    //   menuTreeselect().then(response => {
-    //     this.menuOptions = response.data
-    //   })
-    // },
-    // 所有菜单节点数据
     getMenuAllCheckedKeys() {
       // 目前被选中的菜单节点
       const checkedKeys = this.$refs.menu.getHalfCheckedKeys()
@@ -323,13 +286,6 @@ export default {
       const halfCheckedKeys = this.$refs.menu.getCheckedKeys()
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys)
       return checkedKeys
-    },
-    /** 根据角色ID查询菜单树结构 */
-    getRoleMenuTreeselect(roleId) {
-      return roleMenuTreeselect(roleId).then(response => {
-        this.menuOptions = response.menus
-        return response
-      })
     },
     // 角色状态修改
     handleStatusChange(row) {
@@ -340,16 +296,6 @@ export default {
       }).catch(function() {
         row.enabled = row.enabled === 0 ? 1 : 0
       })
-    },
-    // 取消按钮
-    cancel() {
-      this.open = false
-      this.reset()
-    },
-    // 取消按钮（数据权限）
-    cancelDataScope() {
-      this.openDataScope = false
-      this.reset()
     },
     // 表单重置
     reset() {
@@ -389,15 +335,25 @@ export default {
     },
 
     handleSelectMenu(row) {
-      console.log(row)
-      listMenuRole(row.id).then(res => {
-        console.log(res)
+      this.roleId = row.id
+      fetchTreeList().then(response => {
+        this.menuTreeList = response.data
+      }).then(() => {
+        const index = this.menuTreeList.map(item => {
+          if (!item.children) {
+            item.disabled = true
+          }
+          return item
+        })
+        this.menuTreeList = index
+        this.openDataScope = true
       })
-      console.log(this.menuTreeList)
-      console.log('this.$store.getters.account:' + this.$store.getters.name)
-
-      // this.getRoleMenu(this.$store.getters.name, row.id)
-      this.openDataScope = true
+      listMenuRole(row.id).then(res => {
+        this.menuRoleIds = res.data
+        console.log('this.$store.getters.account:' + this.$store.getters.name)
+      }).catch(response => {
+        console.log(response)
+      })
     },
 
     // 按修改键弹出对话框（传入当前行的数据）
@@ -514,6 +470,7 @@ export default {
       if (this.checkAll) {
         queryParams.pageNum = undefined
         queryParams.pageSize = undefined
+        queryParams.type = 'all'
       }
       this.$confirm('是否确认导出角色数据项?', '警告', {
         confirmButtonText: '确定',
@@ -538,7 +495,8 @@ export default {
 .el-row button {
   float: left;
 }
-.el-checkbox{
+
+.el-checkbox {
   margin-left: 10px;
   float: left;
   margin-top: 6px;

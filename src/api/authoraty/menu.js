@@ -43,7 +43,7 @@ export function updateMenu(id, data) {
 // 修改菜单显示状态
 export function updateHidden(id, params) {
   return request({
-    url: '/sysMenu/updateHidden/' + id,
+    url: '/sysMenu/update',
     method: 'post',
     params: params
   })

@@ -38,7 +38,7 @@ export default {
     },
     routePathNow() {
       const activePath = this.treeMenu.filter(item => item.path === this.$route.path)
-      activePath[0].effect = 'dark'
+      !activePath ? activePath[0].effect = 'dark' : ''
       return activePath[0]
     },
     isCollapse() {
@@ -73,9 +73,9 @@ export default {
         } else {
           this.treeMenu.push({
             path: '/' + obj.name,
-            name: obj.name,
-            title: obj.title,
-            icon: obj.icon,
+            name: obj.name || '',
+            title: obj.titlee || '',
+            icon: obj.icone || '',
             type: '',
             effect: 'plain'
           })

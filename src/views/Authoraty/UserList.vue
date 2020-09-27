@@ -81,7 +81,7 @@
       </el-button>
       <el-button type="warning" icon="el-icon-download" size="mini" :disabled="!multiple" @click="handleExport">导出
       </el-button>
-      <el-checkbox v-model="checkAll" >导出所有数据</el-checkbox>
+      <el-checkbox v-model="checkAll">导出所有数据</el-checkbox>
     </el-row>
     <!-- 表格-->
     <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
@@ -541,6 +541,7 @@ export default {
       if (this.checkAll) {
         queryParams.pageNum = undefined
         queryParams.pageSize = undefined
+        queryParams.type = 'all'
       }
       this.$confirm('是否确认导出用户数据项?', '警告', {
         confirmButtonText: '确定',
