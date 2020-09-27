@@ -113,6 +113,7 @@
           :default-checked-keys="menuRoleIds"
           :default-expanded-keys="menuRoleIds"
           node-key="id"
+          :check-strictly="true"
           highlight-current
           :props="defaultProps"
           auto-expand-parent
@@ -251,7 +252,7 @@ export default {
         }
       }
       console.log()
-      listMenuByRole(Array.from(checkedMenuIds), this.roleId).then(response => {
+      listMenuByRole(Array.from(checkedMenuIds),this.roleId).then(response => {
         if (response.code === 2000) {
           this.$message({
             message: '分配成功',
@@ -340,7 +341,7 @@ export default {
         this.menuTreeList = response.data
       }).then(() => {
         const index = this.menuTreeList.map(item => {
-          if (!item.children) {
+          if (item.enabled !== 1) {
             item.disabled = true
           }
           return item

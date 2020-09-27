@@ -120,8 +120,9 @@
       <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-button size="mini" type="text" icon="el-icon-circle-check" @click="handleUpdate(scope.row)">分配角色</el-button>
           <el-button
-            v-if="scope.row.id !== 1"
+            v-if="scope.row.id !== id"
             size="mini"
             type="text"
             icon="el-icon-delete"
@@ -246,6 +247,7 @@
         <el-button type="primary" size="small" @click="handleDialogConfirm()">确 定</el-button>
       </span>
     </el-dialog>
+
   </div>
 </template>
 
@@ -257,7 +259,7 @@ import { getToken } from '@/utils/auth'
 import fileDownload from 'js-file-download'
 import moment from 'moment'
 import { listRole } from '@/api/authoraty/role'
-
+import store from '../../store'
 // 用于复制给user
 const defaultUser = {
   account: '',
@@ -273,7 +275,8 @@ const defaultUser = {
   deleteStatus: 0,
   enabled: 1,
   realName: '',
-  roleIds: null
+  roleIds: null,
+  userId: 1,
 }
 export default {
   name: 'User',
@@ -292,6 +295,7 @@ export default {
       checkAll: false,
       showSearch: true, // 显示搜索条件
       total: 0, // 总条数
+      id: store.getters.id,
       userList: null, // 用户表格数据
       open: false, // 是否显示弹出层
       initPassword: undefined, // 默认密码

@@ -6,6 +6,7 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
+    realName: '',
     id: getIDKey(),
     avatar: '',
     email: '',
@@ -26,6 +27,9 @@ const mutations = {
   },
   SET_NAME: (state, name) => {
     state.name = name
+  },
+  SET_REALNAME: (state, name) => {
+    state.realName = name
   },
   SET_ID: (state, id) => {
     state.id = id
@@ -87,7 +91,9 @@ const actions = {
         const email = data.userInfo.email
         const mobilePhone = data.userInfo.mobilePhone
         const createDate = data.userInfo.createDate
+        const realName = data.userInfo.realName
         const gender = data.userInfo.gender
+        commit('SET_REALNAME', realName)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         commit('SET_EMAIL', email)
@@ -119,7 +125,7 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       removeCookies() // must remove  token  first
-      sessionStorage.clear();
+      sessionStorage.clear()
       commit('RESET_STATE')
       resolve()
     })

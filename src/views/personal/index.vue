@@ -12,8 +12,8 @@
             </div>
             <ul class="list-group list-group-striped">
               <li class="list-group-item">
-                <svg-icon icon-class="user" />用户名称
-                <div class="pull-right">{{ user.name }}</div>
+                <svg-icon icon-class="user" />用户账号
+                <div class="pull-right">{{ user.account }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="phone" />手机号码
@@ -76,7 +76,8 @@ export default {
   },
   methods: {
     getUser() {
-      this.user.name = this.$store.getters.name
+      this.user.account = this.$store.getters.name
+      this.user.realName = this.$store.getters.realName
       this.user.mobilePhone = this.$store.getters.mobilePhone
       this.user.email = this.$store.getters.email
       this.user.gender = this.$store.getters.gender
