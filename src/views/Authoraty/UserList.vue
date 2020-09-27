@@ -120,7 +120,7 @@
       <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
-          <el-button size="mini" type="text" icon="el-icon-circle-check" @click="handleUpdate(scope.row)">分配角色</el-button>
+          <el-button size="mini" type="text" icon="el-icon-circle-check" @click="alloc(scope.row)">分配角色</el-button>
           <el-button
             v-if="scope.row.id !== id"
             size="mini"
@@ -227,6 +227,30 @@
               </el-select>
             </el-form-item>
           </el-col>
+<!--          <el-col :span="12">-->
+<!--            <el-form-item label="角色">-->
+<!--              <el-select v-model="user.roleIds" multiple placeholder="请选择">-->
+<!--                <el-option-->
+<!--                  v-for="item in roleOptions"-->
+<!--                  :key="item.value"-->
+<!--                  :label="item.label"-->
+<!--                  :value="item.value"-->
+<!--                  :disabled="item.enabled == 1"-->
+<!--                />-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
+        </el-row>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" size="small" @click="handleDialogConfirm()">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!--    分配角色的对话框-->
+    <el-dialog  :visible.sync="openalloc" width="40%">
+      <el-form ref="www" :model="user" label-width="150px" :rules="rules" size="small">
+        <el-row>
           <el-col :span="12">
             <el-form-item label="角色">
               <el-select v-model="user.roleIds" multiple placeholder="请选择">
@@ -243,11 +267,10 @@
         </el-row>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">取 消</el-button>
+        <el-button size="small" @click="openalloc = false">取 消</el-button>
         <el-button type="primary" size="small" @click="handleDialogConfirm()">确 定</el-button>
       </span>
     </el-dialog>
-
   </div>
 </template>
 
@@ -284,6 +307,7 @@ export default {
   data() {
     return {
       dialogVisible: false,
+      openalloc:false,
       isEdit: false,
       user: Object.assign({}, defaultUser), // user为对话框中:model
       defaultRoleId: null,
@@ -452,6 +476,10 @@ export default {
       this.isEdit = true
       this.user = Object.assign({}, row)
     },
+    alloc(){
+      this.openalloc = true
+    },
+
     // 对话框按确定键之后的方法
     handleDialogConfirm() {
       if (this.isEdit) { // 更新资源数据（即编辑修改）
