@@ -2,15 +2,13 @@
   <div class="app-container">
     <!--    添加按钮-->
     <el-card shadow="never" class="operate-container">
-      <i class="el-icon-tickets" />
-      <span>数据列表</span>
-      <el-button size="mini" class="btn-add" style="margin-left: 5px;" @click="handleAdd()">添加</el-button>
+      <el-button size="mini" class="btn-add"  type="info" style="margin-left: 5px;" @click="handleAdd()">添加</el-button>
       <el-button size="mini" class="btn-add" type="primary" icon="el-icon-refresh" @click="getList">刷新</el-button>
       <el-button size="mini" class="btn-add" type="success" icon="el-icon-position" @click="returnResources">返回资源列表</el-button>
     </el-card>
     <!--    表格-->
     <div class="table-container">
-      <el-table ref="resourceCategoryTable" v-loading="listLoading" :data="list" style="width: 100%;" border>
+      <el-table ref="resourceCategoryTable" v-loading="listLoading" :data="list" style="width: 100%;">
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
@@ -167,6 +165,12 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
+  .el-card__body>button{
+    float: left;
+  }
+  .el-card{
+    border: 0px;
+  }
 </style>
 
