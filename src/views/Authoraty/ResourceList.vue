@@ -80,7 +80,7 @@
         layout="total, sizes,prev, pager, next,jumper"
         :current-page.sync="listQuery.pageNum"
         :page-size="listQuery.pageSize"
-        :page-sizes="[10,15,20]"
+        :page-sizes="[10,25,50]"
         :total="total">
       </el-pagination>
     </div>

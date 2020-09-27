@@ -70,7 +70,7 @@
         @current-change="handleCurrentChange"
         layout="total, sizes,prev, pager, next,jumper"
         :page-size="queryParams.pageSize"
-        :page-sizes="[10,15,20]"
+        :page-sizes="[10,25,50]"
         :current-page.sync="queryParams.pageNum"
         :total="total">
       </el-pagination>

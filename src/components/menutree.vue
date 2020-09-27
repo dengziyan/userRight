@@ -1,21 +1,18 @@
 <template>
   <div class="menutree">
-    <label v-for="menu in data" :key="menu.id">
+    <label v-for="menu in data">
       <el-submenu v-if="menu.children" :index="'/' + menu.name">
         <template slot="title">
-          <i :class="'el-icon-'+menu.icon" />
+          <i :class="'el-icon-'+menu.icon"/>
           <span>{{ menu.title }}</span>
         </template>
-        <label>
+        <el-menu-item-group>
           <menutree :data="menu.children"/>
-        </label>
+        </el-menu-item-group>
       </el-submenu>
-      <el-menu-item
-        v-else
-        :index="'/'+menu.title"
-        @click="clickMenu(menu)"
-      >
-        <i :class="'el-icon-' + menu.icon" />
+
+      <el-menu-item v-else :index="'/'+menu.name" @click="clickMenu(menu)">
+        <i :class="'el-icon-'+menu.icon"/>
         <span slot="title">{{ menu.title }}</span>
       </el-menu-item>
     </label>
@@ -24,6 +21,7 @@
 
 <script>
 import menutree from '@/components/menutree'
+
 export default {
   name: 'menutree',
   components: {
@@ -46,19 +44,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .el-menu-vertical-demo {
-    height: 100vh;
-  }
+.el-menu-vertical-demo {
+  height: 100vh;
+}
 
-  .el-menu {
-    border: none;
-  }
+.el-menu {
+  border: none;
+}
 
-  .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 160px;
-    min-height: 400px;
-  }
-  .el-submenu .el-menu-item {
-    min-width: auto;
-  }
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 160px;
+  min-height: 400px;
+}
+
+.el-submenu .el-menu-item {
+  min-width: auto;
+}
 </style>

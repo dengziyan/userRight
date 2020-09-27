@@ -10,26 +10,30 @@ export function list(query) {
 }
 
 // 删除操作日志
-export function delOperlog(operId) {
+export function delOperlog(operIds) {
   return request({
-    url: '/monitor/operlog/' + operId,
-    method: 'delete'
+    url: '/sys/log/operation-log',
+    method: 'delete',
+    params:{
+      ids : operIds+''
+    }
   })
 }
 
 // 清空操作日志
 export function cleanOperlog() {
   return request({
-    url: '/monitor/operlog/clean',
+    url: '/sys/log/operation-log/clean',
     method: 'delete'
   })
 }
 
 // 导出操作日志
-export function exportOperlog() {
+export function exportOperlog(query) {
   return request({
     url: '/sys/log/operation-log/export',
     method: 'get',
-    responseType: 'arraybuffer'
-  }, { timeout: 60000 })
+    responseType: 'arraybuffer',
+    params: query
+  })
 }

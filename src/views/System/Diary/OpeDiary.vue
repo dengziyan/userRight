@@ -13,9 +13,8 @@
           @clear="clearParams('title')"
         >
           <el-option
-            v-for="dict in statusOptions"
-            :key="dict.value"
-            :label="dict.label"
+            v-for="dict in systemOptions"
+            :label="dict.value"
             :value="dict.value"
           />
         </el-select>
@@ -28,17 +27,17 @@
           style="width: 240px;"
           size="small"
           @keyup.enter.native="handleQuery"
-          @clear="clearParams('title')"
+          @clear="clearParams('operName')"
         />
       </el-form-item>
-      <el-form-item label="类型" prop="operName">
+      <el-form-item label="类型" prop="method">
         <el-select
-          v-model="queryParams.operName"
+          v-model="queryParams.method"
           placeholder="操作类型"
           clearable
           size="small"
           style="width: 240px"
-          @clear="clearParams('operName')"
+          @clear="clearParams('method')"
         >
           <el-option v-for="dict in typeOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
         </el-select>
@@ -81,9 +80,11 @@
     <el-row :gutter="10" class="mb8">
       <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除
       </el-button>
-      <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleClean">清空</el-button>
-      <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
-      <!--      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />-->
+      <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="!multiple" @click="handleClean">清空
+      </el-button>
+      <el-button type="warning" icon="el-icon-download" size="mini" :disabled="!multiple" @click="handleExport">导出
+      </el-button>
+      <el-checkbox v-model="checkAll">导出所有数据</el-checkbox>
     </el-row>
     <!--表格-->
     <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange">
@@ -95,11 +96,7 @@
       <el-table-column label="操作人员" align="center" prop="operName" :show-overflow-tooltip="true" />
       <el-table-column label="主机" align="center" prop="operIp" width="130" :show-overflow-tooltip="true" />
       <el-table-column label="操作地点" align="center" prop="operLocation" :show-overflow-tooltip="true" />
-      <el-table-column
-        prop="status"
-        label="操作状态"
-        width="100"
-      >
+      <el-table-column prop="status" label="操作状态" width="100">
         <template slot-scope="scope">
           <el-tag
             size="medium"
@@ -129,6 +126,7 @@
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
+      :page-sizes="[10,25,50]"
       @pagination="getList"
     />
 
@@ -190,9 +188,10 @@ export default {
       total: 0, // 总条数
       list: [], // 表格数据
       open: false, // 是否显示弹出层
+      checkAll: false,
       typeOptions: [], // 类型数据字典
       statusOptions: [{ label: '失败', value: 0 }, { label: '成功', value: 1 }], // 类型数据字典
-      systemOptions: [],
+      systemOptions: [{ value: '系统管理模块' }, { value: '用户登录注册和登出模块' }, { value: '用户个人信息模块' }, { value: '用户管理模块' }, { value: '角色管理模块' }, { value: '菜单管理模块' }, { value: '资源类别管理模块' }, { value: '资源管理模块' }],
       dateRange: [], // 日期范围
       form: {}, // 表单参数
       queryParams: { // 查询参数
@@ -209,8 +208,8 @@ export default {
     newTitle() {
       return this.queryParams.title
     },
-    newOperation() {
-      return this.queryParams.operName
+    newMethod() {
+      return this.queryParams.method
     },
     newStatus() {
       return this.queryParams.status
@@ -220,13 +219,13 @@ export default {
     newTitle() {
       this.getList()
     },
-    newOperation() {
-      this.getList()
-    },
     newStatus() {
+      this.getList()
+    }, newMethod() {
       this.getList()
     }
   },
+
   created() {
     this.getList()
   },
@@ -255,10 +254,7 @@ export default {
       if (val === 'method') {
         this.queryParams.method = undefined
       }
-    },
-    // 操作日志状态字典翻译
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status)
+      this.getList()
     },
     // 操作日志类型字典翻译
     typeFormat(row, column) {
@@ -266,7 +262,6 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1
       this.getList()
     },
     /** 重置按钮操作 */
@@ -316,17 +311,23 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
+      const queryParams = this.queryParams
+      if (this.checkAll) {
+        queryParams.pageNum = undefined
+        queryParams.pageSize = undefined
+        queryParams.type='all'
+      }
       this.$confirm('是否确认导出所有操作日志数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return exportOperlog()
-      }).then(response => {
-        console.log(response)
-        const sysDate = moment(new Date()).format('YYYY-MM-DDHHmm')
-        console.log(sysDate)
-        fileDownload(response, sysDate + '用户操作日志.xlsx')
+        exportOperlog(queryParams).then(response => {
+          console.log(response)
+          const sysDate = moment(new Date()).format('YYYY-MM-DDHHmm')
+          console.log(sysDate)
+          fileDownload(response, sysDate + '用户操作日志.xlsx')
+        })
       }).catch(function() {
       })
     }
@@ -334,14 +335,16 @@ export default {
 }
 </script>
 <style scoped>
-.el-row button{
-float: left;
+.el-row button {
+  float: left;
 }
-right-toolbar{
-float: left;
+
+right-toolbar {
+  float: left;
 }
-</
+
+<
+/
 
 style
-
 >

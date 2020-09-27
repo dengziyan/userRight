@@ -57,11 +57,12 @@ export function delUser(ids) {
 }
 
 // 导出用户
-export function exportUser() {
+export function exportUser(query) {
   return request({
     url: '/sys/user/export',
     method: 'get',
-    responseType: 'arraybuffer'
+    responseType: 'arraybuffer',
+    params: query
   })
 }
 

@@ -68,8 +68,11 @@ export function changeRoleStatus(id, type) {
 // 删除角色
 export function delRole(roleId) {
   return request({
-    url: '/sys/role/' + roleId,
-    method: 'delete'
+    url: '/sys/role/delete',
+    method: 'delete',
+    params: {
+      ids: roleId + ''
+    }
   })
 }
 
@@ -78,13 +81,14 @@ export function exportRole(query) {
   return request({
     url: '/sys/role/export',
     method: 'get',
+    responseType: 'arraybuffer',
     params: query
   })
 }
 
 export function listMenuByRole(roleId) {
   return request({
-    url: '/role/listMenu/'+roleId,
+    url: '/role/listMenu/' + roleId,
     method: 'get'
   })
 }

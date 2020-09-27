@@ -13,22 +13,26 @@ export function exportLogininfor(query) {
   return request({
     url: '/sys/log/login-log/export',
     method: 'get',
+    responseType: 'arraybuffer',
     params: query
   })
 }
 
 // 删除登录日志
-export function delLogininfor(infoId) {
+export function delLogininfor(infoIds) {
   return request({
-    url: '/monitor/logininfor/' + infoId,
-    method: 'delete'
+    url: '/sys/log/login-log',
+    method: 'delete',
+    params:{
+      ids: infoIds + ''
+    }
   })
 }
 
 // 清空登录日志
 export function cleanLogininfor() {
   return request({
-    url: '/monitor/logininfor/clean',
+    url: '/sys/log/login-log/clean',
     method: 'delete'
   })
 }

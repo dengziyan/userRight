@@ -9,7 +9,7 @@ export function getOnline() {
 }
 
 // 查询在线用户列表
-export function list(query) {
+export function Onlinelist(query) {
   return request({
     url: '/sys/online',
     method: 'get',

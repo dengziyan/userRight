@@ -10,17 +10,14 @@
       text-color="#fff"
       active-text-color="#ffd04b"
     >
-
       <menutree :data="menu_data" />
     </el-menu>
   </div>
-
 </template>
 
 <script>
 import { treeList } from '@/api/authoraty/menu'
 import menutree from '@/components/menutree'
-
 export default {
   components: {
     menutree: menutree
@@ -28,8 +25,8 @@ export default {
   data() {
     return {
       asideMenu: [],
-      menu_data: [],
-      treeMenu: []
+      treeMenu: [],
+      menu_data: []
     }
   },
   computed: {
@@ -38,6 +35,11 @@ export default {
     },
     hasChildren() {
       return this.asideMenu.filter(item => item.children)
+    },
+    routePathNow() {
+      const activePath = this.treeMenu.filter(item => item.path === this.$route.path)
+      activePath[0].effect = 'dark'
+      return activePath[0]
     },
     isCollapse() {
       return this.$store.state.tab.isCollapse
@@ -52,7 +54,7 @@ export default {
       this.listLoading = true
       treeList(this.$store.getters.id).then(response => {
         this.dynamicRouter(response.data)
-        // this.$store.commit('setTabList', this.routePathNow)
+        this.$store.commit('setTabList', this.routePathNow)
         // this.listLoading = false
         this.asideMenu = response.data
         this.total = response.data.total
@@ -79,29 +81,29 @@ export default {
           })
         }
       }
-    },
+    }
   }
 
 }
 </script>
 
 <style lang="scss" scoped>
-  .el-menu-vertical-demo {
-    height: 100vh;
-  }
+.el-menu-vertical-demo {
+  height: 100vh;
+}
 
-  .el-menu {
-    border: none;
-  }
+.el-menu {
+  border: none;
+}
 
-  .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 160px;
-    min-height: 400px;
-  }
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 160px;
+  min-height: 400px;
+}
 
-  .el-submenu .el-menu-item {
-    min-width: auto;
-  }
+.el-submenu .el-menu-item {
+  min-width: auto;
+}
   .el-menu-vertical-demo[data-v-a28ad4e6]:not(.el-menu--collapse) {
     /*width: auto;*/
   }

@@ -72,28 +72,30 @@
 
     <!-- 各个操作按钮 -->
     <el-row :gutter="10" class="mb8">
-      <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
-      <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate">修改
+      <el-button type="primary" icon="el-icon-plus" size="mini" :disabled="!multiple" @click="handleAdd">新增</el-button>
+      <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleTopUpdate">修改
       </el-button>
       <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除
       </el-button>
-      <el-button type="info" icon="el-icon-upload2" size="mini" @click="handleImport">导入</el-button>
-      <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
-      <!--          <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>-->
+      <el-button type="info" icon="el-icon-upload2" size="mini" :disabled="!multiple" @click="handleImport">导入
+      </el-button>
+      <el-button type="warning" icon="el-icon-download" size="mini" :disabled="!multiple" @click="handleExport">导出
+      </el-button>
+      <el-checkbox v-model="checkAll">导出所有数据</el-checkbox>
     </el-row>
     <!-- 表格-->
     <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="50" align="center" />
-      <el-table-column label="编号" align="center" prop="id" />
-      <el-table-column label="账号" align="center" prop="account" :show-overflow-tooltip="true" />
-      <el-table-column label="姓名" align="center" prop="realName" :show-overflow-tooltip="true" />
+      <el-table-column type="selection" width="50" align="center"/>
+      <el-table-column label="编号" align="center" prop="id"/>
+      <el-table-column label="账号" align="center" prop="account" :show-overflow-tooltip="true"/>
+      <el-table-column label="姓名" align="center" prop="realName" :show-overflow-tooltip="true"/>
       <el-table-column label="性别" align="center" prop="gender">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.gender == 'F' ? '女' : '男' }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="邮箱" align="center" prop="email" :show-overflow-tooltip="true" />
-      <el-table-column label="手机号码" align="center" prop="mobilePhone" width="120" :show-overflow-tooltip="true" />
+      <el-table-column label="邮箱" align="center" prop="email" :show-overflow-tooltip="true"/>
+      <el-table-column label="手机号码" align="center" prop="mobilePhone" width="120" :show-overflow-tooltip="true"/>
       <el-table-column label="创建时间" align="center" prop="createDate" width="160" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createDate) }}</span>
@@ -136,7 +138,7 @@
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
-      :page-sizes="[5,15,20]"
+      :page-sizes="[10,25,50]"
       @pagination="getList"
     />
     <!-- 用户导入对话框 -->
@@ -153,7 +155,7 @@
         :auto-upload="false"
         drag
       >
-        <i class="el-icon-upload" />
+        <i class="el-icon-upload"/>
         <div class="el-upload__text">
           将文件拖到此处，或
           <em>点击上传</em>
@@ -174,31 +176,31 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户账号" prop="account">
-              <el-input v-model="user.account" placeholder="请输入用户账号" />
+              <el-input v-model="user.account" placeholder="请输入用户账号"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="手机号码" prop="mobilePhone">
-              <el-input v-model="user.mobilePhone" placeholder="请输入手机号码" maxlength="11" />
+              <el-input v-model="user.mobilePhone" placeholder="请输入手机号码" maxlength="11"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item v-if="user.id == undefined" label="用户姓名" prop="realName">
-              <el-input v-model="user.realName" placeholder="请输入用户姓名" />
+              <el-input v-model="user.realName" placeholder="请输入用户姓名"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="user.id == undefined" label="用户密码" prop="password">
-              <el-input v-model="user.password" placeholder="请输入用户密码" type="password" />
+            <el-form-item v-if="user.id == undefined" label="默认密码：" prop="password">
+              <el-input v-model="user.password" placeholder="88888888" :disabled="true" type="text"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="邮箱" prop="email">
-              <el-input v-model="user.email" placeholder="请输入邮箱" maxlength="50" />
+              <el-input v-model="user.email" placeholder="请输入邮箱" maxlength="50"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -284,8 +286,10 @@ export default {
       defaultRoleId: null,
       loading: true, // 遮罩层
       ids: [], // 多选时选中数组
+      updataData: {},
       single: true, // 非单个禁用
       multiple: true, // 非多个禁用
+      checkAll: false,
       showSearch: true, // 显示搜索条件
       total: 0, // 总条数
       userList: null, // 用户表格数据
@@ -308,7 +312,7 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 5,
+        pageSize: 10,
         account: undefined,
         realName: undefined,
         mobilePhone: undefined,
@@ -374,7 +378,12 @@ export default {
     // 获取到角色
     getRoleList() {
       listRole().then(response => {
-        const roleList = response.data.rows
+        const res = response.data
+        if (res.total === 0) {
+          this.roleOptions = []
+          return true
+        }
+        const roleList = res.rows
         for (let i = 0; i < roleList.length; i++) {
           const role = roleList[i]
           this.roleOptions.push({ label: role.roleName, value: role.id })
@@ -393,12 +402,13 @@ export default {
       if (val === 'account') {
         this.queryParams.account = undefined
       }
+      this.getList()
     },
 
     // 用户状态修改
     handleStatusChange(row) {
       const type = row.enabled === 1 ? { label: '启用', value: 'enable' } : { label: '停用', value: 'disable' }
-      changeUserStatus(row.account, type.value).then(response => {
+      changeUserStatus(row.account, type.value).then(() => {
         this.getList()
       }).catch(function() {
         row.enabled = row.enabled === 0 ? 1 : 0
@@ -416,13 +426,8 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      // const deleteList = []
-      // selection.forEach(function(val) {
-      //   deleteList.push(val.id)
-      // })
-      // this.ids = deleteList
+      this.updataData = selection.length === 1 ? selection : {}
       this.ids = selection.map(item => item.id)
-      // console.log(this.ids)
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
@@ -431,6 +436,11 @@ export default {
       this.dialogVisible = true
       this.isEdit = false
       this.user = Object.assign({}, defaultUser) // 默认值为空
+    },
+    // 按修改键弹出对话框（传入当前行的数据）
+    handleTopUpdate() {
+      console.log(this.updataData)
+      this.handleUpdate(this.updataData[0])
     },
     // 按修改键弹出对话框（传入当前行的数据）
     handleUpdate(row) {
@@ -442,38 +452,36 @@ export default {
     handleDialogConfirm() {
       if (this.isEdit) { // 更新资源数据（即编辑修改）
         updateUser(this.user).then(response => {
-          this.$message({
-            message: '修改成功！',
-            type: 'success'
-          })
-          this.dialogVisible = false
-          this.getList()
+          if (response.code === 2000) {
+            this.$message({
+              message: '修改成功！',
+              type: 'success'
+            })
+            this.dialogVisible = false
+            this.getList()
+          }
         })
       } else { // 插入一条资源数据（即添加）
         addUser(this.user).then(response => {
-          this.$message({
-            message: '添加成功！',
-            type: 'success'
-          })
-          this.dialogVisible = false
-          this.getList()
+          if (response.code === 2000) {
+            this.$message({
+              message: '添加成功！',
+              type: 'success'
+            })
+            this.dialogVisible = false
+            this.getList()
+          }
         })
       }
     },
     /** 重置密码按钮操作 */
     handleResetPwd(row) {
-      //   resetUserPwd(row.account, row.email).then((response) => {
-      //     if (response.code === 200) {
-      //       this.msgSuccess('修改成功，新密码是：' + value)
-      //     }
-      //   })
-      // },
       this.$confirm('向"' + row.email + '"邮箱发邮件？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
-      }).then((response) => {
+      }).then(() => {
         resetUserPwd(row.account, row.email).then((response) => {
-          if (response.code === 200) {
+          if (response.code === 2000) {
             this.msgSuccess('修改成功')
           }
         })
@@ -487,7 +495,7 @@ export default {
           // eslint-disable-next-line eqeqeq
           if (this.form.id != undefined) {
             updateUser(this.form).then((response) => {
-              if (response.code === 200) {
+              if (response.code === 2000) {
                 this.msgSuccess('修改成功')
                 this.open = false
                 this.getList()
@@ -495,7 +503,7 @@ export default {
             })
           } else {
             addUser(this.form).then((response) => {
-              if (response.code === 200) {
+              if (response.code === 2000) {
                 this.msgSuccess('新增成功')
                 this.open = false
                 this.getList()
@@ -529,13 +537,18 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.$confirm('是否确认导出所有用户数据项?', '警告', {
+      const queryParams = this.queryParams
+      if (this.checkAll) {
+        queryParams.pageNum = undefined
+        queryParams.pageSize = undefined
+      }
+      this.$confirm('是否确认导出用户数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(function() {
-          exportUser().then(res => {
+          exportUser(queryParams).then(res => {
             console.log(res)
             const sysDate = moment(new Date()).format('YYYY-MM-DDHHmm')
             console.log(sysDate)
@@ -587,7 +600,7 @@ export default {
 </script>
 
 <style scoped>
-  .el-row button {
-    float: left;
-  }
+.el-row button {
+  float: left;
+}
 </style>
