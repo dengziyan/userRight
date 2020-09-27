@@ -86,9 +86,29 @@ export function exportRole(query) {
   })
 }
 
-export function listMenuByRole(roleId) {
+export function listMenuRole(roleId) {
   return request({
-    url: '/role/listMenu/' + roleId,
+    url: '/sys/role/role-menu/' + roleId,
     method: 'get'
+  })
+}
+
+
+export function listMenuByRole(menuIds, roleId) {
+  const data = {
+    ids: menuIds,
+    role: roleId
+  }
+  return request({
+    url: '/sys/user/assign-menu',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    },
+    transformRequest: [function(data) { // 在请求之前对data传参进行格式转换
+      data = Qs.stringify(data)
+      return data
+    }],
+    data
   })
 }

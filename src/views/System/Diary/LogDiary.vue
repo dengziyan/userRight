@@ -181,7 +181,7 @@ export default {
       if (val === 'ipaddr') {
         this.queryParams.ipaddr = undefined
       }
-      this.getLis()
+      this.getList()
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -248,7 +248,11 @@ export default {
 .el-row button {
   float: left;
 }
-
+.el-checkbox{
+  margin-left: 10px;
+  float: left;
+  margin-top: 6px;
+}
 right-toolbar {
   float: left;
 }

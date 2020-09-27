@@ -32,7 +32,7 @@ export default {
       } else {
         // tags动态显示，当前路由高亮
         val.effect = 'dark'
-        console.log(state.tabsList)
+        // console.log(state.tabsList)
         state.tabsList.forEach(function(value, index) {
           if (index !== 0) {
             value.effect = 'plain'
@@ -53,7 +53,7 @@ export default {
       state.isCollapse = !state.isCollapse
     },
     setTabList(state, menu) {
-      console.log(menu)
+      // console.log(menu)
       state.tabsList.forEach(function(value, index) {
         value.effect = 'plain'
         state.tabsList.splice(index, 1, value)

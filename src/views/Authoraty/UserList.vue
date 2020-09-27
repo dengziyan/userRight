@@ -81,7 +81,7 @@
       </el-button>
       <el-button type="warning" icon="el-icon-download" size="mini" :disabled="!multiple" @click="handleExport">导出
       </el-button>
-      <el-checkbox v-model="checkAll">导出所有数据</el-checkbox>
+      <el-checkbox v-model="checkAll" >导出所有数据</el-checkbox>
     </el-row>
     <!-- 表格-->
     <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
@@ -602,5 +602,10 @@ export default {
 <style scoped>
 .el-row button {
   float: left;
+}
+.el-checkbox{
+  margin-left: 10px;
+  float: left;
+  margin-top: 6px;
 }
 </style>

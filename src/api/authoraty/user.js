@@ -123,18 +123,18 @@ export function updateUserProfile(data) {
   })
 }
 
-// 用户密码重置
-export function updateUserPwd(oldPassword, newPassword) {
-  const data = {
-    oldPassword,
-    newPassword
-  }
-  return request({
-    url: '/sys/user/profile/updatePwd',
-    method: 'put',
-    params: data
-  })
-}
+// // 用户密码重置
+// export function updateUserPwd(oldPassword, newPassword) {
+//   const data = {
+//     oldPassword,
+//     newPassword
+//   }
+//   return request({
+//     url: '/sys/user/profile/updatePwd',
+//     method: 'put',
+//     params: data
+//   })
+// }
 
 // 用户头像上传
 export function uploadAvatar(data) {

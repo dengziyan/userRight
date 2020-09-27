@@ -54,11 +54,11 @@ export function getMenu(id) {
     method: 'get'
   })
 }
-
-// export function fetchTreeList() {
-//   return request({
-//     url: '/sysMenu/treeList',
-//     method: 'get'
-//   })
-// }
+// 获取树形结构的菜单
+export function fetchTreeList() {
+  return request({
+    url: '/sysMenu/treeList',
+    method: 'get'
+  })
+}
 

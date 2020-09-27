@@ -335,16 +335,16 @@ export default {
 }
 </script>
 <style scoped>
-.el-row button {
+  .el-button {
   float: left;
 }
-
+.el-checkbox{
+  margin-left: 10px;
+  float: left;
+  margin-top: 6px;
+}
 right-toolbar {
   float: left;
 }
+</style>
 
-<
-/
-
-style
->

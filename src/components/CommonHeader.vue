@@ -38,13 +38,32 @@ export default {
   data() {
     return {
       userImg: store.getters.avatar
+      // screenWidth: '',
+      // screenHeight: ''
     }
   },
   computed: {
     ...mapState({
       current: state => state.tab.currentMenu
     })
+
   },
+  // mounted() { //没做出来
+  //   let that = this
+  //   this.screenWidth = document.body.clientWidth;
+  //   this.screenHeight = document.body.clientHeight;
+  //   window.onresize = () => {
+  //     return (() => {
+  //       this.screenWidth = document.body.clientWidth;
+  //       this.screenHeight = document.body.clientHeight;
+  //     })();
+  //   };
+  //   console.log(this.screenWidth)
+  //   if(this.screenWidth < 1000){
+  //     that.collapseMenu();
+  //   }
+  // },
+
   methods: {
     collapseMenu() {
       this.$store.commit('collapseMenu')

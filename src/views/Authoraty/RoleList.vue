@@ -53,11 +53,11 @@
     </el-row>
     <!--表格-->
     <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="角色编号" prop="id" width="120"/>
-      <el-table-column label="角色名称" prop="roleName" width="150"/>
-      <el-table-column label="角色描述" prop="roleDesc" width="300" :show-overflow-tooltip="true"/>
-      <el-table-column label="是否启用">
+      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="角色编号" prop="id" width="120" />
+      <el-table-column label="角色名称" prop="roleName" width="150" />
+      <el-table-column label="角色描述" prop="roleDesc" width="300" :show-overflow-tooltip="true" />
+      <el-table-column label="是否启用" width="150">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.enabled"
@@ -97,7 +97,7 @@
     <el-dialog :title="isEdit?'编辑角色':'添加角色'" :visible.sync="dialogVisible" width="60%">
       <el-form ref="www" :model="role" label-width="150px" :rules="rules" size="small">
         <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="role.roleName" placeholder="请输入角色名称"/>
+          <el-input v-model="role.roleName" placeholder="请输入角色名称" />
         </el-form-item>
         <el-form-item label="状态">
           <el-radio-group v-model="role.enabled">
@@ -110,7 +110,7 @@
         <!--          <el-input v-model="form.roleKey" placeholder="请输入权限字符" />-->
         <!--        </el-form-item>-->
         <el-form-item label="角色描述">
-          <el-input v-model="role.roleDesc" type="textarea" placeholder="请输入内容"/>
+          <el-input v-model="role.roleDesc" type="textarea" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -126,10 +126,12 @@
           ref="tree"
           :data="menuTreeList"
           show-checkbox
-          default-expand-all
+          :default-checked-keys="[5]"
+          :default-expanded-keys="[5]"
           node-key="id"
           highlight-current
           :props="defaultProps"
+          auto-expand-parent
         />
         <div style="margin-top: 20px" align="center">
           <el-button type="primary" @click="handleSave()">保存</el-button>
@@ -150,6 +152,7 @@ import {
   exportRole,
   dataScope,
   changeRoleStatus,
+  listMenuRole,
   listMenuByRole
 } from '@/api/authoraty/role'
 import { treeselect as menuTreeselect, roleMenuTreeselect, fetchTreeList } from '@/api/authoraty/menu'
@@ -198,7 +201,7 @@ export default {
       form: {}, // 表单参数
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'title'
       },
       rules: { // 表单校验
         roleName: [
@@ -232,6 +235,8 @@ export default {
   },
   created() {
     this.getList()
+    this.treeList()
+    // this.getRoleMenu(this.);
   },
   methods: {
     /** 查询角色列表 */
@@ -245,16 +250,17 @@ export default {
         }
       )
     },
-    // treeList() {
-    //   fetchTreeList().then(response => {
-    //     this.menuTreeList = response.data
-    //   })
-    // },
-    handleSelectResource(index, row) {
-      this.$router.push({ path: '/allocResource', query: { roleId: row.id } })
+    treeList() {
+      fetchTreeList().then(response => {
+        this.menuTreeList = response.data
+      })
     },
-    getRoleMenu(roleId) {
-      listMenuByRole(roleId).then(response => {
+    handleSelectResource(index, row) {
+      this.$router.push({ path: '/allocResource', query: { roleId: row.id }})
+    },
+    getRoleMenu(account, id) {
+      console.log(1111111)
+      listMenuByRole(account, id).then(response => {
         const menuList = response.data
         const checkedMenuIds = []
         if (menuList != null && menuList.length > 0) {
@@ -303,12 +309,12 @@ export default {
     handleClear() {
       this.$refs.tree.setCheckedKeys([])
     },
-    /** 查询菜单树结构 */
-    getMenuTreeselect() {
-      menuTreeselect().then(response => {
-        this.menuOptions = response.data
-      })
-    },
+    // /** 查询菜单树结构 */
+    // getMenuTreeselect() {
+    //   menuTreeselect().then(response => {
+    //     this.menuOptions = response.data
+    //   })
+    // },
     // 所有菜单节点数据
     getMenuAllCheckedKeys() {
       // 目前被选中的菜单节点
@@ -381,8 +387,16 @@ export default {
       this.isEdit = false
       this.role = Object.assign({}, defaultRole) // 默认值为空
     },
+
     handleSelectMenu(row) {
-      this.getRoleMenu(row.id)
+      console.log(row)
+      listMenuRole(row.id).then(res => {
+        console.log(res)
+      })
+      console.log(this.menuTreeList)
+      console.log('this.$store.getters.account:' + this.$store.getters.name)
+
+      // this.getRoleMenu(this.$store.getters.name, row.id)
       this.openDataScope = true
     },
 
@@ -523,5 +537,10 @@ export default {
 <style scoped>
 .el-row button {
   float: left;
+}
+.el-checkbox{
+  margin-left: 10px;
+  float: left;
+  margin-top: 6px;
 }
 </style>

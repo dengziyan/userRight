@@ -1,5 +1,5 @@
 <template> 
-  <div class="app-container">
+  <div class="app-container" style="padding: 0px">
     <!-- 搜索框   -->
     <el-card class="filter-container" shadow="never">
 <!--      <div>-->
@@ -303,6 +303,9 @@ export default {
     padding: 0px;
   }
   .el-main{
+    padding: 0px;
+  }
+  .el-card__body{
     padding: 0px;
   }
 </style>
