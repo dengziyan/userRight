@@ -1,18 +1,18 @@
 <template>
   <el-card class="form-container" shadow="never">
-    <div v-for="(cate,index) in allResourceCate" :class="index===0?'top-line':null" :key="'cate'+cate.id">
+    <div v-for="(category,index) in allResourceCate" :class="index===0?'top-line':null" :key="'cate'+category.id">
       <el-row class="table-layout" style="background: #F2F6FC;">
         <el-checkbox
-          :model="cate.checked"
-          :indeterminate="isIndeterminate(cate.id)"
-          @change="handleCheckAllChange(cate)">
-          {{cate.name}}
+          :model="category.checked"
+          :indeterminate="isIndeterminate(category.id)"
+          @change="handleCheckAllChange(category)">
+          {{category.categoryName}}
         </el-checkbox>
       </el-row>
       <el-row class="table-layout">
-        <el-col :span="8" v-for="resource in getResourceByCate(cate.id)" :key="resource.id" style="padding: 4px 0">
+          <el-col :span="8" v-for="resource in getResourceByCate(category.id)" :key="resource.id" style="padding: 4px 0">
           <el-checkbox v-model="resource.checked" @change="handleCheckChange(resource)">
-            {{resource.name}}
+            {{resource.resourceName}}
           </el-checkbox>
         </el-col>
       </el-row>
@@ -26,7 +26,8 @@
 </template>
 
 <script>
-import { allocResources } from '@/api/authoraty/resource'
+import { allocResources, listRoleResources } from '@/api/authoraty/role'
+import { fetchAllResourceList } from '@/api/authoraty/resource'
 import { listAllCate } from '@/api/authoraty/resourceCategory'
 import { allocResource, listResourceByRole} from '@/api/role'
 
@@ -34,90 +35,106 @@ export default {
   name: 'AllocResource',
   data() {
     return {
-      roleId: null,
-      allResource: null,
+      roleId: this.$route.query.roleId,
+      allResource: [],
       allResourceCate: null
     };
   },
   created() {
-    this.roleId = this.$route.query.roleId;
-    this.getAllResourceCateList();
+    this.getAllResourceCateList()
+    this.getResourceByRole(this.roleId)
   },
   methods: {
     getAllResourceList() {
-      allocResources().then(response => {
-        this.allResource = response.data;
+      fetchAllResourceList().then(response => {
+        this.allResource = response.data
+        console.log(this.allResource)
         for (let i = 0; i < this.allResource.length; i++) {
-          this.allResource[i].checked = false;
+          this.allResource[i].checked = false
         }
         this.getResourceByRole(this.roleId);
-      });
+      })
     },
     getAllResourceCateList() {
       listAllCate().then(response => {
-        this.allResourceCate = response.data;
+        this.allResourceCate = response.data
+        console.log(this.allResourceCate)
         for (let i = 0; i < this.allResourceCate.length; i++) {
-          this.allResourceCate[i].checked = false;
+          this.allResourceCate[i].enabled = false
         }
-        this.getAllResourceList();
+        this.getAllResourceList()
       });
     },
     getResourceByCate(categoryId) {
-      let cateReso0urce = []
+      let cateResource = []
       if (this.allResource == null) return null;
       for (let i = 0; i < this.allResource.length; i++) {
         let resource = this.allResource[i];
         if (resource.categoryId === categoryId) {
-          cateResource.push(resource);
+          cateResource.push(resource)
         }
       }
-      return cateResource;
+      return cateResource
     },
     getResourceByRole(roleId){
-      listResourceByRole(roleId).then(response=>{
-        let allocResource = response.data;
-        this.allResource.forEach(item=>{
-          item.checked = this.getResourceChecked(item.id,allocResource);
-        });
-        this.allResourceCate.forEach(item=>{
-          item.checked = this.isAllChecked(item.id);
-        });
-        this.$forceUpdate();
-      });
+      listRoleResources(roleId).then(response =>{
+        const allocResource = response.data;
+        const resources=[]
+        if(allocResource!==undefined&&allocResource!==null&&allocResource!==''){
+        this.allResource.forEach(function (val,index) {
+         for (let i = 0; i < allocResource.length; i++) {
+           {
+             if (allocResource[i]===val.id){
+               val.checked=true
+               resources.push(val)
+             }
+           }
+         }
+        })
+        this.allResource=resources
+        }
+        // this.allResource.forEach( item=>{
+        //   item.checked = this.getResourceChecked(item.id,allocResource);
+        // });
+        // this.allResourceCate.forEach(item=>{
+        //   item.checked = this.isAllChecked(item.id)
+        // })
+        // this.$forceUpdate()
+      })
     },
     getResourceChecked(resourceId,allocResource){
       if(allocResource==null||allocResource.length===0) return false;
       for(let i=0;i<allocResource.length;i++){
-        if(allocResource[i].id===resourceId){
+        if(allocResource[i].id === resourceId){
           return true;
         }
       }
       return false;
     },
     isIndeterminate(categoryId) {
-      let cateResources = this.getResourceByCate(categoryId);
-      if (cateResources == null) return false;
-      let checkedCount = 0;
+      const cateResources = this.getResourceByCate(categoryId);
+      if (cateResources == null) return false
+      let checkedCount = 0
       for (let i = 0; i < cateResources.length; i++) {
         if (cateResources[i].checked === true) {
-          checkedCount++;
+          checkedCount++
         }
       }
       return !(checkedCount === 0 || checkedCount === cateResources.length);
     },
     isAllChecked(categoryId) {
       let cateResources = this.getResourceByCate(categoryId);
-      if (cateResources == null) return false;
-      let checkedCount = 0;
+      if (cateResources == null) return false
+      let checkedCount = 0
       for (let i = 0; i < cateResources.length; i++) {
         if (cateResources[i].checked === true) {
-          checkedCount++;
+          checkedCount++
         }
       }
-      if(checkedCount===0){
-        return false;
+      if (checkedCount === 0) {
+        return false
       }
-      return checkedCount === cateResources.length;
+      return checkedCount === cateResources.length
     },
     handleSave() {
       this.$confirm('是否分配资源？', '提示', {
@@ -129,14 +146,14 @@ export default {
         if (this.allResource != null && this.allResource.length > 0) {
           this.allResource.forEach(item => {
             if (item.checked) {
-              checkedResourceIds.add(item.id);
+              checkedResourceIds.add(item.id)
             }
-          });
+          })
         }
         let params = new URLSearchParams();
         params.append("roleId", this.roleId);
         params.append("resourceIds", Array.from(checkedResourceIds));
-        allocResource(params).then(response => {
+        allocResources(params).then(response => {
           this.$message({
             message: '分配成功',
             type: 'success',

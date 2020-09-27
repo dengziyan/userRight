@@ -25,61 +25,97 @@ export const constantRoutes = [
         path: '/home',
         name: 'home',
         component: () => import('@/views/Home/Home')
+        ,meta: {
+          keepAlive: true // 需要缓存的页面
+        }
       },
       {
         path: '/personal',
         name: 'personal',
-        component: () => import('@/views/personal/index')
+        component: () => import('@/views/personal/index'),
+        meta: {
+          keepAlive: true // 需要缓存的页面
+        }
       },
       {
         path: '/userList',
         name: 'userList',
-        component: () => import('@/views/Authoraty/UserList')
+        component: () => import('@/views/Authoraty/UserList'),
+        meta: {
+          keepAlive: true // 需要缓存的页面
+        }
       },
       {
         path: '/roleList',
         name: 'roleList',
         component: () => import('@/views/Authoraty/RoleList')
+        ,meta: {
+          keepAlive: true // 需要缓存的页面
+        }
       },
       {
         path: '/menuList',
         name: 'menuList',
         component: () => import('@/views/Authoraty/MenuList')
+        ,meta: {
+          keepAlive: true // 需要缓存的页面
+        }
       },
       {
         path: '/addMenu',
         name: 'addMenu',
         component: () => import('@/views/Authoraty/addMenu')
+        ,meta: {
+          keepAlive: true // 需要缓存的页面
+        }
       },
       {
         path: '/resourceList',
         name: 'resourceList',
         component: () => import('@/views/Authoraty/ResourceList')
+        ,meta: {
+          keepAlive: true // 需要缓存的页面
+        }
       },
       {
         path: '/allocResource',
         name: 'allocResource',
-        component: () => import('@/views/Authoraty/allocResource')
+        component: () => import('@/views/Authoraty/allocResource'),
+        meta: {
+          keepAlive: false // 需要缓存的页面
+        }
       },
       {
         path: '/resourceCategory',
         name: 'resourceCategory',
         component: () => import('@/views/Authoraty/resourceCategory')
+        ,meta: {
+          keepAlive: true // 需要缓存的页面
+        }
       },
       {
         path: '/opeDiary',
         name: 'opeDiary',
         component: () => import('@/views/System/Diary/OpeDiary')
+        ,meta: {
+          keepAlive: true // 需要缓存的页面
+        }
       },
       {
         path: '/logDiary',
         name: 'logDiary',
         component: () => import('@/views/System/Diary/LogDiary')
+        ,meta: {
+          keepAlive: true // 需要缓存的页面
+        }
       },
       {
         path: '/online',
         name: 'online',
         component: () => import('@/views/System/Online')
+        ,meta: {
+          keepAlive: true // 需要缓存的页面
+        }
       }
 
     ]
@@ -89,6 +125,9 @@ export const constantRoutes = [
     path: '/forgetPwd',
     name: 'forgetPwd',
     component: () => import('@/views/personal/forgetPwd')
+    ,meta: {
+      keepAlive: false // 需要缓存的页面
+    }
   },
   { path: '*', redirect: '/404', hidden: true }
 ]

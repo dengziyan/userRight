@@ -6,8 +6,11 @@
       <common-tab />
       <el-main>
         <keep-alive>
-        <router-view />
+          <router-view v-if='$route.meta.keepAlive'/>
         </keep-alive>
+
+        <router-view v-if='!$route.meta.keepAlive'/>
+
       </el-main>
     </el-container>
   </el-container>

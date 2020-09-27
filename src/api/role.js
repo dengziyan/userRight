@@ -60,7 +60,7 @@ export function allocMenu(data) {
   return request({
     url: '/role/allocMenu',
     method: 'post',
-    data:data
+    data: data
   })
 }
 

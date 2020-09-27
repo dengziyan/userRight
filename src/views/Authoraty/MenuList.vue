@@ -30,7 +30,7 @@
               @change="handleHiddenChange(scope.$index, scope.row)"
               :active-value="1"
               :inactive-value="0"
-              v-model="scope.row.hidden">
+              v-model="scope.row.enabled">
             </el-switch>
           </template>
         </el-table-column>
@@ -101,22 +101,11 @@
           <svg-icon style="margin-left: 8px" :icon-class="menu.icon"></svg-icon>
         </el-form-item>
         <el-form-item label="是否显示：">
-          <el-radio-group v-model="menu.hidden">
+          <el-radio-group v-model="menu.enabled">
             <el-radio :label="1">是</el-radio>
             <el-radio :label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-table-column label="是否启用" width="150">
-          <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.enabled"
-              :active-value="1"
-              :inactive-value="0"
-              @change="handleStatusChange(scope.row)"
-            />
-          </template>
-        </el-table-column>
-
 
 
 

@@ -53,19 +53,8 @@ export function createResource(data) {
 
 export function fetchAllResourceList() {
   return request({
-    url: '/resource/listAll',
+    url: '/sysResources/resourceList',
     method: 'get'
   })
 }
 
-export function allocResources(ids, params) {
-  return request({
-    url: '/sys/role/assign-resource',
-    method: 'get',
-    params: {
-      resource: ids,
-      role: params
-
-    }
-  })
-}

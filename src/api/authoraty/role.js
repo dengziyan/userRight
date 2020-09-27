@@ -112,3 +112,22 @@ export function listMenuByRole(menuIds, roleId) {
     data
   })
 }
+
+export function allocResources(ids, params) {
+  return request({
+    url: '/sys/role/assign-resource',
+    method: 'get',
+    params: {
+      resource: ids,
+      role: params
+    }
+  })
+}
+
+export function listRoleResources(id) {
+  return request({
+    url: '/sys/role/role-resources/' + id,
+    method: 'get'
+  })
+}
+
