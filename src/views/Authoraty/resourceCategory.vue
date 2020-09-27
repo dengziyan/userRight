@@ -94,7 +94,7 @@ export default {
   },
   methods: {
     // 返回资源列表
-    returnResources(){
+    returnResources() {
       this.$router.replace('/resourceList')
     },
     handleAdd() {
