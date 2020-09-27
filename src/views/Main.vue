@@ -52,4 +52,7 @@ export default {
     overflow-y: auto;
     height: 100vh;
   }
+
+
 </style>
+

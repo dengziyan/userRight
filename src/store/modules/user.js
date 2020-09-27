@@ -7,7 +7,11 @@ const getDefaultState = () => {
     token: getToken(),
     name: '',
     id: getIDKey(),
-    avatar: ''
+    avatar: '',
+    email: '',
+    mobilePhone: '',
+    createDate: '',
+    gender: ''
   }
 }
 
@@ -27,6 +31,21 @@ const mutations = {
     state.id = id
   },
   SET_AVATAR: (state, avatar) => {
+    state.avatar = avatar
+  },
+  SET_EMAIL: (state, email) => {
+    state.email = email
+  },
+  SET_MOBILEPHNE: (state, mobilePhone) => {
+    state.mobilePhone = mobilePhone
+  },
+  SET_CREATEDATE: (state, createDate) => {
+    state.createDate = createDate
+  },
+  SET_GENDER: (state, gender) => {
+    state.gender = gender
+  },
+  setAvatar(state, avatar) {
     state.avatar = avatar
   }
 }
@@ -65,8 +84,16 @@ const actions = {
 
         const name = data.userInfo.account
         const avatar = data.userInfo.avatarUrl
+        const email = data.userInfo.email
+        const mobilePhone = data.userInfo.mobilePhone
+        const createDate = data.userInfo.createDate
+        const gender = data.userInfo.gender
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
+        commit('SET_EMAIL', email)
+        commit('SET_MOBILEPHNE', mobilePhone)
+        commit('SET_CREATEDATE', createDate)
+        commit('SET_GENDER', gender)
         resolve(data)
       }).catch(error => {
         reject(error)

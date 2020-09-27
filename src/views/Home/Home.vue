@@ -1,25 +1,17 @@
 <template>
-  <div>
-    <h1>第一种在vue中使用echart的方式</h1>
-    <div class="charts">
-      <div id="barGraph" style="height: 350px;"></div>
-    </div>
-    <div class="charts">
-      <div id="pieGraph" style="height: 350px;"></div>
-    </div>
+
+  <div class="home-container">
+    <img src="../../assets/6.jpg" alt="">
+<!--    <div :class="className" :style="{height:height,width:width}" />-->
+<!--    <div class="charts">-->
+<!--      <div id="pieGraph" style="height: 350px;"></div>-->
+<!--    </div>-->
+<!--    <div class="charts">-->
+<!--      <div id="barGraph" style="height: 350px;"></div>-->
+<!--    </div>-->
   </div>
 </template>
-<template>
-  <div>
-    <h1>第一种在vue中使用echart的方式</h1>
-    <div class="charts">
-      <div id="barGraph" style="height: 350px;"></div>
-    </div>
-    <div class="charts">
-      <div id="pieGraph" style="height: 350px;"></div>
-    </div>
-  </div>
-</template>
+
 <script>
 // 引入基本模板,按需加载
 let echarts = require('echarts/lib/echarts');
@@ -29,18 +21,77 @@ require('echarts/lib/chart/bar');
 require('echarts/lib/chart/pie');
 require('echarts/lib/component/tooltip');
 require('echarts/lib/component/title');
-
+require('echarts/theme/macarons') // echarts theme
 
 export default {
   name: "WelcomePage",
+  props: {
+    className: {
+      type: String,
+      default: 'chart'
+    },
+    width: {
+      type: String,
+      default: '100%'
+    },
+    height: {
+      type: String,
+      default: '300px'
+    }
+  },
   data () {
-    return { }
+    return {
+      chart: null
+    }
   },
   mounted(){
-    this.drawBar();
-    this.drawPie();
+    // this.drawBar();
+    // this.drawPie();
+    // this.$nextTick(() => {
+    //   this.initChart()
+    // })
+  },
+  beforeDestroy() {
+    // if (!this.chart) {
+    //   return
+    // }
+    // this.chart.dispose()
+    // this.chart = null
   },
   methods:{
+    initChart() {
+      this.chart = echarts.init(this.$el, 'macarons')
+
+      this.chart.setOption({
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+        legend: {
+          left: 'center',
+          bottom: '10',
+          data: ['Industries', 'Technology', 'Forex', 'Gold', 'Forecasts']
+        },
+        series: [
+          {
+            name: 'WEEKLY WRITE ARTICLES',
+            type: 'pie',
+            roseType: 'radius',
+            radius: [15, 95],
+            center: ['50%', '38%'],
+            data: [
+              { value: 320, name: 'Industries' },
+              { value: 240, name: 'Technology' },
+              { value: 149, name: 'Forex' },
+              { value: 100, name: 'Gold' },
+              { value: 59, name: 'Forecasts' }
+            ],
+            animationEasing: 'cubicInOut',
+            animationDuration: 2600
+          }
+        ]
+      })
+    },
     drawBar(){
       // 基于dom，初始化echarts实例
       let barGraph = echarts.init(document.getElementById('barGraph'));
@@ -95,7 +146,7 @@ export default {
       let pieGraph = echarts.init(document.getElementById('pieGraph'));
       pieGraph.setOption({
         title : {
-          text: '某站点用户访问来源',
+          text: '列表数据',
           subtext: '纯属虚构',
           x:'center'
         },
@@ -106,7 +157,7 @@ export default {
         legend: {
           orient: 'vertical',
           left: 'left',
-          data: ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+          data: ['用户列表','角色列表','资源列表','菜单列表']
         },
         series : [
           {
@@ -115,11 +166,10 @@ export default {
             radius : '55%',
             center: ['50%', '60%'],
             data:[
-              {value:335, name:'直接访问'},
-              {value:310, name:'邮件营销'},
-              {value:234, name:'联盟广告'},
-              {value:135, name:'视频广告'},
-              {value:1548, name:'搜索引擎'}
+              {value:335, name:'用户列表',itemStyle: { color: '#005eff' }},
+              {value:310, name:'角色列表',itemStyle: { color: '#99A9BF' }},
+              {value:234, name:'资源列表',itemStyle: { color: '#409EFF' }},
+              {value:135, name:'菜单列表',itemStyle: { color: '#A349A4' }}
             ],
             itemStyle: {
               emphasis: {
@@ -137,5 +187,8 @@ export default {
 </script>
 
 <style scoped>
-
+  img{
+    width: 800px;
+    height: 800px;
+  }
 </style>

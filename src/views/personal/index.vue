@@ -13,23 +13,23 @@
             <ul class="list-group list-group-striped">
               <li class="list-group-item">
                 <svg-icon icon-class="user" />用户名称
-                <div class="pull-right">{{ user.userName }}</div>
+                <div class="pull-right">{{ user.name }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="phone" />手机号码
-                <div class="pull-right">{{ user.phonenumber }}</div>
+                <div class="pull-right">{{ user.mobilePhone }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="email" />用户邮箱
                 <div class="pull-right">{{ user.email }}</div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="peoples" />所属角色
-                <div class="pull-right">{{ roleGroup }}</div>
+                <svg-icon icon-class="peoples" />性别
+                <div class="pull-right">{{ user.gender }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="date" />创建日期
-                <div class="pull-right">{{ user.createTime }}</div>
+                <div class="pull-right">{{ user.createDate }}</div>
               </li>
             </ul>
           </div>
@@ -76,12 +76,19 @@ export default {
   },
   methods: {
     getUser() {
-      getUserProfile().then(response => {
-        this.user = response.data;
-        this.roleGroup = response.roleGroup;
-        this.postGroup = response.postGroup;
-      });
+      this.user.name = this.$store.getters.name
+      this.user.mobilePhone = this.$store.getters.mobilePhone
+      this.user.email = this.$store.getters.email
+      this.user.gender = this.$store.getters.gender
+      this.user.createDate = this.$store.getters.createDate
     }
   }
 };
 </script>
+<style scoped>
+  ul{
+    list-style: none;
+    padding: 0px;
+    width: 1000px;
+  }
+</style>

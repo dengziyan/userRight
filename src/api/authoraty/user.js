@@ -138,9 +138,9 @@ export function updateUserProfile(data) {
 // 用户头像上传
 export function uploadAvatar(data) {
   return request({
-    url: '/sys/user/profile/avatar',
+    url: '/sys/user-info/avatar',
     method: 'post',
-    data: data
+    data
   })
 }
 

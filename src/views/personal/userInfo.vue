@@ -1,18 +1,18 @@
 <template>
   <el-form ref="form" :model="user" :rules="rules" label-width="80px">
     <el-form-item label="用户昵称" prop="nickName">
-      <el-input v-model="user.nickName" />
+      <el-input v-model="user.name" />
     </el-form-item>
     <el-form-item label="手机号码" prop="phonenumber">
-      <el-input v-model="user.phonenumber" maxlength="11" />
+      <el-input v-model="user.mobilePhone" maxlength="11" />
     </el-form-item>
     <el-form-item label="邮箱" prop="email">
       <el-input v-model="user.email" maxlength="50" />
     </el-form-item>
     <el-form-item label="性别">
-      <el-radio-group v-model="user.sex">
-        <el-radio label="0">男</el-radio>
-        <el-radio label="1">女</el-radio>
+      <el-radio-group v-model="user.gender">
+        <el-radio label="M">男</el-radio>
+        <el-radio label="F">女</el-radio>
       </el-radio-group>
     </el-form-item>
     <el-form-item>
