@@ -60,7 +60,6 @@ export default {
       })
       if (!menu || !menu.name) {
         return
-
       }
       const result = state.tabsList.findIndex(item => item.name === menu.name)
       result === -1 ? state.tabsList.push(menu) : state.tabsList.splice(result, 1, menu)
