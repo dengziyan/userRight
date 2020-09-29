@@ -119,7 +119,7 @@ export function updateUserProfile(data) {
 export function getUserProfile(id){
   return request({
     url: '/sys/user-info/' + id,
-    method: 'put',
+    method: 'get',
     data: id
   })
 }
@@ -164,6 +164,30 @@ export function getCode(phoneNumber) {
 export function codeEquals(code) {
   return request({
     url: '/sysUser/codeEquals/' + code,
+    method: 'get'
+  })
+}
+
+export function updateUserRole(roleids,id){
+  return request({
+    url: '/sys/user/assign-role',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    },
+    transformRequest: [function(data) { // 在请求之前对data传参进行格式转换
+      data = Qs.stringify(data)
+      return data
+    }],
+    data: {
+      role: roleids+'',
+      account: id
+    }
+  })
+}
+export function listUserRole(id){
+  return request({
+    url: '/sys/user/user-role/'+id,
     method: 'get'
   })
 }

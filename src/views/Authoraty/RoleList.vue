@@ -394,21 +394,6 @@ export default {
         })
       }
     },
-    /** 分配数据权限操作 */
-    // handleDataScope(row) {
-    //   this.reset()
-    //   const roleDeptTreeselect = this.getRoleDeptTreeselect(row.roleId)
-    //   getRole(row.roleId).then(response => {
-    //     this.form = response.data
-    //     this.openDataScope = true
-    //     this.$nextTick(() => {
-    //       roleDeptTreeselect.then(res => {
-    //         this.$refs.dept.setCheckedKeys(res.checkedKeys)
-    //       })
-    //     })
-    //     this.title = '分配数据权限'
-    //   })
-    // },
     /** 提交按钮 */
     submitForm: function() {
       this.$refs['form'].validate(valid => {
@@ -435,20 +420,6 @@ export default {
         }
       })
     },
-    /** 提交按钮（数据权限） */
-    submitDataScope: function() {
-      if (this.form.roleId != undefined) {
-        this.form.deptIds = this.getDeptAllCheckedKeys()
-        dataScope(this.form).then(response => {
-          if (response.code === 200) {
-            this.msgSuccess('修改成功')
-            this.openDataScope = false
-            this.getList()
-          }
-        })
-      }
-    },
-
     /** 删除按钮操作 */
     handleDelete(row) {
       // console.log(row)

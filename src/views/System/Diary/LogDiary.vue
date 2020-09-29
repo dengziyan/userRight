@@ -174,9 +174,9 @@ export default {
         console.log(response.data)
         roleList = response.data
       })
-      listRoleResources(roleList).then(response => {
-        this.resources = response.data
-      })
+      // listRoleResources(roleList).then(response => {
+      //   this.resources = response.data
+      // })
     },
       /** 搜索按钮操作 */
     handleQuery() {

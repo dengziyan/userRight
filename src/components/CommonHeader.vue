@@ -38,7 +38,7 @@ export default {
   data() {
     return {
       userImg: store.getters.avatar,
-      baseUrl : 'http://192.168.1.107'
+      baseUrl : 'http://localhost'
     }
   },
   computed: {

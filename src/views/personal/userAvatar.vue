@@ -81,7 +81,7 @@ export default {
       },
       file: undefined,
       previews: {},
-      baselUrl: 'http://192.168.1.107'
+      baselUrl: 'http://localhost'
     }
   },
   methods: {

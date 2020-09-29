@@ -21,7 +21,7 @@ import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, 
 
 // 第三方包
 import ElementUI from 'element-ui'
-import locale from 'element-ui/lib/locale/lang/en'
+import locale from 'element-ui/lib/locale/lang/zh-CN'
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts

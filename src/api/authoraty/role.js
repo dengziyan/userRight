@@ -100,7 +100,7 @@ export function listMenuByRole(menuIds, roleId) {
     role: roleId
   }
   return request({
-    url: '/sys/user/assign-menu',
+    url: '/sys/role/assign-menu',
     method: 'post',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'

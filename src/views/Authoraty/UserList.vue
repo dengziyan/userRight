@@ -85,17 +85,17 @@
     </el-row>
     <!-- 表格-->
     <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="50" align="center"/>
-      <el-table-column label="编号" align="center" prop="id"/>
-      <el-table-column label="账号" align="center" prop="account" :show-overflow-tooltip="true"/>
-      <el-table-column label="姓名" align="center" prop="realName" :show-overflow-tooltip="true"/>
+      <el-table-column type="selection" width="50" align="center" />
+      <el-table-column label="编号" align="center" prop="id" />
+      <el-table-column label="账号" align="center" prop="account" :show-overflow-tooltip="true" />
+      <el-table-column label="姓名" align="center" prop="realName" :show-overflow-tooltip="true" />
       <el-table-column label="性别" align="center" prop="gender">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.gender == 'F' ? '女' : '男' }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="邮箱" align="center" prop="email" :show-overflow-tooltip="true"/>
-      <el-table-column label="手机号码" align="center" prop="mobilePhone" width="120" :show-overflow-tooltip="true"/>
+      <el-table-column label="邮箱" align="center" prop="email" :show-overflow-tooltip="true" />
+      <el-table-column label="手机号码" align="center" prop="mobilePhone" width="120" :show-overflow-tooltip="true" />
       <el-table-column label="创建时间" align="center" prop="createDate" width="160" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createDate) }}</span>
@@ -156,7 +156,7 @@
         :auto-upload="false"
         drag
       >
-        <i class="el-icon-upload"/>
+        <i class="el-icon-upload" />
         <div class="el-upload__text">
           将文件拖到此处，或
           <em>点击上传</em>
@@ -177,31 +177,31 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户账号" prop="account">
-              <el-input v-model="user.account" placeholder="请输入用户账号"/>
+              <el-input v-model="user.account" placeholder="请输入用户账号" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="手机号码" prop="mobilePhone">
-              <el-input v-model="user.mobilePhone" placeholder="请输入手机号码" maxlength="11"/>
+              <el-input v-model="user.mobilePhone" placeholder="请输入手机号码" maxlength="11" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item v-if="user.id == undefined" label="用户姓名" prop="realName">
-              <el-input v-model="user.realName" placeholder="请输入用户姓名"/>
+              <el-input v-model="user.realName" placeholder="请输入用户姓名" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item v-if="user.id == undefined" label="默认密码：" prop="password">
-              <el-input v-model="user.password" placeholder="88888888" :disabled="true" type="text"/>
+              <el-input v-model="user.password" placeholder="88888888" :disabled="true" type="text" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="邮箱" prop="email">
-              <el-input v-model="user.email" placeholder="请输入邮箱" maxlength="50"/>
+              <el-input v-model="user.email" placeholder="请输入邮箱" maxlength="50" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -227,19 +227,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-<!--          <el-col :span="12">-->
-<!--            <el-form-item label="角色">-->
-<!--              <el-select v-model="user.roleIds" multiple placeholder="请选择">-->
-<!--                <el-option-->
-<!--                  v-for="item in roleOptions"-->
-<!--                  :key="item.value"-->
-<!--                  :label="item.label"-->
-<!--                  :value="item.value"-->
-<!--                  :disabled="item.enabled == 1"-->
-<!--                />-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
         </el-row>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -248,7 +235,7 @@
       </span>
     </el-dialog>
     <!--    分配角色的对话框-->
-    <el-dialog  :visible.sync="openalloc" width="40%">
+    <el-dialog :visible.sync="openalloc" width="40%">
       <el-form ref="www" :model="user" label-width="150px" :rules="rules" size="small">
         <el-row>
           <el-col :span="12">
@@ -268,7 +255,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="openalloc = false">取 消</el-button>
-        <el-button type="primary" size="small" @click="handleDialogConfirm()">确 定</el-button>
+        <el-button type="primary" size="small" @click="handleRole()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -276,7 +263,7 @@
 
 <script>
 import {
-  listUser, delUser, addUser, updateUser, exportUser, resetUserPwd, importTemplates, batchAddUser, changeUserStatus
+  listUser, delUser, addUser, updateUserRole, updateUser, listUserRole, exportUser, resetUserPwd, importTemplates, batchAddUser, changeUserStatus
 } from '@/api/authoraty/user'
 import { getToken } from '@/utils/auth'
 import fileDownload from 'js-file-download'
@@ -298,8 +285,8 @@ const defaultUser = {
   deleteStatus: 0,
   enabled: 1,
   realName: '',
-  roleIds: null,
-  userId: 1,
+  roleIds: [],
+  id: 1
 }
 export default {
   name: 'User',
@@ -307,7 +294,7 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      openalloc:false,
+      openalloc: false,
       isEdit: false,
       user: Object.assign({}, defaultUser), // user为对话框中:model
       defaultRoleId: null,
@@ -476,10 +463,29 @@ export default {
       this.isEdit = true
       this.user = Object.assign({}, row)
     },
-    alloc(){
+    alloc(row) {
+      this.user.roleIds = []
+      listUserRole(row.id).then(res => {
+        if (res.code === 2000) {
+          this.user.roleIds=res.data
+        }
+      })
       this.openalloc = true
+      this.user.id=row.id
     },
 
+    handleRole() {
+      updateUserRole(this.user.roleIds, this.user.id).then(response => {
+        if (response.code === 2000) {
+          this.$message({
+            message: '分配角色成功！',
+            type: 'success'
+          })
+          this.openalloc = false
+          this.getList()
+        }
+      })
+    },
     // 对话框按确定键之后的方法
     handleDialogConfirm() {
       if (this.isEdit) { // 更新资源数据（即编辑修改）
@@ -514,7 +520,11 @@ export default {
       }).then(() => {
         resetUserPwd(row.account, row.email).then((response) => {
           if (response.code === 2000) {
-            this.msgSuccess('修改成功')
+            this.$message({
+              message: response.message,
+              type: 'success',
+              duration: 1000
+            })
           }
         })
       }).catch(() => {
