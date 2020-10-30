@@ -56,10 +56,6 @@ export default {
         this.menu_data = response.data
       })
     },
-    clickMenu(item) {
-      this.$router.push({ name: item.name })
-      this.$store.commit('selectMenu', item)
-    },
     dynamicRouter(item) {
       for (const val in item) {
         const obj = item[val]

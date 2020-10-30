@@ -22,10 +22,13 @@ export const constantRoutes = [
     redirect: '/home',
     children: [
       {
+        path: '/', redirect: '/home'
+      },
+      {
         path: '/home',
         name: 'home',
-        component: () => import('@/views/Home/Home')
-        ,meta: {
+        component: () => import('@/views/Home/Home'),
+        meta: {
           keepAlive: true // 需要缓存的页面
         }
       },
@@ -48,32 +51,32 @@ export const constantRoutes = [
       {
         path: '/roleList',
         name: 'roleList',
-        component: () => import('@/views/Authoraty/RoleList')
-        ,meta: {
+        component: () => import('@/views/Authoraty/RoleList'),
+        meta: {
           keepAlive: true // 需要缓存的页面
         }
       },
       {
         path: '/menuList',
         name: 'menuList',
-        component: () => import('@/views/Authoraty/MenuList')
-        ,meta: {
+        component: () => import('@/views/Authoraty/MenuList'),
+        meta: {
           keepAlive: true // 需要缓存的页面
         }
       },
       {
         path: '/addMenu',
         name: 'addMenu',
-        component: () => import('@/views/Authoraty/addMenu')
-        ,meta: {
+        component: () => import('@/views/Authoraty/addMenu'),
+        meta: {
           keepAlive: true // 需要缓存的页面
         }
       },
       {
         path: '/resourceList',
         name: 'resourceList',
-        component: () => import('@/views/Authoraty/ResourceList')
-        ,meta: {
+        component: () => import('@/views/Authoraty/ResourceList'),
+        meta: {
           keepAlive: true // 需要缓存的页面
         }
       },
@@ -88,32 +91,40 @@ export const constantRoutes = [
       {
         path: '/resourceCategory',
         name: 'resourceCategory',
-        component: () => import('@/views/Authoraty/resourceCategory')
-        ,meta: {
+        component: () => import('@/views/Authoraty/resourceCategory'),
+        meta: {
           keepAlive: true // 需要缓存的页面
         }
       },
       {
         path: '/opeDiary',
         name: 'opeDiary',
-        component: () => import('@/views/System/Diary/OpeDiary')
-        ,meta: {
+        component: () => import('@/views/System/Diary/OpeDiary'),
+        meta: {
           keepAlive: true // 需要缓存的页面
         }
       },
       {
         path: '/logDiary',
         name: 'logDiary',
-        component: () => import('@/views/System/Diary/LogDiary')
-        ,meta: {
+        component: () => import('@/views/System/Diary/LogDiary'),
+        meta: {
           keepAlive: true // 需要缓存的页面
         }
       },
       {
         path: '/online',
         name: 'online',
-        component: () => import('@/views/System/Online')
-        ,meta: {
+        component: () => import('@/views/System/Online'),
+        meta: {
+          keepAlive: true // 需要缓存的页面
+        }
+      },
+      {
+        path: '*',
+        name: '页面不存在',
+        component: () => import('@/views/404'),
+        meta: {
           keepAlive: true // 需要缓存的页面
         }
       }
@@ -124,8 +135,8 @@ export const constantRoutes = [
   {
     path: '/forgetPwd',
     name: 'forgetPwd',
-    component: () => import('@/views/personal/forgetPwd')
-    ,meta: {
+    component: () => import('@/views/personal/forgetPwd'),
+    meta: {
       keepAlive: false // 需要缓存的页面
     }
   },

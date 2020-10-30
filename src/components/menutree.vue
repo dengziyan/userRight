@@ -1,7 +1,7 @@
 <template>
   <div class="menutree">
-    <label v-for="menu in data">
-      <el-submenu v-if="menu.children" :index="'/' + menu.name">
+    <label v-for="menu in data" :key="menu.id">
+      <el-submenu v-if="menu.children"  :index="'/' + menu.name">
         <template slot="title">
           <i :class="'el-icon-'+menu.icon"/>
           <span>{{ menu.title }}</span>
@@ -11,7 +11,7 @@
         </el-menu-item-group>
       </el-submenu>
 
-      <el-menu-item v-else :index="'/'+menu.name" @click="clickMenu(menu)">
+      <el-menu-item v-else  :index="'/'+menu.name" @click="clickMenu(menu)">
         <i :class="'el-icon-'+menu.icon"/>
         <span slot="title">{{ menu.title }}</span>
       </el-menu-item>
@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     clickMenu(item) {
-      this.$router.push({ name: item.name })
+      this.$router.push({path: '/' + item.name})
       this.$store.commit('selectMenu', item)
     }
   }

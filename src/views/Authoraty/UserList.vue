@@ -56,17 +56,17 @@
         <el-date-picker
           v-model="dateRange"
           size="small"
-          style="width: 240px"
+          style="width: 200px"
           value-format="yyyy-MM-dd"
-          type="daterange"
+          type="datetimerange"
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button type="cyan" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="small" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -84,17 +84,17 @@
       <el-checkbox v-model="checkAll">导出所有数据</el-checkbox>
     </el-row>
     <!-- 表格-->
-    <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="userList" border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="50" align="center" />
-      <el-table-column label="编号" align="center" prop="id" />
-      <el-table-column label="账号" align="center" prop="account" :show-overflow-tooltip="true" />
-      <el-table-column label="姓名" align="center" prop="realName" :show-overflow-tooltip="true" />
-      <el-table-column label="性别" align="center" prop="gender">
+      <el-table-column label="编号" width="80" align="center" prop="id" />
+      <el-table-column label="账号" width="140" align="center" prop="account" :show-overflow-tooltip="true" />
+      <el-table-column label="姓名" width="100" align="center" prop="realName" :show-overflow-tooltip="true" />
+      <el-table-column label="性别" width="60" align="center" prop="gender">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.gender == 'F' ? '女' : '男' }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="邮箱" align="center" prop="email" :show-overflow-tooltip="true" />
+      <el-table-column label="邮箱" align="center" width="180" prop="email" :show-overflow-tooltip="true" />
       <el-table-column label="手机号码" align="center" prop="mobilePhone" width="120" :show-overflow-tooltip="true" />
       <el-table-column label="创建时间" align="center" prop="createDate" width="160" :show-overflow-tooltip="true">
         <template slot-scope="scope">
@@ -117,7 +117,7 @@
         </template>
       </el-table-column>
       <!--  每行的操作按钮-->
-      <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
           <el-button size="mini" type="text" icon="el-icon-circle-check" @click="alloc(scope.row)">分配角色</el-button>
@@ -367,16 +367,22 @@ export default {
   computed: {
     newEnable() {
       return this.queryParams.enabled
+    },
+    uploadOpen(){
+      return this.upload.open
     }
   },
   watch: {
     newEnable() {
-      this.getList()
+      return  this.getList()
+    },
+    uploadOpen(val){
+      val ===false ? this.$refs.upload.clearFiles():''
     }
   },
   created() {
-    this.getList()
     this.getRoleList() // 获取角色
+    this.getList()
   },
   methods: {
     /** 查询用户列表 */
@@ -618,12 +624,18 @@ export default {
           console.log(err)
         })
     },
-    handleFileUpload(val) {
+     handleFileUpload(val) {
       const formData = new FormData()
       formData.append('file', val.file)
       console.log(val)
       batchAddUser(formData).then(res => {
-        val.onSuccess()
+        if (res.code===2000)
+        {
+          val.onSuccess()
+        }
+        this.$refs.upload.clearFiles(
+
+        )
       }).catch(res => {
         val.onError()
       })
@@ -632,6 +644,7 @@ export default {
     handleFileSuccess() {
       this.upload.open = false
       this.upload.isUploading = false
+      console.log("dddd")
       this.getList()
     },
     // 提交上传文件

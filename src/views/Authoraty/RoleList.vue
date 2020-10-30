@@ -113,10 +113,8 @@
           :default-checked-keys="menuRoleIds"
           :default-expanded-keys="menuRoleIds"
           node-key="id"
-          :check-strictly="true"
           highlight-current
           :props="defaultProps"
-          auto-expand-parent
         />
         <div style="margin-top: 20px" align="center">
           <el-button type="primary" @click="handleSave()">保存</el-button>
@@ -131,15 +129,14 @@
 
 <script>
 import {
-  listRole,
-  delRole,
   addRole,
-  updateRole,
-  exportRole,
-  dataScope,
   changeRoleStatus,
+  delRole,
+  exportRole,
+  listMenuByRole,
   listMenuRole,
-  listMenuByRole
+  listRole,
+  updateRole
 } from '@/api/authoraty/role'
 import { fetchTreeList } from '@/api/authoraty/menu'
 import moment from 'moment'
@@ -166,6 +163,7 @@ export default {
       ids: [], // 选中数组
       menuRoleIds: [], // 用户所拥有的菜单
       menuNoChildren: [],
+      firstMenuList: [],
       single: true, // 非单个禁用
       multiple: true, // 非多个禁用
       showSearch: true, // 显示搜索条件
@@ -209,6 +207,9 @@ export default {
     },
     newAccount() {
       return this.queryParams.roleName
+    },
+    newRoleMenu() {
+      return this.openDataScope
     }
   },
   watch: {
@@ -218,12 +219,20 @@ export default {
     },
     newAccount(val) {
       this.queryParams.roleName = val === '' ? undefined : val
+    },
+    newRoleMenu(val) {
+      if (val === false) {
+        this.$refs.tree.setCheckedKeys([])
+        this.menuRoleIds = []
+        this.menuTreeList = this.firstMenuList
+      }
     }
   },
+
   created() {
     this.getList()
-  },
-  methods: {
+    this.getMenuList()
+  }, methods: {
     /** 查询角色列表 */
     getList() {
       this.loading = true
@@ -240,19 +249,13 @@ export default {
     },
     //  保存分配的菜单
     handleSave() {
-      const checkedNodes = this.$refs.tree.getCheckedNodes()
-      const checkedMenuIds = new Set()
-      if (checkedNodes != null && checkedNodes.length > 0) {
-        for (let i = 0; i < checkedNodes.length; i++) {
-          const checkedNode = checkedNodes[i]
-          checkedMenuIds.add(checkedNode.id)
-          if (checkedNode.parentId !== 0) {
-            checkedMenuIds.add(checkedNode.parentId)
-          }
-        }
-      }
-      console.log()
-      listMenuByRole(Array.from(checkedMenuIds),this.roleId).then(response => {
+      // 勾选的key
+      const checkedKeys = this.$refs.tree.getCheckedKeys()
+      // 暂选状态的母tab的key
+      const halfCheckedNodes = this.$refs.tree.getHalfCheckedKeys()
+      // 合并两个数组
+      const checkedNodes = checkedKeys.concat(halfCheckedNodes)
+      listMenuByRole(Array.from(checkedNodes), this.roleId).then(response => {
         if (response.code === 2000) {
           this.$message({
             message: '分配成功',
@@ -262,7 +265,6 @@ export default {
           this.openDataScope = false
           this.menuRoleIds = this.menuNoChildren
         }
-
       })
     },
     // 清空保存的菜单
@@ -280,17 +282,8 @@ export default {
         this.$refs.tree.setCheckedKeys(index)
       }
     },
-    getMenuAllCheckedKeys() {
-      // 目前被选中的菜单节点
-      const checkedKeys = this.$refs.menu.getHalfCheckedKeys()
-      // 半选中的菜单节点
-      const halfCheckedKeys = this.$refs.menu.getCheckedKeys()
-      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys)
-      return checkedKeys
-    },
     // 角色状态修改
     handleStatusChange(row) {
-      // console.log(row)
       const type = row.enabled === 1 ? { label: '启用', value: 'enable' } : { label: '停用', value: 'disable' }
       changeRoleStatus(row.id, type.value).then(response => {
         this.getList()
@@ -334,32 +327,70 @@ export default {
       this.isEdit = false
       this.role = Object.assign({}, defaultRole) // 默认值为空
     },
-
-    handleSelectMenu(row) {
-      this.roleId = row.id
+    getMenuList() {
       fetchTreeList().then(response => {
         this.menuTreeList = response.data
       }).then(() => {
-        const index = this.menuTreeList.map(item => {
-          if (item.enabled !== 1) {
-            item.disabled = true
-          }
-          return item
-        })
+        const index = this.setMenuDisable(this.menuTreeList, 'no')
         this.menuTreeList = index
-        this.openDataScope = true
+        this.firstMenuList = index
       })
+    },
+    setMenuDisable(list, node) {
+      return list.map(item => {
+        console.log(item)
+        if (item.children) {
+          if (item.enabled === 0) {
+            this.setMenuDisable(item.children, 'yes')
+          } else {
+            this.setMenuDisable(item.children, 'no')
+          }
+        }
+        if (item.enabled === 0 || node === 'yes') {
+          item.disabled = true
+        }
+        return item
+      })
+    },
+
+    // 获取角色菜单
+    handleSelectMenu(row) {
+      this.roleId = row.id
+      // const tree = this.$refs.tree
       listMenuRole(row.id).then(res => {
-        this.menuRoleIds = res.data
-        console.log('this.$store.getters.account:' + this.$store.getters.name)
+        const menus = res.data || []
+        this.openDataScope = true
+        return menus
+      }).then((res) => {
+        // console.log(res)
+        const checked = []
+        res.forEach((i, n) => {
+          const node = this.$refs.tree.getNode(i)
+          console.log(node)
+          // console.log(node.isLeaf)
+          if (node.isLeaf) {
+            // this.$refs.tree.setChecked(node, true)
+            checked.push(i)
+          }
+        })
+        this.setDisabled(checked)
       }).catch(response => {
         console.log(response)
+      })
+    },
+    setDisabled(val) {
+      this.menuRoleIds = val.map(item => {
+        console.log()
+        if (item.enabled === 0) {
+          item.disabled = true
+        }
+        return item
       })
     },
 
     // 按修改键弹出对话框（传入当前行的数据）
     handleTopUpdate() {
-      console.log(this.updataData)
+      // console.log(this.updataData)
       this.handleUpdate(this.updataData[0])
     },
     // 按修改键弹出对话框（传入当前行的数据）
@@ -394,32 +425,6 @@ export default {
         })
       }
     },
-    /** 提交按钮 */
-    submitForm: function() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          if (this.form.roleId != undefined) {
-            this.form.menuIds = this.getMenuAllCheckedKeys()
-            updateRole(this.form).then(response => {
-              if (response.code === 200) {
-                this.msgSuccess('修改成功')
-                this.open = false
-                this.getList()
-              }
-            })
-          } else {
-            this.form.menuIds = this.getMenuAllCheckedKeys()
-            addRole(this.form).then(response => {
-              if (response.code === 200) {
-                this.msgSuccess('新增成功')
-                this.open = false
-                this.getList()
-              }
-            })
-          }
-        }
-      })
-    },
     /** 删除按钮操作 */
     handleDelete(row) {
       // console.log(row)
@@ -450,9 +455,9 @@ export default {
         type: 'warning'
       }).then(function() {
         return exportRole(queryParams).then(res => {
-          console.log(res)
+          // console.log(res)
           const sysDate = moment(new Date()).format('YYYY-MM-DDHHmm')
-          console.log(sysDate)
+          // console.log(sysDate)
           fileDownload(res, sysDate + '用户信息表.xlsx')
         })
       }).then(response => {
