@@ -2,9 +2,9 @@
   <div class="app-container">
     <!--   添加按钮-->
     <el-card class="operate-container" shadow="never">
-<!--      <i class="el-icon-tickets" style="margin-top: 5px"></i>-->
-<!--      <span style="margin-top: 5px">数据列表</span>-->
       <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
+      <el-button type="primary" icon="el-icon-refresh" size="mini" @click="refreshMenu">刷新</el-button>
+      <el-button type="success" icon="el-icon-caret-top" size="mini" @click="refreshMenu">返回上一级</el-button>
     </el-card>
     <!--  表格    -->
     <div class="table-container">
@@ -306,7 +306,7 @@ export default {
 </script>
 
 <style scoped>
-  .el-card{
-    border: 0px;
-  }
+.el-card {
+  border: 0px;
+}
 </style>
